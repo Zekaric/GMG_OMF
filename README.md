@@ -1,4 +1,4 @@
-# GMG_OMF
+# libOMF_C
 
 https://github.com/gmggroup/omf is the official library but this was developed using python.  
 Which is fine but for me and many other devlopers a python library is a hurdle that is hard
