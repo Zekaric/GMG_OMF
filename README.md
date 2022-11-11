@@ -10,12 +10,14 @@ I will make every effort to make compliant OMF files and not cause incompatibili
 
 # License 
 
-MIT.  We all know what this means.  Go to town!
+MIT.  I do not expect this to ever change.  The goal is to make this as easy to adopt and integrate into various software systems.  The License then needs to make that possible and the MIT license is one of those licenses.
 
 # Contact
 
-Currently this project is a sole developer driven.  My name is Robbert de Groot and I work for Hexagon (Hexagon Mining devision.)  I have been in software devlopement professionally since 1995 and have primarily programmed using C/C++.
+I am Robbert de Groot.  Currently the only developer on this project.
 
-Disclaimer: Hexagon is not funding this work.  This work is being performed on my time outside of official work hours.  
+I can be reached off of github at "zekaric at gmail.com" or at [LinkedIn/zekaric](https://www.linkedin.com/in/zekaric/)
 
-I can be reached at "zekaric at gmail.com" 
+# Disclaimer
+
+I work for Hexagon (Hexagon Mining devision.)  I have been in software devlopement professionally since 1995 (Initially Mintec, Inc. which was bought by Hexagon in 2014) and have been primarily programming in C and C++.  Even though I work for Hexagon, Hexagon is not in any way funding or directing this work.  This work is being performed on my time outside of official work hours.  This work is also not being funded or directed by GMG the official developers of OMF.  If any of this changes in the future, I will make it clear what any changes will be.  
