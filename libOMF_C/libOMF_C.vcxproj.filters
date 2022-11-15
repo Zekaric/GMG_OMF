@@ -41,5 +41,14 @@
     <ClCompile Include="miniz.c">
       <Filter>miniz</Filter>
     </ClCompile>
+    <ClCompile Include="omfProject.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfFile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfChar.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
