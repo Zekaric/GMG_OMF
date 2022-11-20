@@ -59,15 +59,86 @@ macro:
 /******************************************************************************
 prototype:
 ******************************************************************************/
-void            _MemClear(  size_t const size, void * const buf);
-void           *_MemCreate( size_t const size);
-void           *_MemClone(  size_t const size, void * const buf);
-void            _MemDestroy(void * const buf);
+// Never to be used external to libOMF_C
+// Memory functions
+void                     _MemClear(                            size_t const size, void * const buf);
+void                    *_MemCreate(                           size_t const size);
+void                    *_MemClone(                            size_t const size, void * const buf);
+void                     _MemDestroy(                          void * const buf);
 
-// Never to be used by clients.
-OmfProject     *omfProjectCreate(         void);
-OmfBool         omfProjectCreateContent(  OmfProject       * const omfProject);
 
-void            omfProjectDestroy(        OmfProject       * const omfProject);
-void            omfProjectDestroyContent( OmfProject       * const omfProject);
 
+// Element routines
+void                     _OmfElementDestroyContent(            OmfElement       * const omfElement);
+
+// Element Line Set routines
+OmfElementLineSet       *_OmfElementLineSetCreate(             void);
+OmfBool                  _OmfElementLineSetCreateContent(      OmfElementLineSet * const omfElementLineSet);
+
+void                     _OmfElementLineSetDestroyContent(     OmfElementLineSet * const omfElementLineSet);
+
+// ELement Point Set routines
+OmfElementPointSet      *_OmfElementPointSetCreate(            void);
+OmfBool                  _OmfElementPointSetCreateContent(     OmfElementPointSet * const omfElementPointSet);
+
+void                     _OmfElementPointSetDestroyContent(    OmfElementPointSet * const omfElementPointSet);
+
+// Element Surface Grid routines
+OmfElementSurfaceGrid   *_OmfElementSurfaceGridCreate(         void);
+OmfBool                  _OmfElementSurfaceGridCreateContent(  OmfElementSurfaceGrid * const omfElementSurfaceGrid);
+
+void                     _OmfElementSurfaceGridDestroyContent( OmfElementSurfaceGrid * const omfElementSurfaceGrid);
+
+// Element Surface Tri routines
+OmfElementSurfaceTri    *_OmfElementSurfaceTriCreate(          void);
+OmfBool                  _OmfElementSurfaceTriCreateContent(   OmfElementSurfaceTri * const omfElementSurfaceTri);
+
+void                     _OmfElementSurfaceTriDestroyContent(  OmfElementSurfaceTri * const omfElementSurfaceTri);
+
+// Element Volume routines
+OmfElementVolume        *_OmfElementVolumeCreate(              void);
+OmfBool                  _OmfElementVolumeCreateContent(       OmfElementVolume * const omfElementVolume);
+
+void                     _OmfElementVolumeDestroyContent(      OmfElementVolume * const omfElementVolume);
+
+
+
+// Geometry routines
+void                     _OmfGeometryDestroyContent(           OmfGeometry * const omfGeometry);
+
+// Geometry Point Set routines
+OmfGeometryLineSet      *_OmfGeometryLineSetCreate(            void);
+OmfBool                  _OmfGeometryLineSetCreateContent(     OmfGeometryLineSet * const omfGeometryPointSet  );
+
+void                     _OmfGeometryLineSetDestroyContent(    OmfGeometryLineSet * const omfGeometryPointSet);
+
+// Geometry Point Set routines
+OmfGeometryPointSet     *_OmfGeometryPointSetCreate(           void);
+OmfBool                  _OmfGeometryPointSetCreateContent(    OmfGeometryPointSet * const omfGeometryPointSet);
+
+void                     _OmfGeometryPointSetDestroyContent(   OmfGeometryPointSet * const omfGeometryPointSet);
+
+// Geometry Surface Grid routines
+OmfGeometrySurfaceGrid  *_OmfGeometrySurfaceGridCreate(        void);
+OmfBool                  _OmfGeometrySurfaceGridCreateContent( OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid);
+
+void                     _OmfGeometrySurfaceGridDestroyContent(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid);
+
+// Geometry Surface Tri routines
+OmfGeometrySurfaceTri   *_OmfGeometrySurfaceTriCreate(         void);
+OmfBool                  _OmfGeometrySurfaceTriCreateContent(  OmfGeometrySurfaceTri * const omfGeometrySurfaceTri);
+
+void                     _OmfGeometrySurfaceTriDestroyContent( OmfGeometrySurfaceTri * const omfGeometrySurfaceTri);
+
+// Geometry Volume routines
+OmfGeometryVolume       *_OmfGeometryVolumeCreate(             void);
+OmfBool                  _OmfGeometryVolumeCreateContent(      OmfGeometryVolume * const omfGeometryVolume);
+
+void                     _OmfGeometryVolumeDestroyContent(     OmfGeometryVolume * const omfGeometryVolume);
+
+
+
+// Project routines
+OmfBool                  _OmfProjectCreateContent(             OmfProject * const omfProject);
+
+void                     _OmfProjectDestroyContent(            OmfProject * const omfProject);

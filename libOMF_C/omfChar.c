@@ -74,6 +74,14 @@ OmfChar *omfCharCreateFromWchar(wchar_t const * const value)
 }
 
 /******************************************************************************
+func: omfCharDestroy
+******************************************************************************/
+void omfCharDestroy(OmfChar * const value)
+{
+   memDestroy(value);
+}
+
+/******************************************************************************
 func: omfCharGetSize
 
 Get the byte count of the string.  Not necessarily the character length.

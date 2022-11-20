@@ -50,5 +50,44 @@
     <ClCompile Include="omfChar.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="omfElementPointSet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfGeometry.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfArray.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfElementLineSet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfElement.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfGeometryPointSet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omgGeometryLineSet.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfElementSurfaceGrid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfElementSurfaceTri.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfGeometrySurfaceGrid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfGeometrySurfaceTri.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfElementVolume.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfGeometryVolume.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

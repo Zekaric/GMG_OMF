@@ -35,70 +35,29 @@ global:
 function:
 ******************************************************************************/
 /******************************************************************************
-func: omfProjectCreate
+func: _OmfProjectCreateContent
 ******************************************************************************/
-OmfProject *omfProjectCreate(void)
+OmfBool _OmfProjectCreateContent(OmfProject * const omfProject)
 {
-   OmfProject *omfProject;
-
-   returnNullIf(!omfIsStarted());
-
-   omfProject = (OmfProject *) memCreateType(OmfProject);
-   returnNullIf(!omfProject);
-
-   if (!omfProjectCreateContent(omfProject))
-   {
-      memDestroy(omfProject);
-      return NULL;
-   }
-
-   return omfProject;
-}
-
-/******************************************************************************
-func: omfProjectCreateContent
-******************************************************************************/
-OmfBool omfProjectCreateContent(OmfProject * const omfProject)
-{
-   returnFalseIf(!omfIsStarted());
-
    memClearType(OmfProject, omfProject);
 
    return omfTRUE;
 }
 
 /******************************************************************************
-func: omfProjectDestroy
+func: _OmfProjectDestroyContent
 ******************************************************************************/
-void omfProjectDestroy(OmfProject * const omfProject)
+void _OmfProjectDestroyContent(OmfProject * const omfProject)
 {
-   returnVoidIf(
-      !omfIsStarted() ||
-      !omfProject);
+   returnVoidIf(!omfProject);
 
-   omfProjectDestroyContent(omfProject);
-   
-   memDestroy(omfProject);
-
-   return;
-}
-
-/******************************************************************************
-func: omfProjectDestroyContent
-******************************************************************************/
-void omfProjectDestroyContent(OmfProject * const omfProject)
-{
-   returnVoidIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   memDestroy(omfProject->author);
-   memDestroy(omfProject->date);
-   memDestroy(omfProject->dateCreated);
-   memDestroy(omfProject->dateModified);
-   memDestroy(omfProject->description);
-   memDestroy(omfProject->name);
-   memDestroy(omfProject->revision);
+   omfCharDestroy(omfProject->author);
+   omfCharDestroy(omfProject->date);
+   omfCharDestroy(omfProject->dateCreated);
+   omfCharDestroy(omfProject->dateModified);
+   omfCharDestroy(omfProject->description);
+   omfCharDestroy(omfProject->name);
+   omfCharDestroy(omfProject->revision);
 
    return;
 }
@@ -195,11 +154,11 @@ OmfChar *omfProjectGetName(OmfProject const * const omfProject)
 /******************************************************************************
 func: omfProjectGetOrigin
 ******************************************************************************/
-OmfVec3 omfProjectGetOrigin(OmfProject const * const omfProject)
+OmfCoord omfProjectGetOrigin(OmfProject const * const omfProject)
 {
-   OmfVec3 vec;
+   OmfCoord vec;
 
-   memClearType(OmfVec3, &vec);
+   memClearType(OmfCoord, &vec);
 
    returnIf(
          !omfIsStarted() ||
@@ -234,6 +193,42 @@ OmfChar *omfProjectGetUnits(OmfProject const * const omfProject)
 }
 
 /******************************************************************************
+func: omfProjectIsDateSet
+******************************************************************************/
+OmfBool omfProjectIsDateSet(OmfProject const * const omfProject)
+{
+   returnFalseIf(
+      !omfIsStarted() ||
+      !omfProject);
+
+   return omfProject->isDateSet;
+}
+
+/******************************************************************************
+func: omfProjectIsDateCreatedSet
+******************************************************************************/
+OmfBool omfProjectIsDateCreatedSet(OmfProject const * const omfProject)
+{
+   returnFalseIf(
+      !omfIsStarted() ||
+      !omfProject);
+
+   return omfProject->isDateCreatedSet;
+}
+
+/******************************************************************************
+func: omfProjectIsDateModifiesSet
+******************************************************************************/
+OmfBool omfProjectIsDateModifiesSet(OmfProject const * const omfProject)
+{
+   returnFalseIf(
+      !omfIsStarted() ||
+      !omfProject);
+
+   return omfProject->isDateModifiedSet;
+}
+
+/******************************************************************************
 func: omfProjectSetAuthor
 ******************************************************************************/
 OmfBool omfProjectSetAuthor(OmfProject * const omfProject, OmfChar const * const value)
@@ -242,7 +237,7 @@ OmfBool omfProjectSetAuthor(OmfProject * const omfProject, OmfChar const * const
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->author);
+   omfCharDestroy(omfProject->author);
    omfProject->author = omfCharClone(value);
 
    return omfTRUE;
@@ -257,8 +252,9 @@ OmfBool omfProjectSetDate(OmfProject * const omfProject, OmfChar const * const v
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->date);
-   omfProject->date = omfCharClone(value);
+   omfCharDestroy(omfProject->date);
+   omfProject->date      = omfCharClone(value);
+   omfProject->isDateSet = (value != NULL);
 
    return omfTRUE;
 }
@@ -272,8 +268,9 @@ OmfBool omfProjectSetDateCreated(OmfProject * const omfProject, OmfChar const * 
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->dateCreated);
-   omfProject->dateCreated = omfCharClone(value);
+   omfCharDestroy(omfProject->dateCreated);
+   omfProject->dateCreated      = omfCharClone(value);
+   omfProject->isDateCreatedSet = (value != NULL);
 
    return omfTRUE;
 }
@@ -287,8 +284,9 @@ OmfBool omfProjectSetDateModified(OmfProject * const omfProject, OmfChar const *
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->dateModified);
-   omfProject->dateModified = omfCharClone(value);
+   omfCharDestroy(omfProject->dateModified);
+   omfProject->dateModified      = omfCharClone(value);
+   omfProject->isDateModifiedSet = (value != NULL);
 
    return omfTRUE;
 }
@@ -302,7 +300,7 @@ OmfBool omfProjectSetDescription(OmfProject * const omfProject, OmfChar const * 
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->description);
+   omfCharDestroy(omfProject->description);
    omfProject->description = omfCharClone(value);
 
    return omfTRUE;
@@ -331,7 +329,7 @@ OmfBool omfProjectSetName(OmfProject * const omfProject, OmfChar const * const v
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->name);
+   omfCharDestroy(omfProject->name);
    omfProject->name = omfCharClone(value);
 
    return omfTRUE;
@@ -340,7 +338,7 @@ OmfBool omfProjectSetName(OmfProject * const omfProject, OmfChar const * const v
 /******************************************************************************
 func: omfProjectSetOrigin
 ******************************************************************************/
-OmfBool omfProjectSetOrigin(OmfProject * const omfProject, OmfVec3 const value)
+OmfBool omfProjectSetOrigin(OmfProject * const omfProject, OmfCoord const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
@@ -360,7 +358,7 @@ OmfBool omfProjectSetRevision(OmfProject * const omfProject, OmfChar const * con
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->revision);
+   omfCharDestroy(omfProject->revision);
    omfProject->revision = omfCharClone(value);
 
    return omfTRUE;
@@ -375,7 +373,7 @@ OmfBool omfProjectSetUnits(OmfProject * const omfProject, OmfChar const * const 
       !omfIsStarted() ||
       !omfProject);
 
-   memDestroy(omfProject->units);
+   omfCharDestroy(omfProject->units);
    omfProject->units = omfCharClone(value);
 
    return omfTRUE;
