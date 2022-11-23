@@ -1,0 +1,100 @@
+json
+	element
+
+elements
+	element
+	element ',' elements
+
+element
+	ws value ws
+
+value
+	object		> {
+	array		> [
+	string		> "
+	number		> -0123456789
+	"true"		> "true" 
+	"false"		> "false"
+	"null"		> "null"
+
+object
+	'{' ws '}'		> {}
+	'{' members '}'		> {"
+
+array
+	'[' ws ']'		> []
+	'[' elements ']'	> [	
+
+string
+	'"' characters '"'
+
+members
+	member
+	member ',' members
+
+member
+	ws string ws ':' element	> "
+
+characters
+	""
+	character characters
+
+character
+	'0020' . '10FFFF' - '"' - '\'
+	'\' escape
+
+escape
+	'"'
+	'\'
+	'/'
+	'b'
+	'f'
+	'n'
+	'r'
+	't'
+	'u' hex hex hex hex
+
+hex
+	digit
+	'A' . 'F'
+	'a' . 'f'
+
+number
+	integer fraction exponent
+
+integer
+	digit
+	onenine digits
+	'-' digit
+	'-' onenine digits
+
+fraction
+	""
+	'.' digits
+
+exponent
+	""
+	'E' sign digits
+	'e' sign digits
+
+digits
+	digit
+	digit digits
+
+digit
+	'0' . '9'
+
+onenine
+	'1' . '9'
+
+sign
+	""
+	'+'
+	'-'
+
+ws
+	""
+	'0020' ws
+	'000A' ws
+	'000D' ws
+	'0009' ws
