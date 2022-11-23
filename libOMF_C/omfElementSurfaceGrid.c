@@ -1,143 +1,145 @@
-/******************************************************************************
-file:       OmfElementSurfaceGrid
+/**************************************************************************************************
+file:       OmfElemSurfGrid
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Surface Grid element 
-******************************************************************************/
+Surf Grid element 
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfElementSurfaceGridCreate
-******************************************************************************/
-OmfElementSurfaceGrid *_OmfElementSurfaceGridCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfElemSurfGridCreate
+**************************************************************************************************/
+OmfElemSurfGrid *_OmfElemSurfGridCreate(void)
 {
-   OmfElementSurfaceGrid *omfElementSurfaceGrid;
+   OmfElemSurfGrid *elem;
 
-   omfElementSurfaceGrid = memCreateType(OmfElementSurfaceGrid);
-   returnNullIf(!omfElementSurfaceGrid);
+   elem = memCreateType(OmfElemSurfGrid);
+   returnNullIf(!elem);
 
-   if (!_OmfElementSurfaceGridCreateContent(omfElementSurfaceGrid))
+   if (!_OmfElemSurfGridCreateContent(elem))
    {
-      memDestroy(omfElementSurfaceGrid);
+      memDestroy(elem);
       return NULL;
    }
 
-   return omfElementSurfaceGrid;
+   return elem;
 }
 
-/******************************************************************************
-func: _OmfElementSurfaceGridCreateContent
-******************************************************************************/
-OmfBool _OmfElementSurfaceGridCreateContent(OmfElementSurfaceGrid * const omfElementSurfaceGrid)
+/**************************************************************************************************
+func: _OmfElemSurfGridCreateContent
+**************************************************************************************************/
+OmfBool _OmfElemSurfGridCreateContent(OmfElemSurfGrid * const elem)
 {
-   memClearType(OmfElementSurfaceGrid, omfElementSurfaceGrid);
-   omfElementSurfaceGrid->type    = omfElementTypeSURFACE_GRID;
-   omfElementSurfaceGrid->subType = omfElementSubTypeSURFACE_GRID_SURFACE_DEFAULT;
+   memClearType(OmfElemSurfGrid, elem);
+   elem->typeElem    = omfElemTypeSURF_GRID;
+   elem->typeElemSub = omfElemSubTypeSURF_GRID_SURFACE_DEFAULT;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfElementSurfaceGridDestroyContent
-******************************************************************************/
-void _OmfElementSurfaceGridDestroyContent(OmfElementSurfaceGrid * const omfElementSurfaceGrid)
+/**************************************************************************************************
+func: _OmfElemSurfGridDestroyContent
+**************************************************************************************************/
+void _OmfElemSurfGridDestroyContent(OmfElemSurfGrid * const elem)
 {
-   returnVoidIf(!omfElementSurfaceGrid);
+   returnVoidIf(!elem);
 
-   omfGeometryDestroy((OmfGeometry *) omfElementSurfaceGrid->geometry);
-   //omfTextureListDestroy(     omfElementSurfaceGrid->textureList);
+   omfObjDestroyObj(elem->geometry);
+   //omfTextureListDestroy(     elem->textureList);
 
    return;
 }
 
-/******************************************************************************
-func: omfElementSurfaceGridGetGeometry
-******************************************************************************/
-OmfGeometry *omfElementSurfaceGridGetGeometry(OmfElementSurfaceGrid const * const omfElementSurfaceGrid)
+/**************************************************************************************************
+func: omfElemSurfGridGetGeometry
+**************************************************************************************************/
+OmfGeom *omfElemSurfGridGetGeometry(OmfElemSurfGrid const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementSurfaceGrid);
+      !elem);
 
-   return (OmfGeometry *) omfElementSurfaceGrid->geometry;
+   return (OmfGeom *) elem->geometry;
 }
 
-/******************************************************************************
-func: omfElementSurfaceGridGetTexture
-******************************************************************************/
-OmfTextureList *omfElementSurfaceGridGetTextureList(OmfElementSurfaceGrid const * const omfElementSurfaceGrid)
+/**************************************************************************************************
+func: omfElemSurfGridGetTexture
+**************************************************************************************************/
+OmfTextureList *omfElemSurfGridGetTextureList(OmfElemSurfGrid const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementSurfaceGrid);
+      !elem);
 
-   return omfElementSurfaceGrid->textureList;
+   return elem->textureList;
 }
 
-/******************************************************************************
-func: omfElementSurfaceGridIsTextureListSet
-******************************************************************************/
-OmfBool omfElementSurfaceGridIsTextureListSet(OmfElementSurfaceGrid const * const omfElementSurfaceGrid)
+/**************************************************************************************************
+func: omfElemSurfGridIsTextureListSet
+**************************************************************************************************/
+OmfBool omfElemSurfGridIsTextureListSet(OmfElemSurfGrid const * const elem)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceGrid);
+      !elem);
 
-   return omfElementSurfaceGrid->isTextureListSet;
+   return elem->isTextureListSet;
 }
 
-/******************************************************************************
-func: omfElementSurfaceGridSetGeometry
-******************************************************************************/
-OmfBool omfElementSurfaceGridSetGeometry(OmfElementSurfaceGrid * const omfElementSurfaceGrid, OmfGeometrySurfaceGrid * const value)
+/**************************************************************************************************
+func: omfElemSurfGridSetGeometry
+**************************************************************************************************/
+OmfBool omfElemSurfGridSetGeometry(OmfElemSurfGrid * const elem, 
+   OmfGeomSurfGrid * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceGrid);
+      !elem);
 
-   omfElementSurfaceGrid->geometry = value;
+   elem->geometry = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSurfaceGridSetTexture
-******************************************************************************/
-OmfBool omfElementSurfaceGridSetTextureList(OmfElementSurfaceGrid * const omfElementSurfaceGrid, OmfTextureList * const value)
+/**************************************************************************************************
+func: omfElemSurfGridSetTexture
+**************************************************************************************************/
+OmfBool omfElemSurfGridSetTextureList(OmfElemSurfGrid * const elem, 
+   OmfTextureList * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceGrid);
+      !elem);
 
-   omfElementSurfaceGrid->textureList      =  value;
-   omfElementSurfaceGrid->isTextureListSet = (value != NULL);
+   elem->textureList      =  value;
+   elem->isTextureListSet = (value != NULL);
 
    return omfTRUE;
 }

@@ -1,143 +1,145 @@
-/******************************************************************************
-file:       OmfElementSurfaceTri
+/**************************************************************************************************
+file:       OmfElemSurfTri
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Surface Tri element 
-******************************************************************************/
+Surf Tri element 
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfElementSurfaceTriCreate
-******************************************************************************/
-OmfElementSurfaceTri *_OmfElementSurfaceTriCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfElemSurfTriCreate
+**************************************************************************************************/
+OmfElemSurfTri *_OmfElemSurfTriCreate(void)
 {
-   OmfElementSurfaceTri *omfElementSurfaceTri;
+   OmfElemSurfTri *elem;
 
-   omfElementSurfaceTri = memCreateType(OmfElementSurfaceTri);
-   returnNullIf(!omfElementSurfaceTri);
+   elem = memCreateType(OmfElemSurfTri);
+   returnNullIf(!elem);
 
-   if (!_OmfElementSurfaceTriCreateContent(omfElementSurfaceTri))
+   if (!_OmfElemSurfTriCreateContent(elem))
    {
-      memDestroy(omfElementSurfaceTri);
+      memDestroy(elem);
       return NULL;
    }
 
-   return omfElementSurfaceTri;
+   return elem;
 }
 
-/******************************************************************************
-func: _OmfElementSurfaceTriCreateContent
-******************************************************************************/
-OmfBool _OmfElementSurfaceTriCreateContent(OmfElementSurfaceTri * const omfElementSurfaceTri)
+/**************************************************************************************************
+func: _OmfElemSurfTriCreateContent
+**************************************************************************************************/
+OmfBool _OmfElemSurfTriCreateContent(OmfElemSurfTri * const elem)
 {
-   memClearType(OmfElementSurfaceTri, omfElementSurfaceTri);
-   omfElementSurfaceTri->type    = omfElementTypeSURFACE_GRID;
-   omfElementSurfaceTri->subType = omfElementSubTypeSURFACE_TRI_SURFACE_DEFAULT;
+   memClearType(OmfElemSurfTri, elem);
+   elem->typeElem    = omfElemTypeSURF_GRID;
+   elem->typeElemSub = omfElemSubTypeSURF_TRI_SURFACE_DEFAULT;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfElementSurfaceTriDestroyContent
-******************************************************************************/
-void _OmfElementSurfaceTriDestroyContent(OmfElementSurfaceTri * const omfElementSurfaceTri)
+/**************************************************************************************************
+func: _OmfElemSurfTriDestroyContent
+**************************************************************************************************/
+void _OmfElemSurfTriDestroyContent(OmfElemSurfTri * const elem)
 {
-   returnVoidIf(!omfElementSurfaceTri);
+   returnVoidIf(!elem);
 
-   omfGeometryDestroy((OmfGeometry *) omfElementSurfaceTri->geometry);
-   //omfTextureListDestroy(     omfElementSurfaceTri->textureList);
+   omfObjDestroyObj(elem->geometry);
+   //omfTextureListDestroy(     elem->textureList);
 
    return;
 }
 
-/******************************************************************************
-func: omfElementSurfaceTriGetGeometry
-******************************************************************************/
-OmfGeometry *omfElementSurfaceTriGetGeometry(OmfElementSurfaceTri const * const omfElementSurfaceTri)
+/**************************************************************************************************
+func: omfElemSurfTriGetGeometry
+**************************************************************************************************/
+OmfGeom *omfElemSurfTriGetGeometry(OmfElemSurfTri const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementSurfaceTri);
+      !elem);
 
-   return (OmfGeometry *) omfElementSurfaceTri->geometry;
+   return (OmfGeom *) elem->geometry;
 }
 
-/******************************************************************************
-func: omfElementSurfaceTriGetTexture
-******************************************************************************/
-OmfTextureList *omfElementSurfaceTriGetTextureList(OmfElementSurfaceTri const * const omfElementSurfaceTri)
+/**************************************************************************************************
+func: omfElemSurfTriGetTexture
+**************************************************************************************************/
+OmfTextureList *omfElemSurfTriGetTextureList(OmfElemSurfTri const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementSurfaceTri);
+      !elem);
 
-   return omfElementSurfaceTri->textureList;
+   return elem->textureList;
 }
 
-/******************************************************************************
-func: omfElementSurfaceTriIsTextureListSet
-******************************************************************************/
-OmfBool omfElementSurfaceTriIsTextureListSet(OmfElementSurfaceTri const * const omfElementSurfaceTri)
+/**************************************************************************************************
+func: omfElemSurfTriIsTextureListSet
+**************************************************************************************************/
+OmfBool omfElemSurfTriIsTextureListSet(OmfElemSurfTri const * const elem)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceTri);
+      !elem);
 
-   return omfElementSurfaceTri->isTextureListSet;
+   return elem->isTextureListSet;
 }
 
-/******************************************************************************
-func: omfElementSurfaceTriSetGeometry
-******************************************************************************/
-OmfBool omfElementSurfaceTriSetGeometry(OmfElementSurfaceTri * const omfElementSurfaceTri, OmfGeometrySurfaceTri * const value)
+/**************************************************************************************************
+func: omfElemSurfTriSetGeometry
+**************************************************************************************************/
+OmfBool omfElemSurfTriSetGeometry(OmfElemSurfTri * const elem, 
+   OmfGeomSurfTri * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceTri);
+      !elem);
 
-   omfElementSurfaceTri->geometry = value;
+   elem->geometry = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSurfaceTriSetTexture
-******************************************************************************/
-OmfBool omfElementSurfaceTriSetTextureList(OmfElementSurfaceTri * const omfElementSurfaceTri, OmfTextureList * const value)
+/**************************************************************************************************
+func: omfElemSurfTriSetTexture
+**************************************************************************************************/
+OmfBool omfElemSurfTriSetTextureList(OmfElemSurfTri * const elem, 
+   OmfTextureList * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementSurfaceTri);
+      !elem);
 
-   omfElementSurfaceTri->textureList      =  value;
-   omfElementSurfaceTri->isTextureListSet = (value != NULL);
+   elem->textureList      =  value;
+   elem->isTextureListSet = (value != NULL);
 
    return omfTRUE;
 }

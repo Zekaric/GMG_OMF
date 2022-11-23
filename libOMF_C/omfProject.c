@@ -1,160 +1,139 @@
-/******************************************************************************
-file:       OmfProject
+/**************************************************************************************************
+file:       OmfProj
 author:     Robbert de Groot
-company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
+Project routines
+**************************************************************************************************/
 
-******************************************************************************/
-
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfProjectCreateContent
-******************************************************************************/
-OmfBool _OmfProjectCreateContent(OmfProject * const omfProject)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfProjCreate
+**************************************************************************************************/
+OmfProj *_OmfProjCreate(void)
 {
-   memClearType(OmfProject, omfProject);
+   OmfProj *project;
+
+   returnNullIf(!omfIsStarted());
+
+   project = memCreateType(OmfProj);
+   returnNullIf(!project);
+
+   if (!_OmfProjCreateContent(project))
+   {
+      memDestroy(project);
+      return NULL;
+   }
+
+   return project;
+}
+
+/**************************************************************************************************
+func: _OmfProjCreateContent
+**************************************************************************************************/
+OmfBool _OmfProjCreateContent(OmfProj * const project)
+{
+   returnFalseIf(!omfIsStarted());
+
+   memClearType(OmfProj, project);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfProjectDestroyContent
-******************************************************************************/
-void _OmfProjectDestroyContent(OmfProject * const omfProject)
+/**************************************************************************************************
+func: _OmfProjDestroyContent
+**************************************************************************************************/
+void _OmfProjDestroyContent(OmfProj * const project)
 {
-   returnVoidIf(!omfProject);
+   returnVoidIf(!project);
 
-   omfCharDestroy(omfProject->author);
-   omfCharDestroy(omfProject->date);
-   omfCharDestroy(omfProject->dateCreated);
-   omfCharDestroy(omfProject->dateModified);
-   omfCharDestroy(omfProject->description);
-   omfCharDestroy(omfProject->name);
-   omfCharDestroy(omfProject->revision);
+   omfCharDestroy(project->author);
+   omfCharDestroy(project->date);
+   omfCharDestroy(project->description);
+   omfCharDestroy(project->name);
+   omfCharDestroy(project->revision);
 
    return;
 }
 
-/******************************************************************************
-func: omfProjectGetAuthor
-******************************************************************************/
-OmfChar *omfProjectGetAuthor(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetAuthor
+**************************************************************************************************/
+OmfChar *omfProjGetAuthor(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->author;
+   return project->author;
 }
 
-/******************************************************************************
-func: omfProjectGetDate
-******************************************************************************/
-OmfChar *omfProjectGetDate(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetDate
+**************************************************************************************************/
+OmfChar *omfProjGetDate(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->date;
+   return project->date;
 }
 
-/******************************************************************************
-func: omfProjectGetDateCreated
-******************************************************************************/
-OmfChar *omfProjectGetDateCreated(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetDescription
+**************************************************************************************************/
+OmfChar *omfProjGetDescription(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->dateCreated;
+   return project->description;
 }
 
-/******************************************************************************
-func: omfProjectGetDateModified
-******************************************************************************/
-OmfChar *omfProjectGetDateModified(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetName
+**************************************************************************************************/
+OmfChar *omfProjGetName(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->dateModified;
+   return project->name;
 }
 
-/******************************************************************************
-func: omfProjectGetDescription
-******************************************************************************/
-OmfChar *omfProjectGetDescription(OmfProject const * const omfProject)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   return omfProject->description;
-}
-
-/******************************************************************************
-func: omfProjectGetId
-******************************************************************************/
-OmfId omfProjectGetId(OmfProject const * const omfProject)
-{
-   OmfId id;
-
-   memClearType(OmfId, &id);
-
-   returnIf(
-         !omfIsStarted() ||
-         !omfProject,
-      id);
-
-   return omfProject->id;
-}
-
-/******************************************************************************
-func: omfProjectGetName
-******************************************************************************/
-OmfChar *omfProjectGetName(OmfProject const * const omfProject)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   return omfProject->name;
-}
-
-/******************************************************************************
-func: omfProjectGetOrigin
-******************************************************************************/
-OmfCoord omfProjectGetOrigin(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetOrigin
+**************************************************************************************************/
+OmfCoord omfProjGetOrigin(OmfProj const * const project)
 {
    OmfCoord vec;
 
@@ -162,219 +141,149 @@ OmfCoord omfProjectGetOrigin(OmfProject const * const omfProject)
 
    returnIf(
          !omfIsStarted() ||
-         !omfProject,
+         !project,
       vec);
 
-   return omfProject->origin;
+   return project->origin;
 }
 
-/******************************************************************************
-func: omfProjectGetRevision
-******************************************************************************/
-OmfChar *omfProjectGetRevision(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetRevision
+**************************************************************************************************/
+OmfChar *omfProjGetRevision(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->revision;
+   return project->revision;
 }
 
-/******************************************************************************
-func: omfProjectGetUnits
-******************************************************************************/
-OmfChar *omfProjectGetUnits(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjGetUnits
+**************************************************************************************************/
+OmfChar *omfProjGetUnits(OmfProj const * const project)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->units;
+   return project->units;
 }
 
-/******************************************************************************
-func: omfProjectIsDateSet
-******************************************************************************/
-OmfBool omfProjectIsDateSet(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjIsDateSet
+**************************************************************************************************/
+OmfBool omfProjIsDateSet(OmfProj const * const project)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->isDateSet;
+   return project->isDateSet;
 }
 
-/******************************************************************************
-func: omfProjectIsDateCreatedSet
-******************************************************************************/
-OmfBool omfProjectIsDateCreatedSet(OmfProject const * const omfProject)
+/**************************************************************************************************
+func: omfProjSetAuthor
+**************************************************************************************************/
+OmfBool omfProjSetAuthor(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   return omfProject->isDateCreatedSet;
-}
-
-/******************************************************************************
-func: omfProjectIsDateModifiesSet
-******************************************************************************/
-OmfBool omfProjectIsDateModifiesSet(OmfProject const * const omfProject)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   return omfProject->isDateModifiedSet;
-}
-
-/******************************************************************************
-func: omfProjectSetAuthor
-******************************************************************************/
-OmfBool omfProjectSetAuthor(OmfProject * const omfProject, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   omfCharDestroy(omfProject->author);
-   omfProject->author = omfCharClone(value);
+   omfCharDestroy(project->author);
+   project->author = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetDate
-******************************************************************************/
-OmfBool omfProjectSetDate(OmfProject * const omfProject, OmfChar const * const value)
+/**************************************************************************************************
+func: omfProjSetDate
+**************************************************************************************************/
+OmfBool omfProjSetDate(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfCharDestroy(omfProject->date);
-   omfProject->date      = omfCharClone(value);
-   omfProject->isDateSet = (value != NULL);
+   omfCharDestroy(project->date);
+   project->date      = omfCharClone(value);
+   project->isDateSet = (value != NULL);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetDateCreated
-******************************************************************************/
-OmfBool omfProjectSetDateCreated(OmfProject * const omfProject, OmfChar const * const value)
+/**************************************************************************************************
+func: omfProjSetDescription
+**************************************************************************************************/
+OmfBool omfProjSetDescription(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfCharDestroy(omfProject->dateCreated);
-   omfProject->dateCreated      = omfCharClone(value);
-   omfProject->isDateCreatedSet = (value != NULL);
+   omfCharDestroy(project->description);
+   project->description = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetDateModified
-******************************************************************************/
-OmfBool omfProjectSetDateModified(OmfProject * const omfProject, OmfChar const * const value)
+/**************************************************************************************************
+func: omfProjSetName
+**************************************************************************************************/
+OmfBool omfProjSetName(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfCharDestroy(omfProject->dateModified);
-   omfProject->dateModified      = omfCharClone(value);
-   omfProject->isDateModifiedSet = (value != NULL);
+   omfCharDestroy(project->name);
+   project->name = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetDescription
-******************************************************************************/
-OmfBool omfProjectSetDescription(OmfProject * const omfProject, OmfChar const * const value)
+/**************************************************************************************************
+func: omfProjSetOrigin
+**************************************************************************************************/
+OmfBool omfProjSetOrigin(OmfProj * const project, OmfCoord const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfCharDestroy(omfProject->description);
-   omfProject->description = omfCharClone(value);
+   project->origin = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetId
-******************************************************************************/
-OmfBool omfProjectSetId(OmfProject * const omfProject, OmfId const value)
+/**************************************************************************************************
+func: omfProjSetRevision
+**************************************************************************************************/
+OmfBool omfProjSetRevision(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfProject->id = value;
+   omfCharDestroy(project->revision);
+   project->revision = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfProjectSetName
-******************************************************************************/
-OmfBool omfProjectSetName(OmfProject * const omfProject, OmfChar const * const value)
+/**************************************************************************************************
+func: omfProjSetUnits
+**************************************************************************************************/
+OmfBool omfProjSetUnits(OmfProj * const project, OmfChar const * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfProject);
+      !project);
 
-   omfCharDestroy(omfProject->name);
-   omfProject->name = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfProjectSetOrigin
-******************************************************************************/
-OmfBool omfProjectSetOrigin(OmfProject * const omfProject, OmfCoord const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   omfProject->origin = value;
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfProjectSetRevision
-******************************************************************************/
-OmfBool omfProjectSetRevision(OmfProject * const omfProject, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   omfCharDestroy(omfProject->revision);
-   omfProject->revision = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfProjectSetUnits
-******************************************************************************/
-OmfBool omfProjectSetUnits(OmfProject * const omfProject, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfProject);
-
-   omfCharDestroy(omfProject->units);
-   omfProject->units = omfCharClone(value);
+   omfCharDestroy(project->units);
+   project->units = omfCharClone(value);
 
    return omfTRUE;
 }

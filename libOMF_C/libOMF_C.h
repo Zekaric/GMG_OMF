@@ -1,4 +1,4 @@
-/******************************************************************************
+/**************************************************************************************************
 file:       libOMF_C
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
@@ -20,26 +20,29 @@ A point set element...
 A line set element...
    ... has a line set geometry...
       ... has a 
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+#if !defined(LIB_OMF_C_ROBBERT_DE_GROOT)
+#define      LIB_OMF_C_ROBBERT_DE_GROOT
+
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 constant:
-******************************************************************************/
+**************************************************************************************************/
 #define libOMF_C_VERSION      1
 
 #define omfArrayTypeINT_TAG   "<i8"
 #define omfArrayTypeREAL_TAG  "<f8"
 
-/******************************************************************************
+/**************************************************************************************************
 type:
 
 Structures should NEVER be accessed directly.  Use any and all API to access
 the contents of the structure.  This
-******************************************************************************/
+**************************************************************************************************/
 typedef enum
 {
    omfFALSE = false,
@@ -52,8 +55,8 @@ typedef enum
    omfArrayTypeCOLOR,
    omfArrayTypeDATE_TIME,
    omfArrayTypeINT,
-   omfArrayTypeINT3,
    omfArrayTypeINT2,
+   omfArrayTypeINT3,
    omfArrayTypeREAL,
    omfArrayTypeREAL2,
    omfArrayTypeREAL3,
@@ -62,38 +65,62 @@ typedef enum
 
 typedef enum
 {
-   // v1
-   omfElementTypeNONE,
+   omfDataTypeNONE,
+   omfDataTypeCOLOR,
+   omfDataTypeDATE_TIME,
+   omfDataTypeDATE_TIME_COLORMAP,
+   omfDataTypeLEGEND,
+   omfDataTypeMAPPED,
+   omfDataTypeSCALAR,
+   omfDataTypeSCALAR_COLORMAP,
+   omfDataTypeSTRING,
+   omfDataTypeVECTOR2,
+   omfDataTypeVECTOR3
+} OmfDataType;
 
-   omfElementTypeLINE_SET,
-   omfElementTypePOINT_SET,
-   omfElementTypeSURFACE_GRID,
-   omfElementTypeSURFACE_TRI,
-   omfElementTypeVOLUME
-
-   // v2
-} OmfElementType;
+typedef enum
+{
+   omfDataLocNONE,
+   omfDataLocCELL,
+   omfDataLocFACE,
+   omfDataLocSEGMENT,
+   omfDataLocVERTEX
+} OmfDataLoc;
 
 typedef enum
 {
    // v1
-   omfElementSubTypeNONE,
+   omfElemTypeNONE,
 
-   omfElementSubTypeLINE_SET_LINE_DEFAULT,
-   omfElementSubTypeLINE_SET_BOREHOLE,
-
-   omfElementSubTypePOINT_SET_POINT_DEFAULT,
-   omfElementSubTypePOINT_SET_COLLAR,
-   omfElementSubTypePOINT_SET_BLASTHOLE,
-
-   omfElementSubTypeSURFACE_GRID_SURFACE_DEFAULT,
-
-   omfElementSubTypeSURFACE_TRI_SURFACE_DEFAULT,
-
-   omfElementSubTypeVOLUME_VOLUME_DEFAULT
+   omfElemTypeLINE_SET,
+   omfElemTypePNT_SET,
+   omfElemTypeSURF_GRID,
+   omfElemTypeSURF_TRI,
+   omfElemTypeVOL
 
    // v2
-} OmfElementSubType;
+} OmfElemType;
+
+typedef enum
+{
+   // v1
+   omfElemSubTypeNONE,
+
+   omfElemSubTypeLINE_SET_LINE_DEFAULT,
+   omfElemSubTypeLINE_SET_BOREHOLE,
+
+   omfElemSubTypePNT_SET_POINT_DEFAULT,
+   omfElemSubTypePNT_SET_COLLAR,
+   omfElemSubTypePNT_SET_BLASTHOLE,
+
+   omfElemSubTypeSURF_GRID_SURFACE_DEFAULT,
+
+   omfElemSubTypeSURF_TRI_SURFACE_DEFAULT,
+
+   omfElemSubTypeVOL_VOLUME_DEFAULT
+
+   // v2
+} OmfElemSubType;
 
 typedef enum
 {
@@ -125,34 +152,57 @@ typedef enum
 typedef enum
 {
    // v1
-   omfItemTypeNONE,
+   omfObjTypeNONE,
 
-   omfItemTypeSCALAR_DATA,
+   omfObjTypeARRAY                     = 0x10000000,
+   omfObjTypeARRAY_COLOR,
+   omfObjTypeARRAY_DATE_TIME,
+   omfObjTypeARRAY_INT,
+   omfObjTypeARRAY_INT2,
+   omfObjTypeARRAY_INT3,
+   omfObjTypeARRAY_REAL,
+   omfObjTypeARRAY_REAL2,
+   omfObjTypeARRAY_REAL3,
+   omfObjTypeARRAY_STRING,
 
-   omfItemTypeINT2_ARRAY,
-   omfItemTypeINT3_ARRAY,
-   omfItemTypeSCALAR_ARRAY,
-   omfItemTypeSTRING_ARRAY,
-   omfItemTypeLEGEND,
-   omfItemTypeCOLOR_ARRAY,
-   omfItemTypeMAPPED_DATA,
-   omfItemTypeVECTOR3_ARRAY,
+   omfObjTypeDATA                      = 0x20000000,
+   omfObjTypeDATA_COLOR,
+   omfObjTypeDATA_DATE_TIME,
+   omfObjTypeDATA_DATE_TIME_COLORMAP,
+   omfObjTypeDATA_LEGEND,
+   omfObjTypeDATA_MAPPED,
+   omfObjTypeDATA_SCALAR,
+   omfObjTypeDATA_SCALAR_COLORMAP,
+   omfObjTypeDATA_STRING,
+   omfObjTypeDATA_VECTOR2,
+   omfObjTypeDATA_VECTOR3,
+   
+   omfObjTypeELEM                      = 0x40000000,
+   omfObjTypeELEM_PNT_SET,
+   omfObjTypeELEM_LINE_SET,
+   omfObjTypeELEM_SURF_GRID,
+   omfObjTypeELEM_SURF_TRI,
+   omfObjTypeELEM_VOL,
+   
+   omfObjTypeGEOM                      = 0x80000000,
+   omfObjTypeGEOM_PNT_SET,
+   omfObjTypeGEOM_LINE_SET,
+   omfObjTypeGEOM_SURF_GRID,
+   omfObjTypeGEOM_SURF_TRI,
+   omfObjTypeGEOM_VOL,
+   
+   omfObjTypeMODEL                     = 0x01000000,
+   omfObjTypeMODEL_CONTENT,
+   omfObjTypeMODEL_ID,
+   
+   omfObjTypePROJ                      = 0x02000000,
+   omfObjTypePROJ_ELEMENT,
+   omfObjTypePROJ_ELEMENT_DATA,
 
-   omfItemTypePOINT_SET_ELEMENT,
-   omfItemTypePOINT_SET_GEOMETRY,
-   omfItemTypeLINE_SET_ELEMENT,
-   omfItemTypeLINE_SET_GEOMETRY,
-   omfItemTypeSURFACE_ELEMENT,
-   omfItemTypeSURFACE_GEOMETRY,
-   omfItemTypeIMAGE_TEXTURE,
-   omfItemTypeBLOCK_MODEL,
-   omfItemTypeCOMPOSITE,
-   omfItemTypeVOLUME_ELEMENT,
-   omfItemTypeVOLUME_GRID_GEOMETRY,
-   omfItemTypePROJECT
+   omfObjTypeTEXTURE                   = 0x04000000,
 
    // v2
-} OmfItemType;
+} OmfObjType;
 
 typedef unsigned char                  uchar;
 
@@ -164,47 +214,55 @@ typedef struct OmfCoord                OmfCoord;
 typedef struct OmfArray                OmfArray;
 typedef struct OmfData                 OmfData;
 typedef struct OmfDataList             OmfDataList;
-typedef struct OmfElement              OmfElement;
-typedef struct OmfElementLineSet       OmfElementLineSet;
-typedef struct OmfElementPointSet      OmfElementPointSet;
-typedef struct OmfElementSurfaceGrid   OmfElementSurfaceGrid;
-typedef struct OmfElementSurfaceTri    OmfElementSurfaceTri;
-typedef struct OmfElementVolume        OmfElementVolume;
+typedef struct OmfElem                 OmfElem;
+typedef struct OmfElemLineSet          OmfElemLineSet;
+typedef struct OmfElemPntSet           OmfElemPntSet;
+typedef struct OmfElemSurfGrid         OmfElemSurfGrid;
+typedef struct OmfElemSurfTri          OmfElemSurfTri;
+typedef struct OmfElemVol              OmfElemVol;
 typedef struct OmfFile                 OmfFile;
 typedef struct OmfFile00_09            OmfFile00_09;
 typedef struct OmfFile01_00            OmfFile01_00;
 typedef struct OmfFile02_00            OmfFile02_00;
-typedef struct OmfGeometry             OmfGeometry;
-typedef struct OmfGeometryLineSet      OmfGeometryLineSet;
-typedef struct OmfGeometryPointSet     OmfGeometryPointSet;
-typedef struct OmfGeometrySurfaceGrid  OmfGeometrySurfaceGrid;
-typedef struct OmfGeometrySurfaceTri   OmfGeometrySurfaceTri;
-typedef struct OmfGeometryVolume       OmfGeometryVolume;
+typedef struct OmfGeom                 OmfGeom;
+typedef struct OmfGeomLineSet          OmfGeomLineSet;
+typedef struct OmfGeomPntSet           OmfGeomPntSet;
+typedef struct OmfGeomSurfGrid         OmfGeomSurfGrid;
+typedef struct OmfGeomSurfTri          OmfGeomSurfTri;
+typedef struct OmfGeomVol              OmfGeomVol;
 typedef GUID                           OmfId;
 typedef uint32_t                       OmfIndex;
+typedef struct OmfObj                  OmfObj;
 typedef uint64_t                       OmfOffset;
-typedef struct OmfProject              OmfProject;
+typedef struct OmfProj                 OmfProj;
 typedef struct OmfTexture              OmfTexture;
 typedef struct OmfTextureList          OmfTextureList;
 typedef struct OmfTextureUV            OmfTextureUV;
 typedef struct OmfVector               OmfVector;
 
+struct OmfObj
+{
+// This is a form of old style object oriented class and sub classing.
+// Type casting is used to obtain the proper structure.
+#define OMF_OBJECT_VARS                                                                            \
+   OmfObjType                  typeObj;                                                            \
+   OmfId                       id;                                                                 \
+   OmfChar                    *dateCreated;                                                        \
+   OmfChar                    *dateModified;
+
+   OMF_OBJECT_VARS
+};
 
 struct OmfArray
 {
+   // Must be first.
+   OMF_OBJECT_VARS
+
    // Required
-   OmfId                       id;
    OmfOffset                   bufferOffset;
    OmfCount                    bufferSize;
    OmfArrayType                bufferType;
    OmfCount                    bufferTypeCount;
-
-   // Optional
-   OmfBool                     isDateCreatedSet;
-   OmfBool                     isDateModifiedSet;
-
-   OmfChar                    *dateCreated;
-   OmfChar                    *dateModified;
 };
 
 struct OmfColor
@@ -232,132 +290,118 @@ struct OmfVector
 
 struct OmfData
 {
-   OmfId                       id;
+#define OMF_DATA_VARS                                                                              \
+   OMF_OBJECT_VARS                                                                                 \
+                                                                                                   \
+   OmfDataType                 typeData;                                                           \
+   OmfDataLoc                  location;                                                           \
+   OmfArray                   *array;                                                              \
+   OmfChar                    *description;                                                        \
    OmfChar                    *name;
-} ;
 
-struct OmfDataList
-{
-   OmfId                       id;
+   OMF_DATA_VARS
 };
 
-struct OmfElement
+struct OmfElem
 {
-// This is a form of old style object oriented class and sub classing.
-// Type casting is used to obtain the proper structure.
-#define OMF_ELEMENT_VARS                              \
-   OmfElement                 *next;                  \
-                                                      \
-   OmfElementType              type;                  \
-   OmfId                       id;                    \
-   OmfColor                    color;                 \
-   OmfChar                    *description;           \
-   OmfChar                    *name;                  \
-   OmfElementSubType           subType;               \
-                                                      \
-   OmfBool                     isDataListSet;         \
-   OmfBool                     isDateCreatedSet;      \
-   OmfBool                     isDateModifiedSet;     \
-                                                      \
-   OmfDataList                *dataList;              \
-   OmfChar                    *dateCreated;           \
-   OmfChar                    *dateModified;
+#define OMF_ELEMENT_VARS                                                                           \
+   OMF_OBJECT_VARS                                                                                 \
+                                                                                                   \
+   OmfElemType                 typeElem;                                                           \
+   OmfElemSubType              typeElemSub;                                                        \
+   OmfColor                    color;                                                              \
+   OmfChar                    *description;                                                        \
+   OmfChar                    *name;                                                               \
+                                                                                                   \
+   OmfBool                     isDataListSet;                                                      \
+                                                                                                   \
+   OmfDataList                *dataList;
 
    OMF_ELEMENT_VARS
 };
 
-struct OmfElementLineSet
+struct OmfElemLineSet
 {
-   // Must be first.
-   OMF_ELEMENT_VARS
+#define OMF_ELEMENT_LINE_SET_VARS                                                                  \
+   OMF_ELEMENT_VARS                                                                                \
+                                                                                                   \
+   OmfGeomLineSet             *geometry;
 
-   // Required
-   OmfGeometryLineSet         *geometry;
-
-   // Optional
+   OMF_ELEMENT_LINE_SET_VARS
 };
 
-struct OmfElementPointSet
+struct OmfElemPntSet
 {
-   // Must be first.
-   OMF_ELEMENT_VARS
-
-   // Required
-   OmfGeometryPointSet        *geometry;
-
-   // Optional
-   OmfBool                     isTextureListSet;
-
+#define OMF_ELEMENT_PNT_SET_VARS                                                                   \
+   OMF_ELEMENT_VARS                                                                                \
+                                                                                                   \
+   OmfGeomPntSet              *geometry;                                                           \
+                                                                                                   \
+   OmfBool                     isTextureListSet;                                                   \
    OmfTextureList             *textureList;
+
+   OMF_ELEMENT_PNT_SET_VARS
 };
 
-struct OmfElementSurfaceGrid
+struct OmfElemSurfGrid
 {
-   // Must be first.
-   OMF_ELEMENT_VARS
-
-   // Required
-   OmfGeometrySurfaceGrid     *geometry;
-
-   // Optional
-   OmfBool                     isTextureListSet;
-
+#define OMF_ELEMENT_SURF_GRID_VARS                                                                 \
+   OMF_ELEMENT_VARS                                                                                \
+                                                                                                   \
+   OmfGeomSurfGrid            *geometry;                                                           \
+                                                                                                   \
+   OmfBool                     isTextureListSet;                                                   \
    OmfTextureList             *textureList;
+
+   OMF_ELEMENT_SURF_GRID_VARS
 };
 
-struct OmfElementSurfaceTri
+struct OmfElemSurfTri
 {
-   // Must be first.
-   OMF_ELEMENT_VARS
-
-   // Required
-   OmfGeometrySurfaceTri      *geometry;
-
-   // Optional
-   OmfBool                     isTextureListSet;
-
+#define OMF_ELEMENT_SURF_TRI_VARS                                                                  \
+   OMF_ELEMENT_VARS                                                                                \
+                                                                                                   \
+   OmfGeomSurfTri             *geometry;                                                           \
+                                                                                                   \
+   OmfBool                     isTextureListSet;                                                   \
    OmfTextureList             *textureList;
+
+   OMF_ELEMENT_SURF_TRI_VARS
 };
 
-struct OmfElementVolume
+struct OmfElemVol
 {
-   // Must be first.
-   OMF_ELEMENT_VARS
+#define OMF_ELEMENT_VOL_VARS                                                                       \
+   OMF_ELEMENT_VARS                                                                                \
+                                                                                                   \
+   OmfGeomVol                 *geometry;                                                           \
 
-   // Required
-   OmfGeometryVolume          *geometry;
-
-   // Optional
+   OMF_ELEMENT_VOL_VARS
 };
 
-struct OmfProject
+struct OmfProj
 {
-   // Require
-   OmfId                       id;
-   OmfChar                    *author;
-   OmfChar                    *description;
-   OmfChar                    *name;
-   OmfCoord                    origin;
-   OmfChar                    *revision;
-   OmfChar                    *units;
-
-   // Optional
-   // Not converting this to a native format.  Leaving that to the user of the library.
-   // Date format "YYYY-MM-DDTHH:MM:SSZ" 24 hour time, 0 padded values.  Z = ZULU means 0 offset from GMT.
-   OmfBool                     isDateSet;
-   OmfBool                     isDateCreatedSet;
-   OmfBool                     isDateModifiedSet;
-
+#define OMF_PROJ_VARS                                                                              \
+   OMF_OBJECT_VARS                                                                                 \
+                                                                                                   \
+   OmfChar                    *author;                                                             \
+   OmfChar                    *description;                                                        \
+   OmfChar                    *name;                                                               \
+   OmfCoord                    origin;                                                             \
+   OmfChar                    *revision;                                                           \
+   OmfChar                    *units;                                                              \
+                                                                                                   \
+   OmfBool                     isDateSet;                                                          \
    OmfChar                    *date;
-   OmfChar                    *dateCreated;
-   OmfChar                    *dateModified;
+
+   OMF_PROJ_VARS
 };
 
 struct OmfFile
 {
    OmfBool                     isWriting;
    OmfFileVersion              version;
-   OmfProject                  project;
+   OmfProj                    *project;
 
    // v00_09
    FILE                       *file;
@@ -369,113 +413,251 @@ struct OmfFile
    void                       *fileZip;
 };
 
-struct OmfGeometry
+struct OmfGeom
 {
-#define OMF_GEOMETRY_VARS                                \
-   OmfElementType              type;                     \
-   OmfId                       id;                       \
-   OmfCoord                    origin;                   \
-                                                         \
-   OmfBool                     isDateCreatedSet;         \
-   OmfBool                     isDateModifiedSet;        \
-                                                         \
-   OmfChar                    *dateCreated;              \
-   OmfChar                    *dateModified;
+#define OMF_GEOMETRY_VARS                                                                          \
+   OMF_OBJECT_VARS                                                                                 \
+                                                                                                   \
+   OmfElemType                 typeElem;                                                           \
+   OmfCoord                    origin;
 
    OMF_GEOMETRY_VARS
 };
 
-struct OmfGeometryLineSet
+struct OmfGeomLineSet
 {
-   // Must be first.
-   OMF_GEOMETRY_VARS
-
-   // Required
-   OmfArray                   *coord;
+#define OMF_GEOMETRY_LINE_SET_VARS                                                                 \
+   OMF_GEOMETRY_VARS                                                                               \
+                                                                                                   \
+   OmfArray                   *coord;                                                              \
    OmfArray                   *segment;
+
+   OMF_GEOMETRY_LINE_SET_VARS
 };
 
-struct OmfGeometryPointSet
+struct OmfGeomPntSet
 {
-   // Must be first.
-   OMF_GEOMETRY_VARS
-
-   // Required
+#define OMF_GEOMETRY_PNT_SET_VARS                                                                  \
+   OMF_GEOMETRY_VARS                                                                               \
+                                                                                                   \
    OmfArray                   *coord;
+
+   OMF_GEOMETRY_PNT_SET_VARS
 };
 
-struct OmfGeometrySurfaceGrid
+struct OmfGeomSurfGrid
 {
-   // Must be first.
-   OMF_GEOMETRY_VARS
-
-   // Required
-   OmfVector                   axisU;
-   OmfVector                   axisV;
-   OmfArray                   *tensorU;
-   OmfArray                   *tensorV;
-
-   // Optional
-   OmfBool                     isOffsetSet;
-
+#define OMF_GEOMETRY_SURF_GRID_VARS                                                                \
+   OMF_GEOMETRY_VARS                                                                               \
+                                                                                                   \
+   OmfVector                   axisU;                                                              \
+   OmfVector                   axisV;                                                              \
+   OmfArray                   *tensorU;                                                            \
+   OmfArray                   *tensorV;                                                            \
+                                                                                                   \
+   OmfBool                     isOffsetSet;                                                        \
    OmfArray                   *offset;
+
+   OMF_GEOMETRY_SURF_GRID_VARS
 };
 
-struct OmfGeometrySurfaceTri
+struct OmfGeomSurfTri
 {
-   // Must be first.
-   OMF_GEOMETRY_VARS
-
-   // Required
-   OmfArray                   *coord;
+#define OMF_GEOMETRY_SURF_TRI_VARS                                                                 \
+   OMF_GEOMETRY_VARS                                                                               \
+                                                                                                   \
+   OmfArray                   *coord;                                                              \
    OmfArray                   *triangle;
+
+   OMF_GEOMETRY_SURF_TRI_VARS
 };
 
-struct OmfGeometryVolume
+struct OmfGeomVol
 {
-   // Must be first.
-   OMF_GEOMETRY_VARS
-
-   // Required
-   OmfVector                   axisU;
-   OmfVector                   axisV;
-   OmfVector                   axisW;
-   OmfArray                   *tensorU;
-   OmfArray                   *tensorV;
+#define OMF_GEOMETRY_VOL_VARS                                                                      \
+   OMF_GEOMETRY_VARS                                                                               \
+                                                                                                   \
+   OmfVector                   axisU;                                                              \
+   OmfVector                   axisV;                                                              \
+   OmfVector                   axisW;                                                              \
+   OmfArray                   *tensorU;                                                            \
+   OmfArray                   *tensorV;                                                            \
    OmfArray                   *tensorW;
 
-   // Optional
+   OMF_GEOMETRY_VOL_VARS
 };
 
 struct OmfTexture
 {
-   OmfId                       id;
-   OmfChar                    *name;
+#define OMF_TEXTURE_VARS                                                                           \
+   OMF_OBJECT_VARS                                                                                 \
+                                                                                                   \
+   OmfVector                   axisU;                                                              \
+   OmfVector                   axisV;                                                              \
+   OmfChar                    *description;                                                        \
+   OmfChar                    *pngImage;                                                           \
+   OmfChar                    *name;                                                               \
+   OmfVector                   origin;
+
+   OMF_TEXTURE_VARS
 };
 
-struct OmfTextureList
-{
-   OmfId                       id;
-};
-
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
 
-/******************************************************************************
+/**************************************************************************************************
 macro:
-******************************************************************************/
+**************************************************************************************************/
+#define omfObjFromObj(                       OBJ)           ((OmfObj *)          (OBJ))
 
+#define omfArrayFromObj(                     OBJ)           ((OmfArray *)        (((omfObjGetType(OBJ) & omfObjTypeARRAY) == omfObjTypeARRAY)     ? (OBJ) : NULL))
+#define omfDataFromObj(                      OBJ)           ((OmfData *)         (((omfObjGetType(OBJ) & omfObjTypeDATA)  == omfObjTypeDATA)      ? (OBJ) : NULL))
+#define omfElemFromObj(                      OBJ)           ((OmfElem *)         (((omfObjGetType(OBJ) & omfObjTypeELEM)  == omfObjTypeELEM)      ? (OBJ) : NULL))
+#define omfElemLineSetFromObj(               OBJ)           ((OmfElemLineSet *)  ( (omfObjGetType(OBJ) == omfObjTypeLINE_SET)                     ? (OBJ) : NULL))
+#define omfElemPntSetFromObj(                OBJ)           ((OmfElemPntSet *)   ( (omfObjGetType(OBJ) == omfObjTypePNT_SET)                      ? (OBJ) : NULL))
+#define omfElemSurfGridFromObj(              OBJ)           ((OmfElemSurfGrid *) ( (omfObjGetType(OBJ) == omfObjTypeSURF_GRID)                    ? (OBJ) : NULL))
+#define omfElemSurfTriFromObj(               OBJ)           ((OmfElemSurfTri *)  ( (omfObjGetType(OBJ) == omfObjTypeSURF_TRI)                     ? (OBJ) : NULL))
+#define omfElemVolFromObj(                   OBJ)           ((OmfElemVol *)      ( (omfObjGetType(OBJ) == omfObjTypeVOL)                          ? (OBJ) : NULL))
+#define omfGeomFromObj(                      OBJ)           ((OmfGeom *)         (((omfObjGetType(OBJ) & omfObjTypeGEOM)  == omfObjTypeGEOM)      ? (OBJ) : NULL))
+#define omfGeomLineSetFromObj(               OBJ)           ((OmfGeomLineSet  *) ( (omfObjGetType(OBJ) == omfObjTypeLINE_SET)                     ? (OBJ) : NULL))
+#define omfGeomPntSetFromObj(                OBJ)           ((OmfGeomPntSet *)   ( (omfObjGetType(OBJ) == omfObjTypePNT_SET)                      ? (OBJ) : NULL))
+#define omfGeomSurfGridFromObj(              OBJ)           ((OmfGeomSurfGrid *) ( (omfObjGetType(OBJ) == omfObjTypeSURF_GRID)                    ? (OBJ) : NULL))
+#define omfGeomSurfTriFromObj(               OBJ)           ((OmfGeomSurfTri *)  ( (omfObjGetType(OBJ) == omfObjTypeSURF_TRI)                     ? (OBJ) : NULL))
+#define omfGeomVolFromObj(                   OBJ)           ((OmfGeomVol *)      ( (omfObjGetType(OBJ) == omfObjTypeVOL)                          ? (OBJ) : NULL))
+#define omfProjFromObj(                      OBJ)           ((OmfProj *)         ( (omfObjGetType(OBJ) == omfObjTypePROJ)                         ? (OBJ) : NULL))
+#define omfTextureFromObj(                   OBJ)           ((OmfTexture *)      ( (omfObjGetType(OBJ) == omfObjTypeTEXTURE)                      ? (OBJ) : NULL))
 
-/******************************************************************************
+#define omfObjGetObjType(                    OBJ)           (((OBJ) != NULL) ? (OBJ)->typeObj : omfObjTypeNONE)
+
+#define omfObjDestroyObj(                    OBJ)           omfObjDestroy(                   omfObjFromObj(          OBJ))
+#define omfObjGetObjDateCreated(             OBJ)           omfObjGetDateCreated(            omfObjFromObj(          OBJ))
+#define omfObjGetObjDateModified(            OBJ)           omfObjGetDateModified(           omfObjFromObj(          OBJ))
+#define omfObjGetObjId(                      OBJ)           omfObjGetId(                     omfObjFromObj(          OBJ))
+#define omfObjSetObjDateCreated(             OBJ, VAL)      omfObjSetDateCreated(            omfObjFromObj(          OBJ), (VAL))
+#define omfObjSetObjDateModified(            OBJ, VAL)      omfObjSetDateModified(           omfObjFromObj(          OBJ), (VAL))
+#define omfObjSetObjId(                      OBJ, VAL)      omfObjSetId(                     omfObjFromObj(          OBJ), (VAL))
+
+#define omfObjGetArrayBufferOffset(          OBJ)           omfArrayGetBufferOffset(         omfArrayFromObj(        OBJ))
+#define omfObjGetArrayBufferSize(            OBJ)           omfArrayGetBufferSize(           omfArrayFromObj(        OBJ))
+#define omfObjGetArrayBufferType(            OBJ)           omfArrayGetBufferType(           omfArrayFromObj(        OBJ))
+#define omfObjGetArrayBufferTypeCount(       OBJ)           omfArrayGetBufferTypeCount(      omfArrayFromObj(        OBJ))
+#define omfObjSetArrayBufferOffset(          OBJ, VAL)      omfArraySetBufferOffset(         omfArrayFromObj(        OBJ), (VAL))
+#define omfObjSetArrayBufferSize(            OBJ, VAL)      omfArraySetBufferSize(           omfArrayFromObj(        OBJ), (VAL))
+#define omfObjSetArrayBufferType(            OBJ, VAL)      omfArraySetBufferType(           omfArrayFromObj(        OJB), (VAL))
+#define omfObjSetArrayBufferTypeCount(       OBJ, VAL)      omfArraySetBufferTypeCount(      omfArrayFromObj(        OBJ), (VAL))
+
+#define omfObjGetDataArray(                  OBJ)           omfDataGetArray(                 omfDataFromObj(         OBJ))
+#define omfObjGetDataDescription(            OBJ)           omfDataGetDescription(           omfDataFromObj(         OBJ))
+#define omfObjGetDataLoc(                    OBJ)           omfDataGetLoc(                   omfDataFromObj(         OBJ))
+#define omfObjGetDataName(                   OBJ)           omfDataGetName(                  omfDataFromObj(         OBJ))
+#define omfObjGetDataType(                   OBJ)           omfDataGetType(                  omfDataFromObj(         OBJ))
+#define omfObjSetDataArray(                  OBJ, VAL)      omfDataSetArray(                 omfDataFromObj(         OBJ), (VAL))
+#define omfObjSetDataDescription(            OBJ, VAL)      omfDataSetDescription(           omfDataFromObj(         OBJ), (VAL))
+#define omfObjSetDataLoc(                    OBJ, VAL)      omfDataSetLoc(                   omfDataFromObj(         OBJ), (VAL))
+#define omfObjSetDataName(                   OBJ, VAL)      omfDataSetName(                  omfDataFromObj(         OBJ), (VAL))
+#define omfObjSetDataType(                   OBJ, VAL)      omfDataSetType(                  omfDataFromObj(         OBJ), (VAL))
+
+#define omfObjGetElemColor(                  OBJ)           omfElemGetColor(                 omfElemFromObj(         OBJ))
+#define omfObjGetElemDataList(               OBJ)           omfElemGetDataList(              omfElemFromObj(         OBJ))
+#define omfObjGetElemDescription(            OBJ)           omfElemGetDescription(           omfElemFromObj(         OBJ))
+#define omfObjGetElemName(                   OBJ)           omfElemGetName(                  omfElemFromObj(         OBJ))
+#define omfObjGetElemType(                   OBJ)           omfElemGetType(                  omfElemFromObj(         OBJ))
+#define omfObjGetElemTypeSub(                OBJ)           omfElemGetTypeSub(               omfElemFromObj(         OBJ))
+#define omfObjIsElemDataListSet(             OBJ)           omfElemIsDataListSet(            omfElemFromObj(         OBJ))
+#define omfObjSetElemColor(                  OBJ, VAL)      omfElemSetColor(                 omfElemFromObj(         OBJ), (VAL))
+#define omfObjSetElemDataList(               OBJ, VAL)      omfElemSetDataList(              omfElemFromObj(         OBJ), (VAL))
+#define omfObjSetElemDescription(            OBJ, VAL)      omfElemSetDescription(           omfElemFromObj(         OBJ), (VAL))
+#define omfObjSetElemName(                   OBJ, VAL)      omfElemSetName(                  omfElemFromObj(         OBJ), (VAL))
+#define omfObjSetElemTypeSub(                OBJ, VAL)      omfElemSetTypeSub(               omfElemFromObj(         OBJ), (VAL))
+
+#define omfObjGetElemLineSetGeometry(        OBJ)           omfElemLineSetGetGeometry(       omfElemLineSetFromObj(  OBJ))
+#define omfObjSetElemLineSetGeometry(        OBJ, VAL)      omfElemLineSetSetGeometry(       omfElemLineSetFromObj(  OBJ), (VAL))
+
+#define omfObjGetElemPntSetGeometry(         OBJ)           omfElemPntSetGetGeometry(        omfElemPntSetFromObj(   OBJ))
+#define omfObjGetElemPntSetTextureList(      OBJ)           omfElemPntSetGetTextureList(     omfElemPntSetFromObj(   OBJ))
+#define omfObjIsElemPntSetTextureListSet(    OBJ)           omfElemPntSetIsTextureListSet(   omfElemPntSetFromObj(   OBJ))
+#define omfObjSetElemPntSetGeometry(         OBJ, VAL)      omfElemPntSetSetGeometry(        omfElemPntSetFromObj(   OBJ), (VAL))
+#define omfObjSetElemPntSetTextureList(      OBJ, VAL)      omfElemPntSetSetTextureList(     omfElemPntSetFromObj(   OBJ), (VAL))
+
+#define omfObjGetElemSurfGridGeometry(       OBJ)           omfElemSurfGridGetGeometry(      omfElemSurfGridFromObj( OBJ))
+#define omfObjGetElemSurfGridTextureList(    OBJ)           omfElemSurfGridGetTextureList(   omfElemSurfGridFromObj( OBJ))
+#define omfObjIsElemSurfGridTextureListSet(  OBJ)           omfElemSurfGridIsTextureListSet( omfElemSurfGridFromObj( OBJ))
+#define omfObjSetElemSurfGridGeometry(       OBJ, VAL)      omfElemSurfGridSetGeometry(      omfElemSurfGridFromObj( OBJ), (VAL))
+#define omfObjSetElemSurfGridTextureList(    OBJ, VAL)      omfElemSurfGridSetTextureList(   omfElemSurfGridFromObj( OBJ), (VAL))
+
+#define omfObjGetElemSurfTriGeometry(        OBJ)           omfElemSurfTriGetGeometry(       omfElemSurfTriFromObj(  OBJ))
+#define omfObjGetElemSurfTriTextureList(     OBJ)           omfElemSurfTriGetTextureList(    omfElemSurfTriFromObj(  OBJ))
+#define omfObjIsElemSurfTriTextureListSet(   OBJ)           omfElemSurfTriIsTextureListSet(  omfElemSurfTriFromObj(  OBJ))
+#define omfObjSetElemSurfTriGeometry(        OBJ, VAL)      omfElemSurfTriSetGeometry(       omfElemSurfTriFromObj(  OBJ), (VAL))
+#define omfObjSetElemSurfTriTextureList(     OBJ, VAL)      omfElemSurfTriSetTextureList(    omfElemSurfTriFromObj(  OBJ), (VAL))
+
+#define omfObjGetGeomOrigin(                 OBJ)           omfGeomGetOrigin(                omfGeomFromObj(         OBJ))
+#define omfObjGetGeomType(                   OBJ)           omfGeomGetType(                  omfGeomFromObj(         OBJ))
+#define omfObjSetGeomOrigin(                 OBJ, VAL)      omfGeomSetOrigin(                omfGeomFromObj(         OBJ), (VAL))
+
+#define omfObjGetGeomLineSetArrayCoord(      OBJ)           omfGeomLineSetGetArrayCoord(     omfGeomLineSetFromObj(  OBJ)) 
+#define omfObjGetGeomLineSetArraySegment(    OBJ)           omfGeomLineSetGetArraySegment(   omfGeomLineSetFromObj(  OBJ)) 
+#define omfObjSetGeomLineSetArrayCoord(      OBJ, VAL)      omfGeomLineSetSetArrayCoord(     omfGeomLineSetFromObj(  OBJ), (VAL))
+#define omfObjSetGeomLineSetArraySegment(    OBJ, VAL)      omfGeomLineSetSetArraySegment(   omfGeomLineSetFromObj(  OBJ), (VAL))
+
+#define omfObjGetGeomPntSetArrayCoord(       OBJ)           omfGeomPntSetGetArrayCoord(      omfGeomPntSetFromObj(   OBJ)) 
+#define omfObjSetGeomPntSetArrayCoord(       OBJ, VAL)      omfGeomPntSetSetArrayCoord(      omfGeomPntSetFromObj(   OBJ), (VAL))
+
+#define omfObjGetGeomSurfGridArrayOffset(    OBJ)           omfGeomSurfGridGetArrayOffset(   omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjGetGeomSurfGridArrayTensorU(   OBJ)           omfGeomSurfGridGetArrayTensorU(  omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjGetGeomSurfGridArrayTensorV(   OBJ)           omfGeomSurfGridGetArrayTensorV(  omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjGetGeomSurfGridAxisU(          OBJ)           omfGeomSurfGridGetAxisU(         omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjGetGeomSurfGridAxisV(          OBJ)           omfGeomSurfGridGetAxisV(         omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjIsGeomSurfGridArrayOffsetSet(  OBJ)           omfGeomSurfGridIsArrayOffsetSet( omfGeomSurfGridFromObj( OBJ)) 
+#define omfObjSetGeomSurfGridArrayOffset(    OBJ, VAL)      omfGeomSurfGridSetArrayOffset(   omfGeomSurfGridFromObj( OBJ), (VAL))
+#define omfObjSetGeomSurfGridArrayTensorU(   OBJ, VAL)      omfGeomSurfGridSetArrayTensorU(  omfGeomSurfGridFromObj( OBJ), (VAL))
+#define omfObjSetGeomSurfGridArrayTensorV(   OBJ, VAL)      omfGeomSurfGridSetArrayTensorV(  omfGeomSurfGridFromObj( OBJ), (VAL))
+#define omfObjSetGeomSurfGridAxisU(          OBJ, VAL)      omfGeomSurfGridSetAxisU(         omfGeomSurfGridFromObj( OBJ), (VAL))
+#define omfObjSetGeomSurfGridAxisV(          OBJ, VAL)      omfGeomSurfGridSetAxisV(         omfGeomSurfGridFromObj( OBJ), (VAL))
+
+#define omfObjGetGeomSurfTriArrayCoord(      OBJ)           omfGeomSurfTriGetArrayCoord(     omfGeomSurfTriFromObj(  OBJ)) 
+#define omfObjGetGeomSurfTriArrayTriangle(   OBJ)           omfGeomSurfTriGetArrayTriangle(  omfGeomSurfTriFromObj(  OBJ)) 
+#define omfObjSetGeomSurfTriArrayCoord(      OBJ, VAL)      omfGeomSurfTriSetArrayCoord(     omfGeomSurfTriFromObj(  OBJ), (VAL))
+#define omfObjSetGeomSurfTriArrayTriangle(   OBJ, VAL)      omfGeomSurfTriSetArrayTriangle(  omfGeomSurfTriFromObj(  OBJ), (VAL))
+
+#define omfObjGetProjAuthor(                 OBJ)           omfProjGetAuthor(                omfProjFromObj(         OBJ)) 
+#define omfObjGetProjDate(                   OBJ)           omfProjGetDate(                  omfProjFromObj(         OBJ)) 
+#define omfObjGetProjDescription(            OBJ)           omfProjGetDescription(           omfProjFromObj(         OBJ)) 
+#define omfObjGetProjName(                   OBJ)           omfProjGetName(                  omfProjFromObj(         OBJ)) 
+#define omfObjGetProjOrigin(                 OBJ)           omfProjGetOrigin(                omfProjFromObj(         OBJ)) 
+#define omfObjGetProjRevision(               OBJ)           omfProjGetRevision(              omfProjFromObj(         OBJ)) 
+#define omfObjGetProjUnits(                  OBJ)           omfProjGetUnits(                 omfProjFromObj(         OBJ)) 
+#define omfObjSetProjAuthor(                 OBJ, VAL)      omfProjSetAuthor(                omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjDate(                   OBJ, VAL)      omfProjSetDate(                  omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjDescription(            OBJ, VAL)      omfProjSetDescription(           omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjName(                   OBJ, VAL)      omfProjSetName(                  omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjOrigin(                 OBJ, VAL)      omfProjSetOrigin(                omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjRevision(               OBJ, VAL)      omfProjSetRevision(              omfProjFromObj(         OBJ), (VAL))
+#define omfObjSetProjUnits(                  OBJ, VAL)      omfProjSetUnits(                 omfProjFromObj(         OBJ), (VAL))
+
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 // Library level routines
 OmfBool                     omfIsStarted(                            void);
                            
 OmfError                    omfStart(                                void *(*memCreate)(size_t size), void (*memDestroy)(void *buffer), void (*memClear)(void *buffer, size_t size));
 void                        omfStop(                                 void);
+
+// Object routines
+OmfObj                     *omfObjCreate(                            OmfObjType const type);
+void                        omfObjDestroy(                           OmfObj * const object);
+
+OmfChar                    *omfObjGetDateCreated(                    OmfObj const * const obj);
+OmfChar                    *omfObjGetDateModified(                   OmfObj const * const obj);
+OmfId                       omfObjGetId(                             OmfObj const * const obj);
+OmfObjType                  omfObjGetType(                           OmfObj const * const obj);
+
+OmfBool                     omfObjSetDateCreated(                    OmfObj       * const obj, OmfChar * const value);
+OmfBool                     omfObjSetDateModified(                   OmfObj       * const obj, OmfChar * const value);
+OmfBool                     omfObjSetId(                             OmfObj       * const obj, OmfId const value);
 
 // Char routines
 OmfChar                    *omfCharClone(                            OmfChar const * const value);
@@ -489,97 +671,85 @@ wchar_t                    *wcharCreateFromOmfChar(                  OmfChar con
 
 // Array buffer routines
 OmfArray                   *omfArrayCreate(                          void);
-OmfBool                     omfArrayCreateContent(                   OmfArray       * const omfArray);
+OmfBool                     omfArrayCreateContent(                   OmfArray       * const arrayData);
 
-void                        omfArrayDestroy(                         OmfArray       * const omfArray);
-void                        omfArrayDestroyContent(                  OmfArray       * const omfArray);
+void                        omfArrayDestroy(                         OmfArray       * const arrayData);
+void                        omfArrayDestroyContent(                  OmfArray       * const arrayData);
 
-OmfOffset                   omfArrayGetBufferOffset(                 OmfArray const * const omfArray);
-OmfCount                    omfArrayGetBufferSize(                   OmfArray const * const omfArray);
-OmfArrayType                omfArrayGetBufferType(                   OmfArray const * const omfArray);
-OmfCount                    omfArrayGetBufferTypeCount(              OmfArray const * const omfArray);
-OmfError                    omfArrayGetDataCoord(                    OmfFile const * const file, OmfArray const * const omfArray/* , callback to buffer filling */);
-OmfError                    omfArrayGetDataIndex(                    OmfFile const * const file, OmfArray const * const omfArray/* , callback to buffer filling */);
-OmfChar                    *omfArrayGetDateCreated(                  OmfArray const * const omfArray);
-OmfChar                    *omfArrayGetDateModified(                 OmfArray const * const omfArray);
-OmfId                       omfArrayGetId(                           OmfArray const * const omfArray);
+OmfOffset                   omfArrayGetBufferOffset(                 OmfArray const * const arrayData);
+OmfCount                    omfArrayGetBufferSize(                   OmfArray const * const arrayData);
+OmfArrayType                omfArrayGetBufferType(                   OmfArray const * const arrayData);
+OmfCount                    omfArrayGetBufferTypeCount(              OmfArray const * const arrayData);
+OmfError                    omfArrayGetDataCoord(                    OmfFile const * const file, OmfArray const * const arrayData/* , callback to buffer filling */);
+OmfError                    omfArrayGetDataIndex(                    OmfFile const * const file, OmfArray const * const arrayData/* , callback to buffer filling */);
 
-OmfBool                     omfArrayIsDateCreated(                   OmfArray const * const omfArray);
-OmfBool                     omfArrayIsDateModified(                  OmfArray const * const omfArray);
+OmfBool                     omfArraySetBufferOffset(                 OmfArray       * const arrayData, OmfOffset const value);
+OmfBool                     omfArraySetBufferSize(                   OmfArray       * const arrayData, OmfCount const value);
+OmfBool                     omfArraySetBufferType(                   OmfArray       * const arrayData, OmfArrayType const value);
+OmfBool                     omfArraySetBufferTypeCount(              OmfArray       * const arrayData, OmfCount const value);
+OmfError                    omfArraySetDataCoord(                    OmfFile       * const file, OmfArray * const arrayData/* , callback to buffer reading */);
+OmfError                    omfArraySetDataIndex(                    OmfFile       * const file, OmfArray * const arrayData/* , callback to buffer reading */);
 
-OmfBool                     omfArraySetBufferOffset(                 OmfArray       * const omfArray, OmfOffset const value);
-OmfBool                     omfArraySetBufferSize(                   OmfArray       * const omfArray, OmfCount const value);
-OmfBool                     omfArraySetBufferType(                   OmfArray       * const omfArray, OmfArrayType const value);
-OmfBool                     omfArraySetBufferTypeCount(              OmfArray       * const omfArray, OmfCount const value);
-OmfError                    omfArraySetDataCoord(                    OmfFile       * const file, OmfArray * const omfArray/* , callback to buffer reading */);
-OmfError                    omfArraySetDataIndex(                    OmfFile       * const file, OmfArray * const omfArray/* , callback to buffer reading */);
-OmfBool                     omfArraySetDateCreated(                  OmfArray       * const omfArray, OmfChar * const value);
-OmfBool                     omfArraySetDateModified(                 OmfArray       * const omfArray, OmfChar * const value);
-OmfBool                     omfArraySetId(                           OmfArray       * const omfArray, OmfId const value);
+// Data routines
+OmfArray                   *omfDataGetArray(                         OmfData const * const data);
+OmfChar                    *omfDataGetDescription(                   OmfData const * const data);
+OmfDataLoc                  omfDataGetLoc(                           OmfData const * const data);
+OmfChar                    *omfDataGetName(                          OmfData const * const data);
+OmfDataType                 omfDataGetType(                          OmfData const * const data);
+
+OmfBool                     omfDataSetArray(                         OmfData       * const data, OmfArray * const value);
+OmfBool                     omfDataSetDescription(                   OmfData       * const data, OmfChar * const value);
+OmfBool                     omfDataSetLoc(                           OmfData       * const data, OmfDataLoc const value);
+OmfBool                     omfDataSetName(                          OmfData       * const data, OmfChar * const value);
+OmfBool                     omfDataSetType(                          OmfData       * const data, OmfDataType const value);
 
 // Element routines
-OmfElement                 *omfElementCreate(                        OmfElementType type);
-                                                                                      
-void                        omfElementDestroy(                       OmfElement       * const omfElement);
+OmfColor                    omfElemGetColor(                         OmfElem const * const elem);
+OmfDataList                *omfElemGetDataList(                      OmfElem const * const elem);
+OmfChar                    *omfElemGetDescription(                   OmfElem const * const elem);
+OmfChar                    *omfElemGetName(                          OmfElem const * const elem);
+OmfElemType                 omfElemGetType(                          OmfElem const * const elem);
+OmfElemSubType              omfElemGetTypeSub(                       OmfElem const * const elem);
 
-OmfColor                    omfElementGetColor(                      OmfElement const * const omfElement);
-OmfDataList                *omfElementGetDataList(                   OmfElement const * const omfElement);
-OmfChar                    *omfElementGetDateCreated(                OmfElement const * const omfElement);
-OmfChar                    *omfElementGetDateModified(               OmfElement const * const omfElement);
-OmfChar                    *omfElementGetDescription(                OmfElement const * const omfElement);
-OmfId                       omfElementGetId(                         OmfElement const * const omfElement);
-OmfChar                    *omfElementGetName(                       OmfElement const * const omfElement);
-OmfElementSubType           omfElementGetSubType(                    OmfElement const * const omfElement);
-OmfElementType              omfElementGetType(                       OmfElement const * const omfElement);
+OmfBool                     omfElemIsDataListSet(                    OmfElem const * const elem);
 
-OmfBool                     omfElementIsDataListSet(                 OmfElement const * const omfElement);
-OmfBool                     omfElementIsDateCreatedSet(              OmfElement const * const omfElement);
-OmfBool                     omfElementIsDateModifiedSet(             OmfElement const * const omfElement);
-
-OmfBool                     omfElementSetColor(                      OmfElement       * const omfElement, OmfColor const value);
-OmfBool                     omfElementSetDataList(                   OmfElement       * const omfElement, OmfDataList * const value);
-OmfBool                     omfElementSetDateCreated(                OmfElement       * const omfElement, OmfChar * const value);
-OmfBool                     omfElementSetDateModified(               OmfElement       * const omfElement, OmfChar * const value);
-OmfBool                     omfElementSetDescription(                OmfElement       * const omfElement, OmfChar * const value);
-OmfBool                     omfElementSetId(                         OmfElement       * const omfElement, OmfId const value);
-OmfBool                     omfElementSetName(                       OmfElement       * const omfElement, OmfChar * const value);
-OmfBool                     omfElementSetSubType(                    OmfElement       * const omfElement, OmfElementSubType const value);
-
-#define omfElementLineSetFromOmfElement(     ELEM)  (OmfElementLineSet *)     ((omfElementGetType(ELEM) == omfElementTypeLINE_SET)     ? (ELEM) : NULL)
-#define omfElementPointSetFromOmfElement(    ELEM)  (OmfElementPointSet *)    ((omfElementGetType(ELEM) == omfElementTypePOINT_SET)    ? (ELEM) : NULL)
-#define omfElementSurfaceGridFromOmfElement( ELEM)  (OmfElementSurfaceGrid *) ((omfElementGetType(ELEM) == omfElementTypeSURFACE_GRID) ? (ELEM) : NULL)
-#define omfElementSurfaceTriFromOmfElement(  ELEM)  (OmfElementSurfaceTri *)  ((omfElementGetType(ELEM) == omfElementTypeSURFACE_TRI)  ? (ELEM) : NULL)
+OmfBool                     omfElemSetColor(                         OmfElem       * const elem, OmfColor const value);
+OmfBool                     omfElemSetDataList(                      OmfElem       * const elem, OmfDataList * const value);
+OmfBool                     omfElemSetDescription(                   OmfElem       * const elem, OmfChar * const value);
+OmfBool                     omfElemSetName(                          OmfElem       * const elem, OmfChar * const value);
+OmfBool                     omfElemSetTypeSub(                       OmfElem       * const elem, OmfElemSubType const value);
 
 // Element Line Set routines
-OmfGeometry                *omfElementLineSetGetGeometry(            OmfElementLineSet const * const omfElementLineSet);
-OmfBool                     omfElementLineSetSetGeometry(            OmfElementLineSet       * const omfElementLineSet, OmfGeometryLineSet * const value);
+OmfGeom                    *omfElemLineSetGetGeometry(               OmfElemLineSet const * const elem);
 
-// Element Point Set routines
-OmfGeometry                *omfElementPointSetGetGeometry(           OmfElementPointSet const * const omfElementPointSet);
-OmfTextureList             *omfElementPointSetGetTextureList(        OmfElementPointSet const * const omfElementPointSet);
+OmfBool                     omfElemLineSetSetGeometry(               OmfElemLineSet       * const elem, OmfGeomLineSet * const value);
 
-OmfBool                     omfElementPointSetIsTextureListSet(      OmfElementPointSet const * const omfElementPointSet);
+// Element Pnt Set routines
+OmfGeom                    *omfElemPntSetGetGeometry(                OmfElemPntSet const * const elem);
+OmfTextureList             *omfElemPntSetGetTextureList(             OmfElemPntSet const * const elem);
 
-OmfBool                     omfElementPointSetSetGeometry(           OmfElementPointSet       * const omfElementPointSet, OmfGeometryPointSet * const value);
-OmfBool                     omfElementPointSetSetTextureList(        OmfElementPointSet       * const omfElementPointSet, OmfTextureList * const value);
+OmfBool                     omfElemPntSetIsTextureListSet(           OmfElemPntSet const * const elem);
 
-// Element Surface Grid routines
-OmfGeometry                *omfElementSurfaceGridGetGeometry(        OmfElementSurfaceGrid const * const omfElementSurfaceGrid);
-OmfTextureList             *omfElementSurfaceGridGetTextureList(     OmfElementSurfaceGrid const * const omfElementSurfaceGrid);
+OmfBool                     omfElemPntSetSetGeometry(                OmfElemPntSet       * const elem, OmfGeomPntSet * const value);
+OmfBool                     omfElemPntSetSetTextureList(             OmfElemPntSet       * const elem, OmfTextureList * const value);
 
-OmfBool                     omfElementSurfaceGridIsTextureListSet(   OmfElementSurfaceGrid const * const omfElementSurfaceGrid);
+// Element Surf Grid routines
+OmfGeom                    *omfElemSurfGridGetGeometry(              OmfElemSurfGrid const * const elem);
+OmfTextureList             *omfElemSurfGridGetTextureList(           OmfElemSurfGrid const * const elem);
 
-OmfBool                     omfElementSurfaceGridSetGeometry(        OmfElementSurfaceGrid * const omfElementSurfaceGrid, OmfGeometrySurfaceGrid * const value);
-OmfBool                     omfElementSurfaceGridSetTextureList(     OmfElementSurfaceGrid * const omfElementSurfaceGrid, OmfTextureList * const value);
+OmfBool                     omfElemSurfGridIsTextureListSet(         OmfElemSurfGrid const * const elem);
 
-// Element Surface Tri routines
-OmfGeometry                *omfElementSurfaceTriGetGeometry(         OmfElementSurfaceTri const * const omfElementSurfaceTri);
-OmfTextureList             *omfElementSurfaceTriGetTextureList(      OmfElementSurfaceTri const * const omfElementSurfaceTri);
+OmfBool                     omfElemSurfGridSetGeometry(              OmfElemSurfGrid       * const elem, OmfGeomSurfGrid * const value);
+OmfBool                     omfElemSurfGridSetTextureList(           OmfElemSurfGrid       * const elem, OmfTextureList * const value);
 
-OmfBool                     omfElementSurfaceTriIsTextureListSet(    OmfElementSurfaceTri const * const omfElementSurfaceTri);
+// Element Surf Tri routines
+OmfGeom                    *omfElemSurfTriGetGeometry(               OmfElemSurfTri const * const elem);
+OmfTextureList             *omfElemSurfTriGetTextureList(            OmfElemSurfTri const * const elem);
 
-OmfBool                     omfElementSurfaceTriSetGeometry(         OmfElementSurfaceTri * const omfElementSurfaceTri, OmfGeometrySurfaceTri * const value);
-OmfBool                     omfElementSurfaceTriSetTextureList(      OmfElementSurfaceTri * const omfElementSurfaceTri, OmfTextureList * const value);
+OmfBool                     omfElemSurfTriIsTextureListSet(          OmfElemSurfTri const * const elem);
+
+OmfBool                     omfElemSurfTriSetGeometry(               OmfElemSurfTri       * const elem, OmfGeomSurfTri * const value);
+OmfBool                     omfElemSurfTriSetTextureList(            OmfElemSurfTri       * const elem, OmfTextureList * const value);
 
 // File routines.
 OmfError                    omfFileCreateRead(                       wchar_t const * const fileName,                                   OmfFile ** const file);
@@ -587,88 +757,66 @@ OmfError                    omfFileCreateWrite(                      wchar_t con
 
 void                        omfFileDestroy(                          OmfFile       * const file);
 
-OmfProject                 *omfFileGetProject(                       OmfFile       * const file);
+OmfProj                    *omfFileGetProject(                       OmfFile       * const file);
 OmfError                    omfFileGetVersion(                       OmfFile const * const file, OmfFileVersion * const value);
 
 OmfBool                     omfFileIsWriting(                        OmfFile const * const file);
 
 // Geometry routines
-OmfGeometry                *omfGeometryCreate(                       OmfElementType const type);
-                                                                                                       
-void                        omfGeometryDestroy(                      OmfGeometry       * const omfGeometry);
+OmfCoord                    omfGeomGetOrigin(                        OmfGeom const * const geom);
+OmfElemType                 omfGeomGetType(                          OmfGeom const * const geom);
 
-OmfChar                    *omfGeometryGetDateCreated(               OmfGeometry const * const omfGeometry);
-OmfChar                    *omfGeometryGetDateModified(              OmfGeometry const * const omfGeometry);
-OmfId                       omfGeometryGetId(                        OmfGeometry const * const omfGeometry);
-OmfCoord                    omfGeometryGetOrigin(                    OmfGeometry const * const omfGeometry);
-OmfElementType              omfGeometryGetType(                      OmfGeometry const * const omfGeometry);
-
-OmfBool                     omfGeometryIsDateCreatedSet(             OmfGeometry const * const omfGeometry);
-OmfBool                     omfGeometryIsDateModifiedSet(            OmfGeometry const * const omfGeometry);
-
-OmfBool                     omfGeometrySetDateCreated(               OmfGeometry       * const omfGeometry, OmfChar * const value);
-OmfBool                     omfGeometrySetDateModified(              OmfGeometry       * const omfGeometry, OmfChar * const value);
-OmfBool                     omfGeometrySetId(                        OmfGeometry       * const omfGeometry, OmfId const value);
-OmfBool                     omfGeometrySetOrigin(                    OmfGeometry       * const omfGeometry, OmfCoord const value);
-
-#define omfGeometryLineSetFromOmfGeometry(    GEOM)   (OmfGeometryLineSet  *)    ((omfGeometryGetType(GEOM) == omfElementTypeLINE_SET)     ? (GEOM) : NULL)
-#define omfGeometryPointSetFromOmfGeometry(   GEOM)   (OmfGeometryPointSet *)    ((omfGeometryGetType(GEOM) == omfElementTypePOINT_SET)    ? (GEOM) : NULL)
-#define omfGeometrySurfaceGridFromOmfGeometry(GEOM)   (OmfGeometrySurfaceGrid *) ((omfGeometryGetType(GEOM) == omfElementTypeSURFACE_GRID) ? (GEOM) : NULL)
-#define omfGeometrySurfaceTriFromOmfGeometry( GEOM)   (OmfGeometrySurfaceTri *)  ((omfGeometryGetType(GEOM) == omfElementTypeSURFACE_TRI)  ? (GEOM) : NULL)
+OmfBool                     omfGeomSetOrigin(                        OmfGeom       * const geom, OmfCoord const value);
 
 // Geometry Line Set routines
-OmfArray                   *omfGeometryLineSetGetArrayCoord(         OmfGeometryLineSet const * const omfGeometryLineSet);
-OmfArray                   *omfGeometryLineSetGetArraySegment(       OmfGeometryLineSet const * const omfGeometryLineSet);
+OmfArray                   *omfGeomLineSetGetArrayCoord(             OmfGeomLineSet const * const geom);
+OmfArray                   *omfGeomLineSetGetArraySegment(           OmfGeomLineSet const * const geom);
 
-OmfBool                     omfGeometryLineSetSetArrayCoord(         OmfGeometryLineSet * const omfGeometryLineSet, OmfArray * const value);;
-OmfBool                     omfGeometryLineSetSetArraySegment(       OmfGeometryLineSet * const omfGeometryLineSet, OmfArray * const value);
+OmfBool                     omfGeomLineSetSetArrayCoord(             OmfGeomLineSet       * const geom, OmfArray * const value);
+OmfBool                     omfGeomLineSetSetArraySegment(           OmfGeomLineSet       * const geom, OmfArray * const value);
 
-// Geometry Point Set routines
-OmfArray                   *omfGeometryPointSetGetArrayCoord(        OmfGeometryPointSet const * const omfGeometry);
+// Geometry Pnt Set routines
+OmfArray                   *omfGeomPntSetGetArrayCoord(              OmfGeomPntSet const * const geom);
 
-OmfBool                     omfGeometryPointSetSetArrayCoord(        OmfGeometryPointSet       * const omfGeometry, OmfArray * const value);
+OmfBool                     omfGeomPntSetSetArrayCoord(              OmfGeomPntSet       * const geom, OmfArray * const value);
 
-// Geometry Surface Grid routines
-OmfArray                   *omfGeometrySurfaceGridGetArrayOffset(    OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
-OmfArray                   *omfGeometrySurfaceGridGetArrayTensorU(   OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
-OmfArray                   *omfGeometrySurfaceGridGetArrayTensorV(   OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
-OmfVector                   omfGeometrySurfaceGridGetAxisU(          OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
-OmfVector                   omfGeometrySurfaceGridGetAxisV(          OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
+// Geometry Surf Grid routines
+OmfArray                   *omfGeomSurfGridGetArrayOffset(           OmfGeomSurfGrid const * const geom);
+OmfArray                   *omfGeomSurfGridGetArrayTensorU(          OmfGeomSurfGrid const * const geom);
+OmfArray                   *omfGeomSurfGridGetArrayTensorV(          OmfGeomSurfGrid const * const geom);
+OmfVector                   omfGeomSurfGridGetAxisU(                 OmfGeomSurfGrid const * const geom);
+OmfVector                   omfGeomSurfGridGetAxisV(                 OmfGeomSurfGrid const * const geom);
 
-OmfBool                     omfGeometrySurfaceGridIsArrayOffsetSet(  OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid);
+OmfBool                     omfGeomSurfGridIsArrayOffsetSet(         OmfGeomSurfGrid const * const geom);
 
-OmfBool                     omfGeometrySurfaceGridSetArrayOffset(    OmfGeometrySurfaceGrid       * const omfGeometrySurfaceGrid, OmfArray * const value);
-OmfBool                     omfGeometrySurfaceGridSetArrayTensorU(   OmfGeometrySurfaceGrid       * const omfGeometrySurfaceGrid, OmfArray * const value);
-OmfBool                     omfGeometrySurfaceGridSetArrayTensorV(   OmfGeometrySurfaceGrid       * const omfGeometrySurfaceGrid, OmfArray * const value);
-OmfBool                     omfGeometrySurfaceGridSetAxisU(          OmfGeometrySurfaceGrid       * const omfGeometrySurfaceGrid, OmfVector const value);
-OmfBool                     omfGeometrySurfaceGridSetAxisV(          OmfGeometrySurfaceGrid       * const omfGeometrySurfaceGrid, OmfVector const value);
+OmfBool                     omfGeomSurfGridSetArrayOffset(           OmfGeomSurfGrid       * const geom, OmfArray * const value);
+OmfBool                     omfGeomSurfGridSetArrayTensorU(          OmfGeomSurfGrid       * const geom, OmfArray * const value);
+OmfBool                     omfGeomSurfGridSetArrayTensorV(          OmfGeomSurfGrid       * const geom, OmfArray * const value);
+OmfBool                     omfGeomSurfGridSetAxisU(                 OmfGeomSurfGrid       * const geom, OmfVector const value);
+OmfBool                     omfGeomSurfGridSetAxisV(                 OmfGeomSurfGrid       * const geom, OmfVector const value);
 
-// Geometry Surface Tri routines
-OmfArray                   *omfGeometrySurfaceTriGetArrayCoord(      OmfGeometrySurfaceTri const * const omfGeometrySurfaceTri);
-OmfArray                   *omfGeometrySurfaceTriGetArrayTriangle(   OmfGeometrySurfaceTri const * const omfGeometrySurfaceTri);
+// Geometry Surf Tri routines
+OmfArray                   *omfGeomSurfTriGetArrayCoord(             OmfGeomSurfTri const * const geom);
+OmfArray                   *omfGeomSurfTriGetArrayTriangle(          OmfGeomSurfTri const * const geom);
 
-OmfBool                     omfGeometrySurfaceTriSetArrayCoord(      OmfGeometrySurfaceTri * const omfGeometrySurfaceTri, OmfArray * const value);
-OmfBool                     omfGeometrySurfaceTriSetArrayTriangle(   OmfGeometrySurfaceTri * const omfGeometrySurfaceTri, OmfArray * const value);
+OmfBool                     omfGeomSurfTriSetArrayCoord(             OmfGeomSurfTri       * const geom, OmfArray * const value);
+OmfBool                     omfGeomSurfTriSetArrayTriangle(          OmfGeomSurfTri       * const geom, OmfArray * const value);
 
 // Project routines
-OmfChar                    *omfProjectGetAuthor(                     OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetDate(                       OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetDateCreated(                OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetDateModified(               OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetDescription(                OmfProject const * const omfProject);
-OmfId                       omfProjectGetId(                         OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetName(                       OmfProject const * const omfProject);
-OmfCoord                    omfProjectGetOrigin(                     OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetRevision(                   OmfProject const * const omfProject);
-OmfChar                    *omfProjectGetUnits(                      OmfProject const * const omfProject);
+OmfChar                    *omfProjGetAuthor(                     OmfProj const * const project);
+OmfChar                    *omfProjGetDate(                       OmfProj const * const project);
+OmfChar                    *omfProjGetDescription(                OmfProj const * const project);
+OmfChar                    *omfProjGetName(                       OmfProj const * const project);
+OmfCoord                    omfProjGetOrigin(                     OmfProj const * const project);
+OmfChar                    *omfProjGetRevision(                   OmfProj const * const project);
+OmfChar                    *omfProjGetUnits(                      OmfProj const * const project);
 
-OmfBool                     omfProjectSetAuthor(                     OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetDate(                       OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetDateCreated(                OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetDateModified(               OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetDescription(                OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetId(                         OmfProject       * const omfProject, OmfId const value);
-OmfBool                     omfProjectSetName(                       OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetOrigin(                     OmfProject       * const omfProject, OmfCoord const value);
-OmfBool                     omfProjectSetRevision(                   OmfProject       * const omfProject, OmfChar const * const value);
-OmfBool                     omfProjectSetUnits(                      OmfProject       * const omfProject, OmfChar const * const value);
+OmfBool                     omfProjSetAuthor(                     OmfProj       * const project, OmfChar const * const value);
+OmfBool                     omfProjSetDate(                       OmfProj       * const project, OmfChar const * const value);
+OmfBool                     omfProjSetDescription(                OmfProj       * const project, OmfChar const * const value);
+OmfBool                     omfProjSetName(                       OmfProj       * const project, OmfChar const * const value);
+OmfBool                     omfProjSetOrigin(                     OmfProj       * const project, OmfCoord const value);
+OmfBool                     omfProjSetRevision(                   OmfProj       * const project, OmfChar const * const value);
+OmfBool                     omfProjSetUnits(                      OmfProj       * const project, OmfChar const * const value);
+
+#endif

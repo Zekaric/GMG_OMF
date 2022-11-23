@@ -1,123 +1,122 @@
-/******************************************************************************
-file:       OmfGeometrySurfaceGrid
+/**************************************************************************************************
+file:       OmfGeomSurfGrid
 author:     Robbert de Groot
-company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Geometry Surface Grid routines
-******************************************************************************/
+Geometry Surf Grid routines
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfGeometrySurfaceGridCreate
-******************************************************************************/
-OmfGeometrySurfaceGrid *_OmfGeometrySurfaceGridCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomSurfGridCreate
+**************************************************************************************************/
+OmfGeomSurfGrid *_OmfGeomSurfGridCreate(void)
 {
-   OmfGeometrySurfaceGrid *omfGeometrySurfaceGrid;
+   OmfGeomSurfGrid *geom;
 
-   omfGeometrySurfaceGrid = memCreateType(OmfGeometrySurfaceGrid);
-   returnNullIf(!omfGeometrySurfaceGrid);
+   geom = memCreateType(OmfGeomSurfGrid);
+   returnNullIf(!geom);
 
-   if (!_OmfGeometrySurfaceGridCreateContent(omfGeometrySurfaceGrid))
+   if (!_OmfGeomSurfGridCreateContent(geom))
    {
-      omfGeometryDestroy((OmfGeometry *) omfGeometrySurfaceGrid);
+      omfObjDestroy((OmfObj *) geom);
       return NULL;
    }
 
-   return omfGeometrySurfaceGrid;
+   return geom;
 }
 
-/******************************************************************************
-func: _OmfGeometrySurfaceGridCreateContent
-******************************************************************************/
-OmfBool _OmfGeometrySurfaceGridCreateContent(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: _OmfGeomSurfGridCreateContent
+**************************************************************************************************/
+OmfBool _OmfGeomSurfGridCreateContent(OmfGeomSurfGrid * const geom)
 {
-   memClearType(OmfGeometrySurfaceGrid, omfGeometrySurfaceGrid);
-   omfGeometrySurfaceGrid->type = omfElementTypeSURFACE_GRID;
+   memClearType(OmfGeomSurfGrid, geom);
+   geom->typeElem = omfElemTypeSURF_GRID;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfGeometrySurfaceGridDestroyContent
-******************************************************************************/
-void _OmfGeometrySurfaceGridDestroyContent(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: _OmfGeomSurfGridDestroyContent
+**************************************************************************************************/
+void _OmfGeomSurfGridDestroyContent(OmfGeomSurfGrid * const geom)
 {
-   returnVoidIf(!omfGeometrySurfaceGrid);
+   returnVoidIf(!geom);
 
-   omfArrayDestroy(omfGeometrySurfaceGrid->offset);
-   omfArrayDestroy(omfGeometrySurfaceGrid->tensorU);
-   omfArrayDestroy(omfGeometrySurfaceGrid->tensorV);
+   omfArrayDestroy(geom->offset);
+   omfArrayDestroy(geom->tensorU);
+   omfArrayDestroy(geom->tensorV);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridGetArrayOffset
-******************************************************************************/
-OmfArray *omfGeometrySurfaceGridGetArrayOffset(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridGetArrayOffset
+**************************************************************************************************/
+OmfArray *omfGeomSurfGridGetArrayOffset(OmfGeomSurfGrid const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   return omfGeometrySurfaceGrid->offset;
+   return geom->offset;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridGetArrayTensorU
-******************************************************************************/
-OmfArray *omfGeometrySurfaceGridGetArrayTensorU(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridGetArrayTensorU
+**************************************************************************************************/
+OmfArray *omfGeomSurfGridGetArrayTensorU(OmfGeomSurfGrid const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   return omfGeometrySurfaceGrid->tensorU;
+   return geom->tensorU;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridGetArrayTensorV
-******************************************************************************/
-OmfArray *omfGeometrySurfaceGridGetArrayTensorV(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridGetArrayTensorV
+**************************************************************************************************/
+OmfArray *omfGeomSurfGridGetArrayTensorV(OmfGeomSurfGrid const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   return omfGeometrySurfaceGrid->tensorV;
+   return geom->tensorV;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridGetAxisU
-******************************************************************************/
-OmfVector omfGeometrySurfaceGridGetAxisU(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridGetAxisU
+**************************************************************************************************/
+OmfVector omfGeomSurfGridGetAxisU(OmfGeomSurfGrid const * const geom)
 {
    OmfVector vec;
 
@@ -125,16 +124,16 @@ OmfVector omfGeometrySurfaceGridGetAxisU(OmfGeometrySurfaceGrid const * const om
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometrySurfaceGrid,
+         !geom,
       vec);
 
-   return omfGeometrySurfaceGrid->axisU;
+   return geom->axisU;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridGetAxisV
-******************************************************************************/
-OmfVector omfGeometrySurfaceGridGetAxisV(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridGetAxisV
+**************************************************************************************************/
+OmfVector omfGeomSurfGridGetAxisV(OmfGeomSurfGrid const * const geom)
 {
    OmfVector vec;
 
@@ -142,89 +141,92 @@ OmfVector omfGeometrySurfaceGridGetAxisV(OmfGeometrySurfaceGrid const * const om
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometrySurfaceGrid,
+         !geom,
       vec);
 
-   return omfGeometrySurfaceGrid->axisV;
+   return geom->axisV;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridIsArrayOffsetSet
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridIsArrayOffsetSet(OmfGeometrySurfaceGrid const * const omfGeometrySurfaceGrid)
+/**************************************************************************************************
+func: omfGeomSurfGridIsArrayOffsetSet
+**************************************************************************************************/
+OmfBool omfGeomSurfGridIsArrayOffsetSet(OmfGeomSurfGrid const * const geom)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   return omfGeometrySurfaceGrid->isOffsetSet;
+   return geom->isOffsetSet;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridSetArrayOffset
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridSetArrayOffset(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomSurfGridSetArrayOffset
+**************************************************************************************************/
+OmfBool omfGeomSurfGridSetArrayOffset(OmfGeomSurfGrid * const geom, 
+   OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   omfGeometrySurfaceGrid->offset = value;
+   geom->offset = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridSetArrayTensorU
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridSetArrayTensorU(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomSurfGridSetArrayTensorU
+**************************************************************************************************/
+OmfBool omfGeomSurfGridSetArrayTensorU(OmfGeomSurfGrid * const geom, 
+   OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   omfGeometrySurfaceGrid->tensorU = value;
+   geom->tensorU = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridSetArrayTensorV
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridSetArrayTensorV(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomSurfGridSetArrayTensorV
+**************************************************************************************************/
+OmfBool omfGeomSurfGridSetArrayTensorV(OmfGeomSurfGrid * const geom, 
+   OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   omfGeometrySurfaceGrid->tensorV = value;
+   geom->tensorV = value;
 
    return omfTRUE;
 }
-/******************************************************************************
-func: omfGeometrySurfaceGridSetAxisU
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridSetAxisU(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid, OmfVector const value)
+/**************************************************************************************************
+func: omfGeomSurfGridSetAxisU
+**************************************************************************************************/
+OmfBool omfGeomSurfGridSetAxisU(OmfGeomSurfGrid * const geom, OmfVector const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   omfGeometrySurfaceGrid->axisU = value;
+   geom->axisU = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceGridSetAxisV
-******************************************************************************/
-OmfBool omfGeometrySurfaceGridSetAxisV(OmfGeometrySurfaceGrid * const omfGeometrySurfaceGrid, OmfVector const value)
+/**************************************************************************************************
+func: omfGeomSurfGridSetAxisV
+**************************************************************************************************/
+OmfBool omfGeomSurfGridSetAxisV(OmfGeomSurfGrid * const geom, OmfVector const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceGrid);
+      !geom);
 
-   omfGeometrySurfaceGrid->axisV = value;
+   geom->axisV = value;
 
    return omfTRUE;
 }

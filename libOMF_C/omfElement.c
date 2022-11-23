@@ -1,144 +1,144 @@
-/******************************************************************************
-file:       OmfElement
+/**************************************************************************************************
+file:       OmfElem
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
 Line set element 
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: omfElementCreate
-******************************************************************************/
-OmfElement *omfElementCreate(OmfElementType const type)
+**************************************************************************************************/
+/**************************************************************************************************
+func: omfElemCreate
+**************************************************************************************************/
+OmfElem *omfElemCreate(OmfElemType const type)
 {
-   OmfElement *omfElement;
+   OmfElem *elem;
 
-   returnNullIf(type == omfElementTypeNONE);
+   returnNullIf(type == omfElemTypeNONE);
 
-   omfElement = NULL;
+   elem = NULL;
 
    switch (type)
    {
    // v1
-   case omfElementTypeLINE_SET:
-      omfElement = (OmfElement *) _OmfElementLineSetCreate();
+   case omfElemTypeLINE_SET:
+      elem = (OmfElem *) _OmfElemLineSetCreate();
       break;
 
-   case omfElementTypePOINT_SET:
-      omfElement = (OmfElement *) _OmfElementPointSetCreate();
+   case omfElemTypePNT_SET:
+      elem = (OmfElem *) _OmfElemPntSetCreate();
       break;
 
-   case omfElementTypeSURFACE_GRID:
-      omfElement = (OmfElement *) _OmfElementSurfaceGridCreate();
+   case omfElemTypeSURF_GRID:
+      elem = (OmfElem *) _OmfElemSurfGridCreate();
       break;
 
-   case omfElementTypeSURFACE_TRI:
-      omfElement = (OmfElement *) _OmfElementSurfaceTriCreate();
+   case omfElemTypeSURF_TRI:
+      elem = (OmfElem *) _OmfElemSurfTriCreate();
       break;
 
-   case omfElementTypeVOLUME:
-      omfElement = (OmfElement *) _OmfElementVolumeCreate();
+   case omfElemTypeVOL:
+      elem = (OmfElem *) _OmfElemVolCreate();
       break;
 
-   case omfElementTypeNONE:
+   case omfElemTypeNONE:
    default:
       break;
    }
 
-   return omfElement;
+   return elem;
 }
 
-/******************************************************************************
-func: omfElementDestroy
-******************************************************************************/
-void omfElementDestroy(OmfElement * const omfElement)
+/**************************************************************************************************
+func: omfElemDestroy
+**************************************************************************************************/
+void omfElemDestroy(OmfElem * const elem)
 {
    returnVoidIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   _OmfElementDestroyContent(omfElement);
+   _OmfElemDestroyContent(elem);
    
-   memDestroy(omfElement);
+   memDestroy(elem);
 
    return;
 }
 
-/******************************************************************************
-func: _OmfElementDestroyContent
-******************************************************************************/
-void _OmfElementDestroyContent(OmfElement * const omfElement)
+/**************************************************************************************************
+func: _OmfElemDestroyContent
+**************************************************************************************************/
+void _OmfElemDestroyContent(OmfElem * const elem)
 {
-   returnVoidIf(!omfElement);
+   returnVoidIf(!elem);
 
-   switch (omfElement->type)
+   switch (elem->typeElem)
    {
    // v1
-   case omfElementTypeLINE_SET:
-      _OmfElementLineSetDestroyContent(    (OmfElementLineSet *)     omfElement);
+   case omfElemTypeLINE_SET:
+      _OmfElemLineSetDestroyContent(    (OmfElemLineSet *)     elem);
       break;
 
-   case omfElementTypePOINT_SET:
-      _OmfElementPointSetDestroyContent(   (OmfElementPointSet *)    omfElement);
+   case omfElemTypePNT_SET:
+      _OmfElemPntSetDestroyContent(   (OmfElemPntSet *)    elem);
       break;
 
-   case omfElementTypeSURFACE_GRID:
-      _OmfElementSurfaceGridDestroyContent((OmfElementSurfaceGrid *) omfElement);
+   case omfElemTypeSURF_GRID:
+      _OmfElemSurfGridDestroyContent((OmfElemSurfGrid *) elem);
       break;
 
-   case omfElementTypeSURFACE_TRI:
-      _OmfElementSurfaceTriDestroyContent( (OmfElementSurfaceTri *)  omfElement);
+   case omfElemTypeSURF_TRI:
+      _OmfElemSurfTriDestroyContent( (OmfElemSurfTri *)  elem);
       break;
 
-   case omfElementTypeVOLUME:
-      _OmfElementVolumeDestroyContent(     (OmfElementVolume *)      omfElement);
+   case omfElemTypeVOL:
+      _OmfElemVolDestroyContent(     (OmfElemVol *)      elem);
       break;
 
-   case omfElementTypeNONE:
+   case omfElemTypeNONE:
    default:
       break;
    }
 
-   // TODO omfDataListDestroy(omfElement->dataList);
-   omfCharDestroy(omfElement->dateCreated);
-   omfCharDestroy(omfElement->dateModified);
-   omfCharDestroy(omfElement->description);
-   omfCharDestroy(omfElement->name);
+   // TODO omfDataListDestroy(elem->dataList);
+   omfCharDestroy(elem->dateCreated);
+   omfCharDestroy(elem->dateModified);
+   omfCharDestroy(elem->description);
+   omfCharDestroy(elem->name);
 
    return;
 }
 
-/******************************************************************************
-func: omfElementGetColor
-******************************************************************************/
-OmfColor omfElementGetColor(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetColor
+**************************************************************************************************/
+OmfColor omfElemGetColor(OmfElem const * const elem)
 {
    OmfColor color;
 
@@ -146,310 +146,199 @@ OmfColor omfElementGetColor(OmfElement const * const omfElement)
 
    returnIf(
          !omfIsStarted() ||
-         !omfElement,
+         !elem,
       color);
 
-   return omfElement->color;
+   return elem->color;
 }
 
-/******************************************************************************
-func: omfElementGetData
-******************************************************************************/
-OmfDataList *omfElementGetData(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetData
+**************************************************************************************************/
+OmfDataList *omfElemGetData(OmfElem const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   return omfElement->dataList;
+   return elem->dataList;
 }
 
-/******************************************************************************
-func: omfElementGetDateCreated
-******************************************************************************/
-OmfChar *omfElementGetDateCreated(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetDescription
+**************************************************************************************************/
+OmfChar *omfElemGetDescription(OmfElem const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   return omfElement->dateCreated;
+   return elem->description;
 }
 
-/******************************************************************************
-func: omfElementGetDateModified
-******************************************************************************/
-OmfChar *omfElementGetDateModified(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetName
+**************************************************************************************************/
+OmfChar *omfElemGetName(OmfElem const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   return omfElement->dateModified;
+   return elem->name;
 }
 
-/******************************************************************************
-func: omfElementGetDescription
-******************************************************************************/
-OmfChar *omfElementGetDescription(OmfElement const * const omfElement)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   return omfElement->description;
-}
-
-/******************************************************************************
-func: omfElementGetId
-******************************************************************************/
-OmfId omfElementGetId(OmfElement const * const omfElement)
-{
-   OmfId id;
-
-   memClearType(OmfId, &id);
-
-   returnIf(
-         !omfIsStarted() ||
-         !omfElement,
-      id);
-
-   return omfElement->id;
-}
-
-/******************************************************************************
-func: omfElementGetName
-******************************************************************************/
-OmfChar *omfElementGetName(OmfElement const * const omfElement)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   return omfElement->name;
-}
-
-/******************************************************************************
-func: omfElementGetType
-******************************************************************************/
-OmfElementType omfElementGetType(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetType
+**************************************************************************************************/
+OmfElemType omfElemGetType(OmfElem const * const elem)
 {
    returnIf(
          !omfIsStarted() ||
-         !omfElement,
+         !elem,
       omfArrayTypeNONE);
 
-   return omfElement->type;
+   return elem->typeElem;
 }
 
-/******************************************************************************
-func: omfElementGetSubType
-******************************************************************************/
-OmfElementSubType omfElementGetSubType(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemGetTypeSub
+**************************************************************************************************/
+OmfElemSubType omfElemGetTypeSub(OmfElem const * const elem)
 {
    returnIf(
          !omfIsStarted() ||
-         !omfElement,
-      omfElementSubTypeNONE);
+         !elem,
+      omfElemSubTypeNONE);
 
-   return omfElement->subType;
+   return elem->typeElemSub;
 }
 
-/******************************************************************************
-func: omfElementIsDataListSet
-******************************************************************************/
-OmfBool omfElementIsDataListSet(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemIsDataListSet
+**************************************************************************************************/
+OmfBool omfElemIsDataListSet(OmfElem const * const elem)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   return omfElement->isDataListSet;
+   return elem->isDataListSet;
 }
 
-/******************************************************************************
-func: omfElementIsDateCreatedSet
-******************************************************************************/
-OmfBool omfElementIsDateCreatedSet(OmfElement const * const omfElement)
+/**************************************************************************************************
+func: omfElemSetColor
+**************************************************************************************************/
+OmfBool omfElemSetColor(OmfElem * const elem, OmfColor const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   return omfElement->isDateCreatedSet;
-}
-
-/******************************************************************************
-func: omfElementIsDateModifiedSet
-******************************************************************************/
-OmfBool omfElementIsDateModifiedSet(OmfElement const * const omfElement)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   return omfElement->isDateModifiedSet;
-}
-
-/******************************************************************************
-func: omfElementSetColor
-******************************************************************************/
-OmfBool omfElementSetColor(OmfElement * const omfElement, OmfColor const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   omfElement->color = value;
+   elem->color = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSetData
-******************************************************************************/
-OmfBool omfElementSetDataList(OmfElement * const omfElement, OmfDataList * const value)
+/**************************************************************************************************
+func: omfElemSetData
+**************************************************************************************************/
+OmfBool omfElemSetDataList(OmfElem * const elem, OmfDataList * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   omfElement->dataList      =  value;
-   omfElement->isDataListSet = (value != NULL);
+   elem->dataList      =  value;
+   elem->isDataListSet = (value != NULL);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSetDateCreated
-******************************************************************************/
-OmfBool omfElementSetDateCreated(OmfElement * const omfElement, OmfChar * const value)
+/**************************************************************************************************
+func: omfElemSetDescription
+**************************************************************************************************/
+OmfBool omfElemSetDescription(OmfElem * const elem, OmfChar * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   omfCharDestroy(omfElement->dateCreated);
-   omfElement->dateCreated      = omfCharClone(value);
-   omfElement->isDateCreatedSet = (value != NULL);
+   omfCharDestroy(elem->description);
+   elem->description = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSetDateModified
-******************************************************************************/
-OmfBool omfElementSetDateModified(OmfElement * const omfElement, OmfChar * const value)
+/**************************************************************************************************
+func: omfElemSetName
+**************************************************************************************************/
+OmfBool omfElemSetName(OmfElem * const elem, OmfChar * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   omfCharDestroy(omfElement->dateModified);
-   omfElement->dateModified      = omfCharClone(value);
-   omfElement->isDateModifiedSet = (value != NULL);
+   omfCharDestroy(elem->name);
+   elem->name = omfCharClone(value);
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementSetDescription
-******************************************************************************/
-OmfBool omfElementSetDescription(OmfElement * const omfElement, OmfChar * const value)
+/**************************************************************************************************
+func: omfElemSetTypeSub
+**************************************************************************************************/
+OmfBool omfElemSetTypeSub(OmfElem * const elem, OmfElemSubType const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElement);
+      !elem);
 
-   omfCharDestroy(omfElement->description);
-   omfElement->description = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfElementSetId
-******************************************************************************/
-OmfBool omfElementSetId(OmfElement * const omfElement, OmfId const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   omfElement->id = value;
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfElementSetName
-******************************************************************************/
-OmfBool omfElementSetName(OmfElement * const omfElement, OmfChar * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   omfCharDestroy(omfElement->name);
-   omfElement->name = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfElementSetSubType
-******************************************************************************/
-OmfBool omfElementSetSubType(OmfElement * const omfElement, OmfElementSubType const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfElement);
-
-   switch (omfElement->type)
+   switch (elem->typeElem)
    {
-   case omfElementTypeLINE_SET:
+   case omfElemTypeLINE_SET:
       switch (value)
       {
-      case omfElementSubTypeLINE_SET_LINE_DEFAULT:
-      case omfElementSubTypeLINE_SET_BOREHOLE:
-         omfElement->subType = value;
+      case omfElemSubTypeLINE_SET_LINE_DEFAULT:
+      case omfElemSubTypeLINE_SET_BOREHOLE:
+         elem->typeElemSub = value;
          break;
 
-      case omfElementSubTypeNONE:
-      case omfElementSubTypePOINT_SET_POINT_DEFAULT:
-      case omfElementSubTypePOINT_SET_COLLAR:
-      case omfElementSubTypePOINT_SET_BLASTHOLE:
-      case omfElementSubTypeSURFACE_GRID_SURFACE_DEFAULT:
-      case omfElementSubTypeSURFACE_TRI_SURFACE_DEFAULT:
-      case omfElementSubTypeVOLUME_VOLUME_DEFAULT:
+      case omfElemSubTypeNONE:
+      case omfElemSubTypePNT_SET_POINT_DEFAULT:
+      case omfElemSubTypePNT_SET_COLLAR:
+      case omfElemSubTypePNT_SET_BLASTHOLE:
+      case omfElemSubTypeSURF_GRID_SURFACE_DEFAULT:
+      case omfElemSubTypeSURF_TRI_SURFACE_DEFAULT:
+      case omfElemSubTypeVOL_VOLUME_DEFAULT:
       default:
          return omfFALSE;
       }
       break;
 
-   case omfElementTypePOINT_SET:
+   case omfElemTypePNT_SET:
       switch (value)
       {
-      case omfElementSubTypePOINT_SET_POINT_DEFAULT:
-      case omfElementSubTypePOINT_SET_BLASTHOLE:
-      case omfElementSubTypePOINT_SET_COLLAR:
-         omfElement->subType = value;
+      case omfElemSubTypePNT_SET_POINT_DEFAULT:
+      case omfElemSubTypePNT_SET_BLASTHOLE:
+      case omfElemSubTypePNT_SET_COLLAR:
+         elem->typeElemSub = value;
          break;
 
-      case omfElementSubTypeNONE:
-      case omfElementSubTypeLINE_SET_LINE_DEFAULT:
-      case omfElementSubTypeLINE_SET_BOREHOLE:
-      case omfElementSubTypeSURFACE_GRID_SURFACE_DEFAULT:
-      case omfElementSubTypeSURFACE_TRI_SURFACE_DEFAULT:
-      case omfElementSubTypeVOLUME_VOLUME_DEFAULT:
+      case omfElemSubTypeNONE:
+      case omfElemSubTypeLINE_SET_LINE_DEFAULT:
+      case omfElemSubTypeLINE_SET_BOREHOLE:
+      case omfElemSubTypeSURF_GRID_SURFACE_DEFAULT:
+      case omfElemSubTypeSURF_TRI_SURFACE_DEFAULT:
+      case omfElemSubTypeVOL_VOLUME_DEFAULT:
       default:
          return omfFALSE;
       }
 
-   case omfElementTypeNONE:
-   case omfElementTypeSURFACE_GRID:
-   case omfElementTypeSURFACE_TRI:
-   case omfElementTypeVOLUME:
+   case omfElemTypeNONE:
+   case omfElemTypeSURF_GRID:
+   case omfElemTypeSURF_TRI:
+   case omfElemTypeVOL:
    default:
       // only one option, should already be set.
       return omfFALSE;

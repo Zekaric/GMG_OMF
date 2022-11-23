@@ -1,103 +1,104 @@
-/******************************************************************************
-file:       OmfElementLineSet
+/**************************************************************************************************
+file:       OmfElemLineSet
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
 Line set element 
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfElementLineSetCreate
-******************************************************************************/
-OmfElementLineSet *_OmfElementLineSetCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfElemLineSetCreate
+**************************************************************************************************/
+OmfElemLineSet *_OmfElemLineSetCreate(void)
 {
-   OmfElementLineSet *omfElementLineSet;
+   OmfElemLineSet *elem;
 
-   omfElementLineSet = memCreateType(OmfElementLineSet);
-   returnNullIf(!omfElementLineSet);
+   elem = memCreateType(OmfElemLineSet);
+   returnNullIf(!elem);
 
-   if (!_OmfElementLineSetCreateContent(omfElementLineSet))
+   if (!_OmfElemLineSetCreateContent(elem))
    {
-      memDestroy(omfElementLineSet);
+      memDestroy(elem);
       return NULL;
    }
 
-   return omfElementLineSet;
+   return elem;
 }
 
-/******************************************************************************
-func: _OmfElementLineSetCreateContent
-******************************************************************************/
-OmfBool _OmfElementLineSetCreateContent(OmfElementLineSet * const omfElementLineSet)
+/**************************************************************************************************
+func: _OmfElemLineSetCreateContent
+**************************************************************************************************/
+OmfBool _OmfElemLineSetCreateContent(OmfElemLineSet * const elem)
 {
-   memClearType(OmfElementLineSet, omfElementLineSet);
-   omfElementLineSet->type    = omfElementTypeLINE_SET;
-   omfElementLineSet->subType = omfElementSubTypeLINE_SET_LINE_DEFAULT;
+   memClearType(OmfElemLineSet, elem);
+   elem->typeElem    = omfElemTypeLINE_SET;
+   elem->typeElemSub = omfElemSubTypeLINE_SET_LINE_DEFAULT;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfElementLineSetDestroyContent
-******************************************************************************/
-void _OmfElementLineSetDestroyContent(OmfElementLineSet * const omfElementLineSet)
+/**************************************************************************************************
+func: _OmfElemLineSetDestroyContent
+**************************************************************************************************/
+void _OmfElemLineSetDestroyContent(OmfElemLineSet * const elem)
 {
-   returnVoidIf(!omfElementLineSet);
+   returnVoidIf(!elem);
 
-   omfGeometryDestroy((OmfGeometry *) omfElementLineSet->geometry);
+   omfObjDestroyObj(elem->geometry);
 
    return;
 }
 
-/******************************************************************************
-func: omfElementLineSetGetGeometry
-******************************************************************************/
-OmfGeometry *omfElementLineSetGetGeometry(OmfElementLineSet const * const omfElementLineSet)
+/**************************************************************************************************
+func: omfElemLineSetGetGeometry
+**************************************************************************************************/
+OmfGeom *omfElemLineSetGetGeometry(OmfElemLineSet const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementLineSet);
+      !elem);
 
-   return (OmfGeometry *) omfElementLineSet->geometry;
+   return (OmfGeom *) elem->geometry;
 }
 
-/******************************************************************************
-func: omfElementLineSetSetGeometry
-******************************************************************************/
-OmfBool omfElementLineSetSetGeometry(OmfElementLineSet * const omfElementLineSet, OmfGeometryLineSet * const value)
+/**************************************************************************************************
+func: omfElemLineSetSetGeometry
+**************************************************************************************************/
+OmfBool omfElemLineSetSetGeometry(OmfElemLineSet * const elem, 
+   OmfGeomLineSet * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementLineSet);
+      !elem);
 
-   omfElementLineSet->geometry = value;
+   elem->geometry = value;
 
    return omfTRUE;
 }

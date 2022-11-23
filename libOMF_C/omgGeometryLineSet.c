@@ -1,131 +1,129 @@
-/******************************************************************************
-file:       OmfGeometryLineSet
+/**************************************************************************************************
+file:       OmfGeomLineSet
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
 Geometry line set routines
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfGeometryLineSetCreate
-******************************************************************************/
-OmfGeometryLineSet *_OmfGeometryLineSetCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomLineSetCreate
+**************************************************************************************************/
+OmfGeomLineSet *_OmfGeomLineSetCreate(void)
 {
-   OmfGeometryLineSet *omfGeometryLineSet;
+   OmfGeomLineSet *geom;
 
-   omfGeometryLineSet = memCreateType(OmfGeometryLineSet);
-   returnNullIf(!omfGeometryLineSet);
+   geom = memCreateType(OmfGeomLineSet);
+   returnNullIf(!geom);
 
-   if (!_OmfGeometryLineSetCreateContent(omfGeometryLineSet))
+   if (!_OmfGeomLineSetCreateContent(geom))
    {
-      omfGeometryDestroy((OmfGeometry *) omfGeometryLineSet);
+      omfObjDestroy((OmfObj *) geom);
       return NULL;
    }
 
-   return omfGeometryLineSet;
+   return geom;
 }
 
-/******************************************************************************
-func: _OmfGeometryLineSetCreateContent
-******************************************************************************/
-OmfBool _OmfGeometryLineSetCreateContent(OmfGeometryLineSet * const omfGeometryLineSet)
+/**************************************************************************************************
+func: _OmfGeomLineSetCreateContent
+**************************************************************************************************/
+OmfBool _OmfGeomLineSetCreateContent(OmfGeomLineSet * const geom)
 {
-   memClearType(OmfGeometryLineSet, omfGeometryLineSet);
-   omfGeometryLineSet->type = omfElementTypeLINE_SET;
+   memClearType(OmfGeomLineSet, geom);
+   geom->typeElem = omfElemTypeLINE_SET;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfGeometryLineSetDestroyContent
-******************************************************************************/
-void _OmfGeometryLineSetDestroyContent(OmfGeometryLineSet * const omfGeometryLineSet)
+/**************************************************************************************************
+func: _OmfGeomLineSetDestroyContent
+**************************************************************************************************/
+void _OmfGeomLineSetDestroyContent(OmfGeomLineSet * const geom)
 {
-   returnVoidIf(!omfGeometryLineSet);
+   returnVoidIf(!geom);
 
-   omfArrayDestroy(omfGeometryLineSet->coord);
-   omfArrayDestroy(omfGeometryLineSet->segment);
+   omfArrayDestroy(geom->coord);
+   omfArrayDestroy(geom->segment);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometryLineSetGetArrayCoord
-******************************************************************************/
-OmfArray *omfGeometryLineSetGetArrayCoord(OmfGeometryLineSet const * const omfGeometryLineSet)
+/**************************************************************************************************
+func: omfGeomLineSetGetArrayCoord
+**************************************************************************************************/
+OmfArray *omfGeomLineSetGetArrayCoord(OmfGeomLineSet const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryLineSet);
+      !geom);
 
-   return omfGeometryLineSet->coord;
+   return geom->coord;
 }
 
-/******************************************************************************
-func: omfGeometryLineSetGetArraySegment
-******************************************************************************/
-OmfArray *omfGeometryLineSetGetArraySegment(OmfGeometryLineSet const * const omfGeometryLineSet)
+/**************************************************************************************************
+func: omfGeomLineSetGetArraySegment
+**************************************************************************************************/
+OmfArray *omfGeomLineSetGetArraySegment(OmfGeomLineSet const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryLineSet);
+      !geom);
 
-   return omfGeometryLineSet->segment;
+   return geom->segment;
 }
 
-/******************************************************************************
-func: omfGeometryLineSetSetArrayCoord
-******************************************************************************/
-OmfBool omfGeometryLineSetSetArrayCoord(OmfGeometryLineSet * const omfGeometryLineSet, 
-   OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomLineSetSetArrayCoord
+**************************************************************************************************/
+OmfBool omfGeomLineSetSetArrayCoord(OmfGeomLineSet * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryLineSet);
+      !geom);
 
-   omfGeometryLineSet->coord = value;
+   geom->coord = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryLineSetSetArraySegment
-******************************************************************************/
-OmfBool omfGeometryLineSetSetArraySegment(OmfGeometryLineSet * const omfGeometryLineSet, 
-   OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomLineSetSetArraySegment
+**************************************************************************************************/
+OmfBool omfGeomLineSetSetArraySegment(OmfGeomLineSet * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryLineSet);
+      !geom);
 
-   omfGeometryLineSet->segment = value;
+   geom->segment = value;
 
    return omfTRUE;
 }

@@ -16,6 +16,9 @@
     <Filter Include="miniz">
       <UniqueIdentifier>{d7477747-249c-434b-a952-3f444825978f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{9a3a34c1-59cc-4a09-8b8f-38582d2189bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -29,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="miniz.h">
       <Filter>miniz</Filter>
+    </ClInclude>
+    <ClInclude Include="libJSON.h">
+      <Filter>json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,15 @@
     </ClCompile>
     <ClCompile Include="omfGeometryVolume.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfData.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="omfObject.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libJSON.c">
+      <Filter>json</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

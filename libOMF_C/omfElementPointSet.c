@@ -1,142 +1,143 @@
-/******************************************************************************
-file:       OmfElementPointSet
+/**************************************************************************************************
+file:       OmfElemPntSet
 author:     Robbert de Groot
-company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
+Pnt Set routines
+**************************************************************************************************/
 
-******************************************************************************/
-
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfElementPointSetCreate
-******************************************************************************/
-OmfElementPointSet *_OmfElementPointSetCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfElemPntSetCreate
+**************************************************************************************************/
+OmfElemPntSet *_OmfElemPntSetCreate(void)
 {
-   OmfElementPointSet *omfElementPointSet;
+   OmfElemPntSet *elem;
 
-   omfElementPointSet = memCreateType(OmfElementPointSet);
-   returnNullIf(!omfElementPointSet);
+   elem = memCreateType(OmfElemPntSet);
+   returnNullIf(!elem);
 
-   if (!_OmfElementPointSetCreateContent(omfElementPointSet))
+   if (!_OmfElemPntSetCreateContent(elem))
    {
-      memDestroy(omfElementPointSet);
+      memDestroy(elem);
       return NULL;
    }
 
-   return omfElementPointSet;
+   return elem;
 }
 
-/******************************************************************************
-func: _OmfElementPointSetCreateContent
-******************************************************************************/
-OmfBool _OmfElementPointSetCreateContent(OmfElementPointSet * const omfElementPointSet)
+/**************************************************************************************************
+func: _OmfElemPntSetCreateContent
+**************************************************************************************************/
+OmfBool _OmfElemPntSetCreateContent(OmfElemPntSet * const elem)
 {
-   memClearType(OmfElementPointSet, omfElementPointSet);
-   omfElementPointSet->type    = omfElementTypePOINT_SET;
-   omfElementPointSet->subType = omfElementSubTypePOINT_SET_POINT_DEFAULT;
+   memClearType(OmfElemPntSet, elem);
+   elem->typeElem    = omfElemTypePNT_SET;
+   elem->typeElemSub = omfElemSubTypePNT_SET_POINT_DEFAULT;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfElementPointSetDestroyContent
-******************************************************************************/
-void _OmfElementPointSetDestroyContent(OmfElementPointSet * const omfElementPointSet)
+/**************************************************************************************************
+func: _OmfElemPntSetDestroyContent
+**************************************************************************************************/
+void _OmfElemPntSetDestroyContent(OmfElemPntSet * const elem)
 {
-   returnVoidIf(!omfElementPointSet);
+   returnVoidIf(!elem);
 
-   omfGeometryDestroy((OmfGeometry *) omfElementPointSet->geometry);
-   //omfTextureListDestroy(     omfElementPointSet->textureList);
+   omfObjDestroy((OmfObj *) elem->geometry);
+   //omfTextureListDestroy(     elem->textureList);
 }
 
-/******************************************************************************
-func: omfElementPointSetGetGeometry
-******************************************************************************/
-OmfGeometry *omfElementPointSetGetGeometry(OmfElementPointSet const * const omfElementPointSet)
+/**************************************************************************************************
+func: omfElemPntSetGetGeometry
+**************************************************************************************************/
+OmfGeom *omfElemPntSetGetGeometry(OmfElemPntSet const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementPointSet);
+      !elem);
 
-   return (OmfGeometry *) omfElementPointSet->geometry;
+   return (OmfGeom *) elem->geometry;
 }
 
-/******************************************************************************
-func: omfElementPointSetGetTexture
-******************************************************************************/
-OmfTextureList *omfElementPointSetGetTextureList(OmfElementPointSet const * const omfElementPointSet)
+/**************************************************************************************************
+func: omfElemPntSetGetTexture
+**************************************************************************************************/
+OmfTextureList *omfElemPntSetGetTextureList(OmfElemPntSet const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementPointSet);
+      !elem);
 
-   return omfElementPointSet->textureList;
+   return elem->textureList;
 }
 
-/******************************************************************************
-func: omfElementPointSetIsTextureListSet
-******************************************************************************/
-OmfBool omfElementPointSetIsTextureListSet(OmfElementPointSet const * const omfElementPointSet)
+/**************************************************************************************************
+func: omfElemPntSetIsTextureListSet
+**************************************************************************************************/
+OmfBool omfElemPntSetIsTextureListSet(OmfElemPntSet const * const elem)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementPointSet);
+      !elem);
 
-   return omfElementPointSet->isTextureListSet;
+   return elem->isTextureListSet;
 }
 
-/******************************************************************************
-func: omfElementPointSetSetGeometry
-******************************************************************************/
-OmfBool omfElementPointSetSetGeometry(OmfElementPointSet * const omfElementPointSet, OmfGeometryPointSet * const value)
+/**************************************************************************************************
+func: omfElemPntSetSetGeometry
+**************************************************************************************************/
+OmfBool omfElemPntSetSetGeometry(OmfElemPntSet * const elem, 
+   OmfGeomPntSet * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementPointSet);
+      !elem);
 
-   omfElementPointSet->geometry = value;
+   elem->geometry = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfElementPointSetSetTexture
-******************************************************************************/
-OmfBool omfElementPointSetSetTextureList(OmfElementPointSet * const omfElementPointSet, OmfTextureList * const value)
+/**************************************************************************************************
+func: omfElemPntSetSetTexture
+**************************************************************************************************/
+OmfBool omfElemPntSetSetTextureList(OmfElemPntSet * const elem, 
+   OmfTextureList * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementPointSet);
+      !elem);
 
-   omfElementPointSet->textureList      =  value;
-   omfElementPointSet->isTextureListSet = (value != NULL);
+   elem->textureList      =  value;
+   elem->isTextureListSet = (value != NULL);
 
    return omfTRUE;
 }

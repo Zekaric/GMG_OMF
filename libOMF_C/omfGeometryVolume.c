@@ -1,122 +1,122 @@
-/******************************************************************************
-file:       OmfGeometryVolume
+/**************************************************************************************************
+file:       OmfGeomVol
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Geometry Surface Grid routines
-******************************************************************************/
+Geometry Surf Grid routines
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfGeometryVolumeCreate
-******************************************************************************/
-OmfGeometryVolume *_OmfGeometryVolumeCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomVolCreate
+**************************************************************************************************/
+OmfGeomVol *_OmfGeomVolCreate(void)
 {
-   OmfGeometryVolume *omfGeometryVolume;
+   OmfGeomVol *geom;
 
-   omfGeometryVolume = memCreateType(OmfGeometryVolume);
-   returnNullIf(!omfGeometryVolume);
+   geom = memCreateType(OmfGeomVol);
+   returnNullIf(!geom);
 
-   if (!_OmfGeometryVolumeCreateContent(omfGeometryVolume))
+   if (!_OmfGeomVolCreateContent(geom))
    {
-      omfGeometryDestroy((OmfGeometry *) omfGeometryVolume);
+      omfObjDestroy((OmfObj *) geom);
       return NULL;
    }
 
-   return omfGeometryVolume;
+   return geom;
 }
 
-/******************************************************************************
-func: _OmfGeometryVolumeCreateContent
-******************************************************************************/
-OmfBool _OmfGeometryVolumeCreateContent(OmfGeometryVolume * const omfGeometryVolume)
+/**************************************************************************************************
+func: _OmfGeomVolCreateContent
+**************************************************************************************************/
+OmfBool _OmfGeomVolCreateContent(OmfGeomVol * const geom)
 {
-   memClearType(OmfGeometryVolume, omfGeometryVolume);
-   omfGeometryVolume->type = omfElementTypeVOLUME;
+   memClearType(OmfGeomVol, geom);
+   geom->typeElem = omfElemTypeVOL;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfGeometryVolumeDestroyContent
-******************************************************************************/
-void _OmfGeometryVolumeDestroyContent(OmfGeometryVolume * const omfGeometryVolume)
+/**************************************************************************************************
+func: _OmfGeomVolDestroyContent
+**************************************************************************************************/
+void _OmfGeomVolDestroyContent(OmfGeomVol * const geom)
 {
-   returnVoidIf(!omfGeometryVolume);
+   returnVoidIf(!geom);
 
-   omfArrayDestroy(omfGeometryVolume->tensorU);
-   omfArrayDestroy(omfGeometryVolume->tensorV);
-   omfArrayDestroy(omfGeometryVolume->tensorW);
+   omfArrayDestroy(geom->tensorU);
+   omfArrayDestroy(geom->tensorV);
+   omfArrayDestroy(geom->tensorW);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetArrayTensorU
-******************************************************************************/
-OmfArray *omfGeometryVolumeGetArrayTensorU(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetArrayTensorU
+**************************************************************************************************/
+OmfArray *omfGeomVolGetArrayTensorU(OmfGeomVol const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   return omfGeometryVolume->tensorU;
+   return geom->tensorU;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetArrayTensorV
-******************************************************************************/
-OmfArray *omfGeometryVolumeGetArrayTensorV(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetArrayTensorV
+**************************************************************************************************/
+OmfArray *omfGeomVolGetArrayTensorV(OmfGeomVol const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   return omfGeometryVolume->tensorV;
+   return geom->tensorV;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetArrayTensorW
-******************************************************************************/
-OmfArray *omfGeometryVolumeGetArrayTensorW(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetArrayTensorW
+**************************************************************************************************/
+OmfArray *omfGeomVolGetArrayTensorW(OmfGeomVol const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   return omfGeometryVolume->tensorW;
+   return geom->tensorW;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetAxisU
-******************************************************************************/
-OmfVector omfGeometryVolumeGetAxisU(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetAxisU
+**************************************************************************************************/
+OmfVector omfGeomVolGetAxisU(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
@@ -124,16 +124,16 @@ OmfVector omfGeometryVolumeGetAxisU(OmfGeometryVolume const * const omfGeometryV
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometryVolume,
+         !geom,
       vec);
 
-   return omfGeometryVolume->axisU;
+   return geom->axisU;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetAxisV
-******************************************************************************/
-OmfVector omfGeometryVolumeGetAxisV(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetAxisV
+**************************************************************************************************/
+OmfVector omfGeomVolGetAxisV(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
@@ -141,16 +141,16 @@ OmfVector omfGeometryVolumeGetAxisV(OmfGeometryVolume const * const omfGeometryV
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometryVolume,
+         !geom,
       vec);
 
-   return omfGeometryVolume->axisV;
+   return geom->axisV;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeGetAxisW
-******************************************************************************/
-OmfVector omfGeometryVolumeGetAxisW(OmfGeometryVolume const * const omfGeometryVolume)
+/**************************************************************************************************
+func: omfGeomVolGetAxisW
+**************************************************************************************************/
+OmfVector omfGeomVolGetAxisW(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
@@ -158,92 +158,92 @@ OmfVector omfGeometryVolumeGetAxisW(OmfGeometryVolume const * const omfGeometryV
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometryVolume,
+         !geom,
       vec);
 
-   return omfGeometryVolume->axisW;
+   return geom->axisW;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetArrayTensorU
-******************************************************************************/
-OmfBool omfGeometryVolumeSetArrayTensorU(OmfGeometryVolume * const omfGeometryVolume, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomVolSetArrayTensorU
+**************************************************************************************************/
+OmfBool omfGeomVolSetArrayTensorU(OmfGeomVol * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->tensorU = value;
+   geom->tensorU = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetArrayTensorV
-******************************************************************************/
-OmfBool omfGeometryVolumeSetArrayTensorV(OmfGeometryVolume * const omfGeometryVolume, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomVolSetArrayTensorV
+**************************************************************************************************/
+OmfBool omfGeomVolSetArrayTensorV(OmfGeomVol * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->tensorV = value;
+   geom->tensorV = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetArrayTensorW
-******************************************************************************/
-OmfBool omfGeometryVolumeSetArrayTensorW(OmfGeometryVolume * const omfGeometryVolume, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomVolSetArrayTensorW
+**************************************************************************************************/
+OmfBool omfGeomVolSetArrayTensorW(OmfGeomVol * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->tensorW = value;
+   geom->tensorW = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetAxisU
-******************************************************************************/
-OmfBool omfGeometryVolumeSetAxisU(OmfGeometryVolume * const omfGeometryVolume, OmfVector const value)
+/**************************************************************************************************
+func: omfGeomVolSetAxisU
+**************************************************************************************************/
+OmfBool omfGeomVolSetAxisU(OmfGeomVol * const geom, OmfVector const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->axisU = value;
+   geom->axisU = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetAxisV
-******************************************************************************/
-OmfBool omfGeometryVolumeSetAxisV(OmfGeometryVolume * const omfGeometryVolume, OmfVector const value)
+/**************************************************************************************************
+func: omfGeomVolSetAxisV
+**************************************************************************************************/
+OmfBool omfGeomVolSetAxisV(OmfGeomVol * const geom, OmfVector const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->axisV = value;
+   geom->axisV = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometryVolumeSetAxisW
-******************************************************************************/
-OmfBool omfGeometryVolumeSetAxisW(OmfGeometryVolume * const omfGeometryVolume, OmfVector const value)
+/**************************************************************************************************
+func: omfGeomVolSetAxisW
+**************************************************************************************************/
+OmfBool omfGeomVolSetAxisW(OmfGeomVol * const geom, OmfVector const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryVolume);
+      !geom);
 
-   omfGeometryVolume->axisW = value;
+   geom->axisW = value;
 
    return omfTRUE;
 }

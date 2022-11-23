@@ -675,7 +675,7 @@ enum
 /* High level compression functions: */
 /* tdefl_compress_mem_to_heap() compresses a block in memory to a heap block allocated via malloc(). */
 /* On entry: */
-/*  pSrc_buf, src_buf_len: Pointer and size of source block to compress. */
+/*  pSrc_buf, src_buf_len: Pnter and size of source block to compress. */
 /*  flags: The max match finder probes (default is 128) logically OR'd against the above flags. Higher probes are slower but improve compression. */
 /* On return: */
 /*  Function returns a pointer to the compressed data, or NULL on failure. */
@@ -848,7 +848,7 @@ enum
 /* High level decompression functions: */
 /* tinfl_decompress_mem_to_heap() decompresses a block in memory to a heap block allocated via malloc(). */
 /* On entry: */
-/*  pSrc_buf, src_buf_len: Pointer and size of the Deflate or zlib source data to decompress. */
+/*  pSrc_buf, src_buf_len: Pnter and size of the Deflate or zlib source data to decompress. */
 /* On return: */
 /*  Function returns a pointer to the decompressed data, or NULL on failure. */
 /*  *pOut_len will be set to the decompressed data's size, which could be larger than src_buf_len on uncompressible data. */

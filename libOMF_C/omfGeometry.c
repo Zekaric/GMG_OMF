@@ -1,187 +1,145 @@
-/******************************************************************************
-file:       OmfGeometry
+/**************************************************************************************************
+file:       OmfGeom
 author:     Robbert de Groot
-company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
+Geometry routines
+**************************************************************************************************/
 
-******************************************************************************/
-
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: omfGeometryCreate
-******************************************************************************/
-OmfGeometry *omfGeometryCreate(OmfElementType const type)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomCreate
+**************************************************************************************************/
+OmfGeom *_OmfGeomCreate(OmfElemType const type)
 {
-   OmfGeometry *omfGeometry;
+   OmfGeom *geom;
 
    returnNullIf(
       !omfIsStarted() ||
-      type == omfElementTypeNONE);
+      type == omfElemTypeNONE);
 
-   omfGeometry = NULL;
+   geom = NULL;
 
    switch (type)
    {
    // v1
-   case omfElementTypeLINE_SET:
-      omfGeometry = (OmfGeometry *) _OmfGeometryLineSetCreate();
+   case omfElemTypeLINE_SET:
+      geom = (OmfGeom *) _OmfGeomLineSetCreate();
       break;
 
-   case omfElementTypePOINT_SET:
-      omfGeometry = (OmfGeometry *) _OmfGeometryPointSetCreate();
+   case omfElemTypePNT_SET:
+      geom = (OmfGeom *) _OmfGeomPntSetCreate();
       break;
 
-   case omfElementTypeSURFACE_GRID:
-      omfGeometry = (OmfGeometry *) _OmfGeometrySurfaceGridCreate();
+   case omfElemTypeSURF_GRID:
+      geom = (OmfGeom *) _OmfGeomSurfGridCreate();
       break;
 
-   case omfElementTypeSURFACE_TRI:
-      omfGeometry = (OmfGeometry *) _OmfGeometrySurfaceTriCreate();
+   case omfElemTypeSURF_TRI:
+      geom = (OmfGeom *) _OmfGeomSurfTriCreate();
       break;
 
-   case omfElementTypeVOLUME:
-      omfGeometry = (OmfGeometry *) _OmfGeometryVolumeCreate();
+   case omfElemTypeVOL:
+      geom = (OmfGeom *) _OmfGeomVolCreate();
       break;
 
-   case omfElementTypeNONE:
+   case omfElemTypeNONE:
    default:
       break;
    }
 
-   return omfGeometry;
+   return geom;
 }
 
-/******************************************************************************
-func: omfGeometryDestroy
-******************************************************************************/
-void omfGeometryDestroy(OmfGeometry * const omfGeometry)
+/**************************************************************************************************
+func: _OmfGeomDestroy
+**************************************************************************************************/
+void _OmfGeomDestroy(OmfGeom * const geom)
 {
    returnVoidIf(
       !omfIsStarted() ||
-      !omfGeometry);
+      !geom);
 
-   _OmfGeometryDestroyContent(omfGeometry);
+   _OmfGeomDestroyContent(geom);
    
-   memDestroy(omfGeometry);
+   memDestroy(geom);
 
    return;
 }
 
-/******************************************************************************
-func: _OmfGeometryDestroyContent
-******************************************************************************/
-void _OmfGeometryDestroyContent(OmfGeometry * const omfGeometry)
+/**************************************************************************************************
+func: _OmfGeomDestroyContent
+**************************************************************************************************/
+void _OmfGeomDestroyContent(OmfGeom * const geom)
 {
    returnVoidIf(
       !omfIsStarted() ||
-      !omfGeometry);
+      !geom);
 
-   switch (omfGeometry->type)
+   switch (geom->typeElem)
    {
    // v1
-   case omfElementTypeLINE_SET:
-      _OmfGeometryLineSetDestroyContent(    (OmfGeometryLineSet *)     omfGeometry);
+   case omfElemTypeLINE_SET:
+      _OmfGeomLineSetDestroyContent(    (OmfGeomLineSet *)     geom);
       break;
 
-   case omfElementTypePOINT_SET:
-      _OmfGeometryPointSetDestroyContent(   (OmfGeometryPointSet *)    omfGeometry);
+   case omfElemTypePNT_SET:
+      _OmfGeomPntSetDestroyContent(   (OmfGeomPntSet *)    geom);
       break;
 
-   case omfElementTypeSURFACE_GRID:
-      _OmfGeometrySurfaceGridDestroyContent((OmfGeometrySurfaceGrid *) omfGeometry);
+   case omfElemTypeSURF_GRID:
+      _OmfGeomSurfGridDestroyContent((OmfGeomSurfGrid *) geom);
       break;
 
-   case omfElementTypeSURFACE_TRI:
-      _OmfGeometrySurfaceTriDestroyContent( (OmfGeometrySurfaceTri *)  omfGeometry);
+   case omfElemTypeSURF_TRI:
+      _OmfGeomSurfTriDestroyContent( (OmfGeomSurfTri *)  geom);
       break;
 
-   case omfElementTypeVOLUME:
-      _OmfGeometryVolumeDestroyContent(     (OmfGeometryVolume *)      omfGeometry);
+   case omfElemTypeVOL:
+      _OmfGeomVolDestroyContent(     (OmfGeomVol *)      geom);
       break;
 
-   case omfElementTypeNONE:
+   case omfElemTypeNONE:
    default:
       break;
    }
 
-   omfCharDestroy(omfGeometry->dateCreated);
-   omfCharDestroy(omfGeometry->dateModified);
+   omfCharDestroy(geom->dateCreated);
+   omfCharDestroy(geom->dateModified);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometryGetDateCreated
-******************************************************************************/
-OmfChar *omfGeometryGetDateCreated(OmfGeometry const * const omfGeometry)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   return omfGeometry->dateCreated;
-}
-
-/******************************************************************************
-func: omfGeometryGetDateModified
-******************************************************************************/
-OmfChar *omfGeometryGetDateModified(OmfGeometry const * const omfGeometry)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   return omfGeometry->dateModified;
-}
-
-/******************************************************************************
-func: omfGeometryGetId
-******************************************************************************/
-OmfId omfGeometryGetId(OmfGeometry const * const omfGeometry)
-{
-   OmfId id;
-
-   memClearType(OmfId, &id);
-
-   returnIf(
-         !omfIsStarted() ||
-         !omfGeometry,
-      id);
-
-   return omfGeometry->id;
-}
-
-/******************************************************************************
-func: omfGeometryGetOrigin
-******************************************************************************/
-OmfCoord omfGeometryGetOrigin(OmfGeometry const * const omfGeometry)
+/**************************************************************************************************
+func: omfGeomGetOrigin
+**************************************************************************************************/
+OmfCoord omfGeomGetOrigin(OmfGeom const * const geom)
 {
    OmfCoord coord;
 
@@ -189,106 +147,36 @@ OmfCoord omfGeometryGetOrigin(OmfGeometry const * const omfGeometry)
 
    returnIf(
          !omfIsStarted() ||
-         !omfGeometry,
+         !geom,
       coord);
 
-   return omfGeometry->origin;
+   return geom->origin;
 }
 
-/******************************************************************************
-func: omfGeometryGetType
-******************************************************************************/
-OmfElementType omfGeometryGetType(OmfGeometry const * const omfGeometry)
+/**************************************************************************************************
+func: omfGeomGetType
+**************************************************************************************************/
+OmfElemType omfGeomGetType(OmfGeom const * const geom)
 {
    returnIf(
          !omfIsStarted() ||
-         !omfGeometry,
-      omfElementTypeNONE);
+         !geom,
+      omfElemTypeNONE);
 
-   return omfGeometry->type;
+   return geom->typeElem;
 }
 
 
-/******************************************************************************
-func: omfGeometryIsDateCreatedSet
-******************************************************************************/
-OmfBool omfGeometryIsDateCreatedSet(OmfGeometry const * const omfGeometry)
+/**************************************************************************************************
+func: omfGeomSetOrigin
+**************************************************************************************************/
+OmfBool omfGeomSetOrigin(OmfGeom * const geom, OmfCoord const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometry);
+      !geom);
 
-   return omfGeometry->isDateCreatedSet;
-}
-
-/******************************************************************************
-func: omfGeometryIsDateModifiedSet
-******************************************************************************/
-OmfBool omfGeometryIsDateModifiedSet(OmfGeometry const * const omfGeometry)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   return omfGeometry->isDateModifiedSet;
-}
-
-/******************************************************************************
-func: omfGeometrySetDateCreated
-******************************************************************************/
-OmfBool omfGeometrySetDateCreated(OmfGeometry * const omfGeometry, OmfChar * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   omfCharDestroy(omfGeometry->dateCreated);
-   omfGeometry->dateCreated      = omfCharClone(value);
-   omfGeometry->isDateCreatedSet = (value != NULL);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfGeometrySetDateModified
-******************************************************************************/
-OmfBool omfGeometrySetDateModified(OmfGeometry * const omfGeometry, OmfChar * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   omfCharDestroy(omfGeometry->dateModified);
-   omfGeometry->dateModified      = omfCharClone(value);
-   omfGeometry->isDateModifiedSet = (value != NULL);
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfGeometrySetId
-******************************************************************************/
-OmfBool omfGeometrySetId(OmfGeometry * const omfGeometry, OmfId const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   omfGeometry->id = value;
-
-   return omfTRUE;
-}
-
-/******************************************************************************
-func: omfGeometrySetOrigin
-******************************************************************************/
-OmfBool omfGeometrySetOrigin(OmfGeometry * const omfGeometry, OmfCoord const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !omfGeometry);
-
-   omfGeometry->origin = value;
+   geom->origin = value;
 
    return omfTRUE;
 }

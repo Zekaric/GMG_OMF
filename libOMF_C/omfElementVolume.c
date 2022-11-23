@@ -1,103 +1,103 @@
-/******************************************************************************
-file:       OmfElementVolume
+/**************************************************************************************************
+file:       OmfElemVol
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Volume element 
-******************************************************************************/
+Vol element 
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfElementVolumeCreate
-******************************************************************************/
-OmfElementVolume *_OmfElementVolumeCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfElemVolCreate
+**************************************************************************************************/
+OmfElemVol *_OmfElemVolCreate(void)
 {
-   OmfElementVolume *omfElementVolume;
+   OmfElemVol *elem;
 
-   omfElementVolume = memCreateType(OmfElementVolume);
-   returnNullIf(!omfElementVolume);
+   elem = memCreateType(OmfElemVol);
+   returnNullIf(!elem);
 
-   if (!_OmfElementVolumeCreateContent(omfElementVolume))
+   if (!_OmfElemVolCreateContent(elem))
    {
-      memDestroy(omfElementVolume);
+      memDestroy(elem);
       return NULL;
    }
 
-   return omfElementVolume;
+   return elem;
 }
 
-/******************************************************************************
-func: _OmfElementVolumeCreateContent
-******************************************************************************/
-OmfBool _OmfElementVolumeCreateContent(OmfElementVolume * const omfElementVolume)
+/**************************************************************************************************
+func: _OmfElemVolCreateContent
+**************************************************************************************************/
+OmfBool _OmfElemVolCreateContent(OmfElemVol * const elem)
 {
-   memClearType(OmfElementVolume, omfElementVolume);
-   omfElementVolume->type    = omfElementTypeVOLUME;
-   omfElementVolume->subType = omfElementSubTypeVOLUME_VOLUME_DEFAULT;
+   memClearType(OmfElemVol, elem);
+   elem->typeElem    = omfElemTypeVOL;
+   elem->typeElemSub = omfElemSubTypeVOL_VOLUME_DEFAULT;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfElementVolumeDestroyContent
-******************************************************************************/
-void _OmfElementVolumeDestroyContent(OmfElementVolume * const omfElementVolume)
+/**************************************************************************************************
+func: _OmfElemVolDestroyContent
+**************************************************************************************************/
+void _OmfElemVolDestroyContent(OmfElemVol * const elem)
 {
-   returnVoidIf(!omfElementVolume);
+   returnVoidIf(!elem);
 
-   omfGeometryDestroy((OmfGeometry *) omfElementVolume->geometry);
+   omfObjDestroyObj(elem->geometry);
 
    return;
 }
 
-/******************************************************************************
-func: omfElementVolumeGetGeometry
-******************************************************************************/
-OmfGeometry *omfElementVolumeGetGeometry(OmfElementVolume const * const omfElementVolume)
+/**************************************************************************************************
+func: omfElemVolGetGeometry
+**************************************************************************************************/
+OmfGeom *omfElemVolGetGeometry(OmfElemVol const * const elem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfElementVolume);
+      !elem);
 
-   return (OmfGeometry *) omfElementVolume->geometry;
+   return (OmfGeom *) elem->geometry;
 }
 
-/******************************************************************************
-func: omfElementVolumeSetGeometry
-******************************************************************************/
-OmfBool omfElementVolumeSetGeometry(OmfElementVolume * const omfElementVolume, OmfGeometryVolume * const value)
+/**************************************************************************************************
+func: omfElemVolSetGeometry
+**************************************************************************************************/
+OmfBool omfElemVolSetGeometry(OmfElemVol * const elem, OmfGeomVol * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfElementVolume);
+      !elem);
 
-   omfElementVolume->geometry = value;
+   elem->geometry = value;
 
    return omfTRUE;
 }

@@ -149,12 +149,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="libJSON.h" />
     <ClInclude Include="lib_local.h" />
     <ClInclude Include="libOMF_C.h" />
     <ClInclude Include="miniz.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libJSON.c" />
     <ClCompile Include="libOMF_C.c" />
     <ClCompile Include="miniz.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -172,6 +174,7 @@
     </ClCompile>
     <ClCompile Include="omfChar.c" />
     <ClCompile Include="omfArray.c" />
+    <ClCompile Include="omfData.c" />
     <ClCompile Include="omfElement.c" />
     <ClCompile Include="omfElementLineSet.c" />
     <ClCompile Include="omfElementSurfaceGrid.c" />
@@ -184,6 +187,7 @@
     <ClCompile Include="omfGeometrySurfaceGrid.c" />
     <ClCompile Include="omfGeometrySurfaceTri.c" />
     <ClCompile Include="omfGeometryVolume.c" />
+    <ClCompile Include="omfObject.c" />
     <ClCompile Include="omfProject.c" />
     <ClCompile Include="omgGeometryLineSet.c" />
     <ClCompile Include="pch.c">

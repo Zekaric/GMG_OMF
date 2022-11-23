@@ -1,130 +1,131 @@
-/******************************************************************************
-file:       OmfGeometrySurfaceTri
+/**************************************************************************************************
+file:       OmfGeomSurfTri
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Geometry Surface Tri routines
-******************************************************************************/
+Geometry Surf Tri routines
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfGeometrySurfaceTriCreate
-******************************************************************************/
-OmfGeometrySurfaceTri *_OmfGeometrySurfaceTriCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomSurfTriCreate
+**************************************************************************************************/
+OmfGeomSurfTri *_OmfGeomSurfTriCreate(void)
 {
-   OmfGeometrySurfaceTri *omfGeometrySurfaceTri;
+   OmfGeomSurfTri *geom;
 
-   omfGeometrySurfaceTri = memCreateType(OmfGeometrySurfaceTri);
-   returnNullIf(!omfGeometrySurfaceTri);
+   geom = memCreateType(OmfGeomSurfTri);
+   returnNullIf(!geom);
 
-   if (!_OmfGeometrySurfaceTriCreateContent(omfGeometrySurfaceTri))
+   if (!_OmfGeomSurfTriCreateContent(geom))
    {
-      omfGeometryDestroy((OmfGeometry *) omfGeometrySurfaceTri);
+      omfObjDestroy((OmfObj *) geom);
       return NULL;
    }
 
-   return omfGeometrySurfaceTri;
+   return geom;
 }
 
-/******************************************************************************
-func: _OmfGeometrySurfaceTriCreateContent
-******************************************************************************/
-OmfBool _OmfGeometrySurfaceTriCreateContent(OmfGeometrySurfaceTri * const omfGeometrySurfaceTri)
+/**************************************************************************************************
+func: _OmfGeomSurfTriCreateContent
+**************************************************************************************************/
+OmfBool _OmfGeomSurfTriCreateContent(OmfGeomSurfTri * const geom)
 {
-   memClearType(OmfGeometrySurfaceTri, omfGeometrySurfaceTri);
-   omfGeometrySurfaceTri->type = omfElementTypeSURFACE_TRI;
+   memClearType(OmfGeomSurfTri, geom);
+   geom->typeElem = omfElemTypeSURF_TRI;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfGeometrySurfaceTriDestroyContent
-******************************************************************************/
-void _OmfGeometrySurfaceTriDestroyContent(OmfGeometrySurfaceTri * const omfGeometrySurfaceTri)
+/**************************************************************************************************
+func: _OmfGeomSurfTriDestroyContent
+**************************************************************************************************/
+void _OmfGeomSurfTriDestroyContent(OmfGeomSurfTri * const geom)
 {
-   returnVoidIf(!omfGeometrySurfaceTri);
+   returnVoidIf(!geom);
 
-   omfArrayDestroy(omfGeometrySurfaceTri->coord);
-   omfArrayDestroy(omfGeometrySurfaceTri->triangle);
+   omfArrayDestroy(geom->coord);
+   omfArrayDestroy(geom->triangle);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceTriGetCoord
-******************************************************************************/
-OmfArray *omfGeometrySurfaceTriGetArrayCoord(OmfGeometrySurfaceTri const * const omfGeometrySurfaceTri)
+/**************************************************************************************************
+func: omfGeomSurfTriGetCoord
+**************************************************************************************************/
+OmfArray *omfGeomSurfTriGetArrayCoord(OmfGeomSurfTri const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceTri);
+      !geom);
 
-   return omfGeometrySurfaceTri->coord;
+   return geom->coord;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceTriGetArrayTriangle
-******************************************************************************/
-OmfArray *omfGeometrySurfaceTriGetArrayTriangle(OmfGeometrySurfaceTri const * const omfGeometrySurfaceTri)
+/**************************************************************************************************
+func: omfGeomSurfTriGetArrayTriangle
+**************************************************************************************************/
+OmfArray *omfGeomSurfTriGetArrayTriangle(OmfGeomSurfTri const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceTri);
+      !geom);
 
-   return omfGeometrySurfaceTri->triangle;
+   return geom->triangle;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceTriSetCoord
-******************************************************************************/
-OmfBool omfGeometrySurfaceTriSetArrayCoord(OmfGeometrySurfaceTri * const omfGeometrySurfaceTri, 
+/**************************************************************************************************
+func: omfGeomSurfTriSetCoord
+**************************************************************************************************/
+OmfBool omfGeomSurfTriSetArrayCoord(OmfGeomSurfTri * const geom, 
    OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceTri);
+      !geom);
 
-   omfGeometrySurfaceTri->coord = value;
+   geom->coord = value;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: omfGeometrySurfaceTriSetArrayTriangle
-******************************************************************************/
-OmfBool omfGeometrySurfaceTriSetArrayTriangle(OmfGeometrySurfaceTri * const omfGeometrySurfaceTri, OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomSurfTriSetArrayTriangle
+**************************************************************************************************/
+OmfBool omfGeomSurfTriSetArrayTriangle(OmfGeomSurfTri * const geom, 
+   OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometrySurfaceTri);
+      !geom);
 
-   omfGeometrySurfaceTri->triangle = value;
+   geom->triangle = value;
 
    return omfTRUE;
 }

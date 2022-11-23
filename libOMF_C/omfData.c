@@ -1,10 +1,10 @@
 /**************************************************************************************************
-file:       OmfArray
+file:       OmfData
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Array routines, binary blob data
+Data routines
 **************************************************************************************************/
 
 /**************************************************************************************************
@@ -34,190 +34,188 @@ global:
 function:
 **************************************************************************************************/
 /**************************************************************************************************
-func: omfArrayCreate
+func: _OmfDataCreate
 **************************************************************************************************/
-OmfArray *_OmfArrayCreate(OmfArrayType const type)
+OmfData *_OmfDataCreate(OmfDataType const type)
 {
-   OmfArray *arrayData;
+   OmfData *data;
 
    returnNullIf(!omfIsStarted());
 
-   arrayData = memCreateType(OmfArray);
-   returnNullIf(!arrayData);
+   data = memCreateType(OmfData);
+   returnNullIf(!data);
 
-   if (!_OmfArrayCreateContent(arrayData, type))
+   if (!_OmfDataCreateContent(data, type))
    {
-      memDestroy(arrayData);
+      memDestroy(data);
       return NULL;
    }
 
-   return arrayData;
+   return data;
 }
 
 /**************************************************************************************************
-func: _OfArrayCreateContent
+func: _OmfDataCreateContent
 **************************************************************************************************/
-OmfBool _OmfArrayCreateContent(OmfArray * const arrayData, OmfArrayType const type)
+OmfBool _OmfDataCreateContent(OmfData * const data, OmfDataType const type)
 {
    returnFalseIf(!omfIsStarted());
 
-   memClearType(OmfArray, arrayData);
-   arrayData->bufferType = type;
+   memClearType(OmfData, data);
+
+   data->typeData = type;
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfArrayDestroyContent
+func: _OmfDataDestroyContent
 **************************************************************************************************/
-void omfArrayDestroyContent(OmfArray * const arrayData)
+void _OmfDataDestroyContent(OmfData * const data)
 {
    returnVoidIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
+
+   omfObjDestroyObj(data->array);
+   omfCharDestroy(  data->dateCreated);
+   omfCharDestroy(  data->dateModified);
+   omfCharDestroy(  data->description);
+   omfCharDestroy(  data->name);
 
    return;
 }
 
 /**************************************************************************************************
-func: omfArrayGetBufferOffset
+func: omfDataGetArray
 **************************************************************************************************/
-OmfOffset omfArrayGetBufferOffset(OmfArray const * const arrayData)
+OmfArray *omfDataGetArray(OmfData const * const data)
 {
-   return0If(
+   returnNullIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   return arrayData->bufferOffset;
+   return data->array;
 }
 
 /**************************************************************************************************
-func: omfArrayGetBufferSize
+func: omfDataGetDescription
 **************************************************************************************************/
-OmfCount omfArrayGetBufferSize(OmfArray const * const arrayData)
+OmfChar *omfDataGetDescription(OmfData const * const data)
 {
-   return0If(
+   returnNullIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   return arrayData->bufferSize;
+   return data->description;
 }
 
 /**************************************************************************************************
-func: omfArrayGetBufferType
+func: omfDataGetLoc
 **************************************************************************************************/
-OmfArrayType omfArrayGetBufferType(OmfArray const * const arrayData)
+OmfDataLoc omfDataGetLoc(OmfData const * const data)
 {
    returnIf(
          !omfIsStarted() ||
-         !arrayData,
-      omfArrayTypeNONE);
+         !data,
+      omfDataLocNONE);
 
-   return arrayData->bufferType;
+   return data->location;
 }
 
 /**************************************************************************************************
-func: omfArrayGetBufferTypeCount
+func: omfDataGetName
 **************************************************************************************************/
-OmfCount omfArrayGetBufferTypeCount(OmfArray const * const arrayData)
+OmfChar *omfDataGetName(OmfData const * const data)
 {
-   return0If(
+   returnNullIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   return arrayData->bufferTypeCount;
+   return data->name;
 }
 
 /**************************************************************************************************
-func: omfArrayGetCoordList
+func: omfDataGetType
 **************************************************************************************************/
-OmfError omfArrayGetCoordList(OmfFile const * const file, OmfArray const * const arrayData
-   /* , callback to buffer filling */)
+OmfDataType omfDataGetType(OmfData const * const omfData)
 {
-   // If we are writing we should not be calling this function.  This is for reading only.
    returnIf(
-         !omfIsStarted()         ||
-         !file                   ||
-          omfFileIsWriting(file) ||
-         !arrayData,
-      omfErrorPARAMETER_BAD);
+         !omfIsStarted() ||
+         !omfData,
+      omfDataTypeNONE);
 
-   // TODO reading from the file the compressed buffer.  We don't know at this point in time how
-   // many coords we are reading in.  Caller needs to be able to resize their point buffer.
-
-   return omfErrorNONE;
+   return omfData->typeData;
 }
 
 /**************************************************************************************************
-func: omfArraySetBufferOffset
+func: omfDataSetArray
 **************************************************************************************************/
-OmfBool omfArraySetBufferOffset(OmfArray * const arrayData, OmfOffset const value)
+OmfBool omfDataSetArray(OmfData * const data, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   arrayData->bufferOffset = value;
+   data->array = value;
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfArraySetBufferSize
+func: omfDataSetDescription
 **************************************************************************************************/
-OmfBool omfArraySetBufferSize(OmfArray * const arrayData, OmfCount const value)
+OmfBool omfDataSetDescription(OmfData * const data, OmfChar * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   arrayData->bufferSize = value;
+   omfCharDestroy(data->description);
+   data->description = omfCharClone(value);
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfArraySetBufferType
+func: omfDataSetLoc
 **************************************************************************************************/
-OmfBool omfArraySetBufferType(OmfArray * const arrayData, OmfArrayType const value)
+OmfBool omfDataSetLoc(OmfData * const data, OmfDataLoc const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   arrayData->bufferType = value;
+   data->location = value;
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfArraySetBufferTypeCount
+func: omfDataSetName
 **************************************************************************************************/
-OmfBool omfArraySetBufferTypeCount(OmfArray * const arrayData, OmfCount const value)
+OmfBool omfDataSetName(OmfData * const data, OmfChar * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !arrayData);
+      !data);
 
-   arrayData->bufferTypeCount = value;
+   omfCharDestroy(data->name);
+   data->name = omfCharClone(value);
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfArraySetCoordList
+func: omfDataSetType
 **************************************************************************************************/
-OmfError omfArraySetCoordList(OmfFile * const file, OmfArray * const arrayData
-   /* , callback to buffer reading */)
+OmfBool omfDataSetType(OmfData * const omfData, OmfDataType const value)
 {
-   // If we are reading, we should not be calling this function.  This is for writing only.
    returnFalseIf(
-      !omfIsStarted()         ||
-      !file                   ||
-      !omfFileIsWriting(file) ||
-      !arrayData);
+      !omfIsStarted() ||
+      !omfData);
 
-   // TODO, write a new point set coordinate list buffer to the file.
+   omfData->typeData = value;
 
-   return omfErrorNONE;
+   return omfTRUE;
 }

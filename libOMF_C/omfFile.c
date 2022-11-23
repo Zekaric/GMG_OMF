@@ -1,51 +1,51 @@
-/******************************************************************************
+/**************************************************************************************************
 file:       omfFile
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
 The file routines.
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 macro:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 static OmfError _TestLoad00_09(     OmfFile       * const file, wchar_t const * const fileName);
 
 static OmfError _WriteHeader00_09(  OmfFile const * const file, OmfOffset const position);
 
-/******************************************************************************
+/**************************************************************************************************
 glboal:
 function:
-******************************************************************************/
-/******************************************************************************
+**************************************************************************************************/
+/**************************************************************************************************
 func: omfFileCreateRead
 
 Create an OmfFile structure.  Open the omf file for reading.  This function 
 will handle the reading of old an new omf file formats.
-******************************************************************************/
+**************************************************************************************************/
 OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file)
 {
    OmfError error;
@@ -61,12 +61,15 @@ OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file
 
    // Create the structure.
    ftemp = memCreateType(OmfFile);
-   returnIf(!ftemp, omfErrorMEM_CREATE_FAILURE);
+   error = omfErrorMEM_CREATE_FAILURE;
+   gotoIf(!ftemp, omfFileCreateReadERROR);
 
    memClearType(OmfFile, ftemp);
 
    // Set up what needs to be set up for the project.
-   _OmfProjectCreateContent(&ftemp->project);
+   ftemp->project = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
+   error = omfErrorMEM_CREATE_FAILURE;
+   gotoIf(!ftemp->project, omfFileCreateReadERROR);
 
    // Todo read in the file to see if it is a version 0.9.0 or a zip file which
    // will be a version 1.0.0 or larger.
@@ -95,10 +98,16 @@ OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file
       return omfErrorNONE;
    }
 
+omfFileCreateReadERROR:
+
+   // Clean up
+   omfObjDestroyObj(ftemp->project);
+   memDestroy(ftemp);
+
    return error;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: omfFileCreateWrite
 
 Create an OmfFile sturcture.  Open the omfFile for writing.  This will not over
@@ -106,7 +115,7 @@ write the file and fail.  Caller is responsible for destroying the file before
 writing.
 
 Provide the version of file you want to write to.
-******************************************************************************/
+**************************************************************************************************/
 OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const fileVersion, 
    OmfFile ** const file)
 {
@@ -130,7 +139,8 @@ OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const
 
    // Set up what needs to be set up for the project.
    error = omfErrorMEM_CREATE_FAILURE;
-   gotoIf(!_OmfProjectCreateContent(&ftemp->project), omfFileCreateWriteERROR);
+   ftemp->project = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
+   gotoIf(!ftemp->project, omfFileCreateWriteERROR);
    
    // Open the file.
    error = omfErrorFILE_OPEN_FAILURE;
@@ -149,19 +159,19 @@ OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const
 omfFileCreateWriteERROR:
    // Clean up.
    fclose(ftemp->file);
-   _OmfProjectDestroyContent(&ftemp->project);
+   omfObjDestroyObj(ftemp->project);
    memDestroy(ftemp);
 
    return error;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: omfFileDestroy
 
 Close the file being read from or written to.  
 
 Clean up the dynamic memory for an omf file.  
-******************************************************************************/
+**************************************************************************************************/
 void omfFileDestroy(OmfFile * const file)
 {
    returnVoidIf(!file);
@@ -196,27 +206,27 @@ void omfFileDestroy(OmfFile * const file)
    }
 
    // Clean up.
-   _OmfProjectDestroyContent(&file->project);
+   omfObjDestroyObj(file->project);
 
    memDestroy(file->jsonTableOfContents);
    memDestroy(file);
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: omfFileGetProject
-******************************************************************************/
-OmfProject *omfFileGetProject(OmfFile * const file)
+**************************************************************************************************/
+OmfProj *omfFileGetProject(OmfFile * const file)
 {
    returnNullIf(
       !omfIsStarted() ||
       !file);
 
-   return &file->project;
+   return file->project;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: omfFileGetVersion
-******************************************************************************/
+**************************************************************************************************/
 OmfError omfFileGetVersion(OmfFile const * const file, OmfFileVersion * const value)
 {
    returnIf(!omfIsStarted(), omfErrorLIB_NOT_STARTED); 
@@ -230,9 +240,9 @@ OmfError omfFileGetVersion(OmfFile const * const file, OmfFileVersion * const va
    return omfErrorNONE;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: omfFileIsWriting
-******************************************************************************/
+**************************************************************************************************/
 OmfBool omfFileIsWriting(OmfFile const * const file)
 {
    returnFalseIf(
@@ -242,15 +252,15 @@ OmfBool omfFileIsWriting(OmfFile const * const file)
    return file->isWriting;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 function:
-******************************************************************************/
-/******************************************************************************
+**************************************************************************************************/
+/**************************************************************************************************
 func: _TestLoad00_09
 
 Try loading the file as an origianl 0.9.0 OMF file.
-******************************************************************************/
+**************************************************************************************************/
 static OmfError _TestLoad00_09(OmfFile * const file, wchar_t const * const fileName)
 {
    char      magicNumber[4],
@@ -320,9 +330,9 @@ LOAD_ERROR:
    return omfErrorFILE_NOT_OMF;
 }
 
-/******************************************************************************
+/**************************************************************************************************
 func: _WriteHeader00_09
-******************************************************************************/
+**************************************************************************************************/
 static OmfError _WriteHeader00_09(OmfFile const * const file, OmfOffset const position)
 {
    char   magicNumber[4] = { 0x84, 0x83, 0x82, 0x81 };
@@ -340,7 +350,7 @@ static OmfError _WriteHeader00_09(OmfFile const * const file, OmfOffset const po
    gotoIf(count != 32, WRITE_ERROR);
 
    // Write out the project id.
-   count = fwrite(&file->project.id, 1, sizeof(OmfId), file->file);
+   count = fwrite(&file->project->id, 1, sizeof(OmfId), file->file);
    gotoIf(count != 16, WRITE_ERROR);
 
    // Write out the offset to the table of contents json.

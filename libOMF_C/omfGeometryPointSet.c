@@ -1,104 +1,102 @@
-/******************************************************************************
-file:       OmfGeometryPointSet
+/**************************************************************************************************
+file:       OmfGeomPntSet
 author:     Robbert de Groot
-company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
+Geometry Pnt Set routines
+**************************************************************************************************/
 
-******************************************************************************/
-
-/******************************************************************************
+/**************************************************************************************************
 include:
-******************************************************************************/
+**************************************************************************************************/
 #include "pch.h"
 
-/******************************************************************************
+/**************************************************************************************************
 local:
 constant:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 type:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 variable:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 prototype:
-******************************************************************************/
+**************************************************************************************************/
 
-/******************************************************************************
+/**************************************************************************************************
 global:
 function:
-******************************************************************************/
-/******************************************************************************
-func: _OmfGeometryPointSetCreate
-******************************************************************************/
-OmfGeometryPointSet *_OmfGeometryPointSetCreate(void)
+**************************************************************************************************/
+/**************************************************************************************************
+func: _OmfGeomPntSetCreate
+**************************************************************************************************/
+OmfGeomPntSet *_OmfGeomPntSetCreate(void)
 {
-   OmfGeometryPointSet *omfGeometryPointSet;
+   OmfGeomPntSet *geom;
 
-   omfGeometryPointSet = memCreateType(OmfGeometryPointSet);
-   returnNullIf(!omfGeometryPointSet);
+   geom = memCreateType(OmfGeomPntSet);
+   returnNullIf(!geom);
 
-   if (!_OmfGeometryPointSetCreateContent(omfGeometryPointSet))
+   if (!_OmfGeomPntSetCreateContent(geom))
    {
-      omfGeometryDestroy((OmfGeometry *) omfGeometryPointSet);
+      omfObjDestroy((OmfObj *) geom);
       return NULL;
    }
 
-   return omfGeometryPointSet;
+   return geom;
 }
 
-/******************************************************************************
-func: _OmfGeometryPointSetCreateContent
-******************************************************************************/
-OmfBool _OmfGeometryPointSetCreateContent(OmfGeometryPointSet * const omfGeometryPointSet)
+/**************************************************************************************************
+func: _OmfGeomPntSetCreateContent
+**************************************************************************************************/
+OmfBool _OmfGeomPntSetCreateContent(OmfGeomPntSet * const geom)
 {
-   memClearType(OmfGeometryPointSet, omfGeometryPointSet);
-   omfGeometryPointSet->type = omfElementTypePOINT_SET;
+   memClearType(OmfGeomPntSet, geom);
+   geom->typeElem = omfElemTypePNT_SET;
 
    return omfTRUE;
 }
 
-/******************************************************************************
-func: _OmfGeometryPointSetDestroyContent
-******************************************************************************/
-void _OmfGeometryPointSetDestroyContent(OmfGeometryPointSet * const omfGeometryPointSet)
+/**************************************************************************************************
+func: _OmfGeomPntSetDestroyContent
+**************************************************************************************************/
+void _OmfGeomPntSetDestroyContent(OmfGeomPntSet * const geom)
 {
-   returnVoidIf(!omfGeometryPointSet);
+   returnVoidIf(!geom);
 
-   omfArrayDestroy(omfGeometryPointSet->coord);
+   omfArrayDestroy(geom->coord);
 
    return;
 }
 
-/******************************************************************************
-func: omfGeometryPointSetGetCoord
-******************************************************************************/
-OmfArray *omfGeometryPointSetGetArrayCoord(OmfGeometryPointSet const * const omfGeometryPointSet)
+/**************************************************************************************************
+func: omfGeomPntSetGetCoord
+**************************************************************************************************/
+OmfArray *omfGeomPntSetGetArrayCoord(OmfGeomPntSet const * const geom)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !omfGeometryPointSet);
+      !geom);
 
-   return omfGeometryPointSet->coord;
+   return geom->coord;
 }
 
-/******************************************************************************
-func: omfGeometryPointSetSetCoord
-******************************************************************************/
-OmfBool omfGeometryPointSetSetArrayCoord(OmfGeometryPointSet * const omfGeometryPointSet, 
-   OmfArray * const value)
+/**************************************************************************************************
+func: omfGeomPntSetSetCoord
+**************************************************************************************************/
+OmfBool omfGeomPntSetSetArrayCoord(OmfGeomPntSet * const geom, OmfArray * const value)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !omfGeometryPointSet);
+      !geom);
 
-   omfGeometryPointSet->coord = value;
+   geom->coord = value;
 
    return omfTRUE;
 }
