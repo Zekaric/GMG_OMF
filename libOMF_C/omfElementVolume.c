@@ -40,12 +40,12 @@ OmfElemVol *_OmfElemVolCreate(void)
 {
    OmfElemVol *elem;
 
-   elem = memCreateType(OmfElemVol);
+   elem = _OmfMemCreateType(OmfElemVol);
    returnNullIf(!elem);
 
    if (!_OmfElemVolCreateContent(elem))
    {
-      memDestroy(elem);
+      _OmfMemDestroy(elem);
       return NULL;
    }
 
@@ -57,7 +57,7 @@ func: _OmfElemVolCreateContent
 **************************************************************************************************/
 OmfBool _OmfElemVolCreateContent(OmfElemVol * const elem)
 {
-   memClearType(OmfElemVol, elem);
+   _OmfMemClearType(OmfElemVol, elem);
    elem->typeElem    = omfElemTypeVOL;
    elem->typeElemSub = omfElemSubTypeVOL_VOLUME_DEFAULT;
 

@@ -60,11 +60,11 @@ OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file
    *file = NULL;
 
    // Create the structure.
-   ftemp = memCreateType(OmfFile);
+   ftemp = _OmfMemCreateType(OmfFile);
    error = omfErrorMEM_CREATE_FAILURE;
    gotoIf(!ftemp, omfFileCreateReadERROR);
 
-   memClearType(OmfFile, ftemp);
+   _OmfMemClearType(OmfFile, ftemp);
 
    // Set up what needs to be set up for the project.
    ftemp->project = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
@@ -102,7 +102,7 @@ omfFileCreateReadERROR:
 
    // Clean up
    omfObjDestroyObj(ftemp->project);
-   memDestroy(ftemp);
+   _OmfMemDestroy(ftemp);
 
    return error;
 }
@@ -132,10 +132,10 @@ OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const
    *file = NULL;
 
    // Create the structure.
-   ftemp = memCreateType(OmfFile);
+   ftemp = _OmfMemCreateType(OmfFile);
    returnIf(!ftemp, omfErrorMEM_CREATE_FAILURE);
 
-   memClearType(OmfFile, ftemp);
+   _OmfMemClearType(OmfFile, ftemp);
 
    // Set up what needs to be set up for the project.
    error = omfErrorMEM_CREATE_FAILURE;
@@ -160,7 +160,7 @@ omfFileCreateWriteERROR:
    // Clean up.
    fclose(ftemp->file);
    omfObjDestroyObj(ftemp->project);
-   memDestroy(ftemp);
+   _OmfMemDestroy(ftemp);
 
    return error;
 }
@@ -208,8 +208,8 @@ void omfFileDestroy(OmfFile * const file)
    // Clean up.
    omfObjDestroyObj(file->project);
 
-   memDestroy(file->jsonTableOfContents);
-   memDestroy(file);
+   _OmfMemDestroy(file->jsonTableOfContents);
+   _OmfMemDestroy(file);
 }
 
 /**************************************************************************************************
@@ -310,7 +310,7 @@ static OmfError _TestLoad00_09(OmfFile * const file, wchar_t const * const fileN
    gotoIf(_fseeki64(file->file, file->offsetTableOfContents, SEEK_SET), LOAD_ERROR);
 
    // Allocate the buffer for the toc
-   file->jsonTableOfContents = memCreateTypeArray(count, uchar);
+   file->jsonTableOfContents = _OmfMemCreateTypeArray(count, uchar);
    gotoIf(!file->jsonTableOfContents, LOAD_ERROR);
 
    // We got this far then we are dealing with a OMF 0.9.0 file.
@@ -318,14 +318,14 @@ static OmfError _TestLoad00_09(OmfFile * const file, wchar_t const * const fileN
 
 LOAD_ERROR:
    // Clean up.
-   memDestroy(file->jsonTableOfContents);
+   _OmfMemDestroy(file->jsonTableOfContents);
    file->jsonTableOfContents = NULL;
 
    fclose(file->file);
    file->file = NULL;
 
    file->offsetTableOfContents = 0;
-   memClearType(OmfId, &file->idProject);
+   _OmfMemClearType(OmfId, &file->idProject);
 
    return omfErrorFILE_NOT_OMF;
 }
@@ -344,8 +344,8 @@ static OmfError _WriteHeader00_09(OmfFile const * const file, OmfOffset const po
    gotoIf(count != 4, WRITE_ERROR);
 
    // Write out the version number.
-   memClearTypeArray(32, char,                     version);
-   memCopyTypeArray( 10, char, omfVERSION00_09_00, version);
+   _OmfMemClearTypeArray(32, char,                     version);
+   _OmfMemCopyTypeArray( 10, char, omfVERSION00_09_00, version);
    count = fwrite(version, 1, 32, file->file);
    gotoIf(count != 32, WRITE_ERROR);
 

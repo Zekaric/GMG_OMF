@@ -42,12 +42,12 @@ OmfData *_OmfDataCreate(OmfDataType const type)
 
    returnNullIf(!omfIsStarted());
 
-   data = memCreateType(OmfData);
+   data = _OmfMemCreateType(OmfData);
    returnNullIf(!data);
 
    if (!_OmfDataCreateContent(data, type))
    {
-      memDestroy(data);
+      _OmfMemDestroy(data);
       return NULL;
    }
 
@@ -61,7 +61,7 @@ OmfBool _OmfDataCreateContent(OmfData * const data, OmfDataType const type)
 {
    returnFalseIf(!omfIsStarted());
 
-   memClearType(OmfData, data);
+   _OmfMemClearType(OmfData, data);
 
    data->typeData = type;
 

@@ -88,7 +88,7 @@ void _OmfGeomDestroy(OmfGeom * const geom)
 
    _OmfGeomDestroyContent(geom);
    
-   memDestroy(geom);
+   _OmfMemDestroy(geom);
 
    return;
 }
@@ -143,7 +143,7 @@ OmfCoord omfGeomGetOrigin(OmfGeom const * const geom)
 {
    OmfCoord coord;
 
-   memClearType(OmfCoord, &coord);
+   _OmfMemClearType(OmfCoord, &coord);
 
    returnIf(
          !omfIsStarted() ||

@@ -40,12 +40,12 @@ OmfElemSurfGrid *_OmfElemSurfGridCreate(void)
 {
    OmfElemSurfGrid *elem;
 
-   elem = memCreateType(OmfElemSurfGrid);
+   elem = _OmfMemCreateType(OmfElemSurfGrid);
    returnNullIf(!elem);
 
    if (!_OmfElemSurfGridCreateContent(elem))
    {
-      memDestroy(elem);
+      _OmfMemDestroy(elem);
       return NULL;
    }
 
@@ -57,7 +57,7 @@ func: _OmfElemSurfGridCreateContent
 **************************************************************************************************/
 OmfBool _OmfElemSurfGridCreateContent(OmfElemSurfGrid * const elem)
 {
-   memClearType(OmfElemSurfGrid, elem);
+   _OmfMemClearType(OmfElemSurfGrid, elem);
    elem->typeElem    = omfElemTypeSURF_GRID;
    elem->typeElemSub = omfElemSubTypeSURF_GRID_SURFACE_DEFAULT;
 

@@ -40,7 +40,7 @@ OmfGeomSurfGrid *_OmfGeomSurfGridCreate(void)
 {
    OmfGeomSurfGrid *geom;
 
-   geom = memCreateType(OmfGeomSurfGrid);
+   geom = _OmfMemCreateType(OmfGeomSurfGrid);
    returnNullIf(!geom);
 
    if (!_OmfGeomSurfGridCreateContent(geom))
@@ -57,7 +57,7 @@ func: _OmfGeomSurfGridCreateContent
 **************************************************************************************************/
 OmfBool _OmfGeomSurfGridCreateContent(OmfGeomSurfGrid * const geom)
 {
-   memClearType(OmfGeomSurfGrid, geom);
+   _OmfMemClearType(OmfGeomSurfGrid, geom);
    geom->typeElem = omfElemTypeSURF_GRID;
 
    return omfTRUE;
@@ -120,7 +120,7 @@ OmfVector omfGeomSurfGridGetAxisU(OmfGeomSurfGrid const * const geom)
 {
    OmfVector vec;
 
-   memClearType(OmfVector, &vec);
+   _OmfMemClearType(OmfVector, &vec);
 
    returnIf(
          !omfIsStarted() ||
@@ -137,7 +137,7 @@ OmfVector omfGeomSurfGridGetAxisV(OmfGeomSurfGrid const * const geom)
 {
    OmfVector vec;
 
-   memClearType(OmfVector, &vec);
+   _OmfMemClearType(OmfVector, &vec);
 
    returnIf(
          !omfIsStarted() ||

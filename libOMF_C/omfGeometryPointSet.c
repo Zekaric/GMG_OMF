@@ -40,7 +40,7 @@ OmfGeomPntSet *_OmfGeomPntSetCreate(void)
 {
    OmfGeomPntSet *geom;
 
-   geom = memCreateType(OmfGeomPntSet);
+   geom = _OmfMemCreateType(OmfGeomPntSet);
    returnNullIf(!geom);
 
    if (!_OmfGeomPntSetCreateContent(geom))
@@ -57,7 +57,7 @@ func: _OmfGeomPntSetCreateContent
 **************************************************************************************************/
 OmfBool _OmfGeomPntSetCreateContent(OmfGeomPntSet * const geom)
 {
-   memClearType(OmfGeomPntSet, geom);
+   _OmfMemClearType(OmfGeomPntSet, geom);
    geom->typeElem = omfElemTypePNT_SET;
 
    return omfTRUE;

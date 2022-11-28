@@ -100,7 +100,7 @@ function:
 /**************************************************************************************************
 func: _MemClear
 **************************************************************************************************/
-void _MemClear(size_t const size, void * const buf)
+void _OmfMemClear(size_t const size, void * const buf)
 {
    _memClear(buf, size);
 }
@@ -108,7 +108,7 @@ void _MemClear(size_t const size, void * const buf)
 /**************************************************************************************************
 func: _MemCreate
 **************************************************************************************************/
-void *_MemCreate(size_t const size)
+void *_OmfMemCreate(size_t const size)
 {
    returnNullIf(!size);
 
@@ -118,13 +118,13 @@ void *_MemCreate(size_t const size)
 /**************************************************************************************************
 func: _MemClone
 **************************************************************************************************/
-void *_MemClone(size_t const size, void * const buf)
+void *_OmfMemClone(size_t const size, void * const buf)
 {
    void *dst;
 
    returnNullIf(!buf || !size);
 
-   dst = _MemCreate(size);
+   dst = _memCreate(size);
    returnNullIf(!dst);
 
    memmove(dst, buf, size);
@@ -133,9 +133,32 @@ void *_MemClone(size_t const size, void * const buf)
 }
 
 /**************************************************************************************************
-func: _MemDestroy
+func: _OmfMemDestroy
 **************************************************************************************************/
-void _MemDestroy(void * const buf)
+void _OmfMemDestroy(void * const buf)
 {
    _memDestroy(buf);
+}
+
+/**************************************************************************************************
+func: _OmfMemGrow
+**************************************************************************************************/
+OmfBool _OmfMemGrow(size_t const oldSize, void ** const buffer, size_t const newSize)
+{
+   void *vtemp;
+
+   // Create a new buffer.
+   vtemp = _memCreate(newSize);
+   returnIf(!vtemp, omfFALSE);
+
+   // Copy the data from the source buffer.
+   memmove(vtemp, *buffer, oldSize);
+
+   // Clean up the old stack.
+   _memDestroy(*buffer);
+
+   // Set to the new stack.
+   *buffer = vtemp;
+
+   return omfTRUE;
 }

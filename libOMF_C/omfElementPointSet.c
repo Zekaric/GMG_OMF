@@ -40,12 +40,12 @@ OmfElemPntSet *_OmfElemPntSetCreate(void)
 {
    OmfElemPntSet *elem;
 
-   elem = memCreateType(OmfElemPntSet);
+   elem = _OmfMemCreateType(OmfElemPntSet);
    returnNullIf(!elem);
 
    if (!_OmfElemPntSetCreateContent(elem))
    {
-      memDestroy(elem);
+      _OmfMemDestroy(elem);
       return NULL;
    }
 
@@ -57,7 +57,7 @@ func: _OmfElemPntSetCreateContent
 **************************************************************************************************/
 OmfBool _OmfElemPntSetCreateContent(OmfElemPntSet * const elem)
 {
-   memClearType(OmfElemPntSet, elem);
+   _OmfMemClearType(OmfElemPntSet, elem);
    elem->typeElem    = omfElemTypePNT_SET;
    elem->typeElemSub = omfElemSubTypePNT_SET_POINT_DEFAULT;
 

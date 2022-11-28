@@ -1,0 +1,896 @@
+{
+   "aa6fec60-fefe-4e5f-b742-e581ec73b769": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "array": {
+         "start": 60,
+         "dtype": "<i8",
+         "length": 99
+      },
+      "__class__": "ScalarArray"
+   },
+   "a8b06d1e-bbac-4746-bb90-888f9b1f8f6e": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         "WP001", "WP002", "WP003", "WP004", "WP005", "WP006", "WP007", "WP008", "WP009", "WP010",
+         "WP011", "WP012", "WP013", "WP014", "WP015", "WP016", "WP017", "WP018", "WP019", "WP020",
+         "WP021", "WP022", "WP023",          "WP025", "WP026", "WP027", "WP028", "WP029", "WP030",
+         "WP031", "WP032", "WP033", "WP034", "WP035", "WP036", "WP037", "WP038", "WP039", "WP040",
+         "WP041",          "WP043", "WP044", "WP045", "WP046", "WP047", "WP048", "WP049", "WP050",
+                  "WP052", "WP053", "WP054", "WP055", "WP056", "WP057", "WP058"
+      ],
+      "__class__": "StringArray"
+   },
+   "78ba26b7-1c9a-4880-8580-d574b49e6ecc": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "holeid",
+      "description": "",
+      "values": "a8b06d1e-bbac-4746-bb90-888f9b1f8f6e",
+      "__class__": "Legend"
+   },
+   "95c44ffa-965b-4f32-af97-3a53768303ba": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         [ 61, 255, 61 ],
+         [ 255, 255, 96 ],
+         [ 255, 25, 25 ],
+         [ 255, 132, 193 ], 
+         [ 158, 255, 61 ],
+         [ 255, 175, 96 ],
+         [ 255, 168, 168 ],
+         [ 96, 96, 255 ],
+         [ 61, 61, 255 ], 
+         [ 255, 193, 132 ],
+         [ 255, 96, 255 ],
+         [ 132, 255, 193 ],
+         [ 96, 255, 255 ],
+         [ 193, 132, 255 ], 
+         [ 25, 255, 140 ],
+         [ 255, 96, 175 ],
+         [ 175, 255, 96 ],
+         [ 168, 211, 255 ],
+         [ 25, 255, 25 ], 
+         [ 168, 255, 255 ],
+         [ 25, 255, 255 ],
+         [ 255, 132, 132 ],
+         [ 168, 255, 211 ],
+         [ 175, 96, 255 ], 
+         [ 140, 25, 255 ],
+         [ 255, 25, 255 ],
+         [ 255, 61, 158 ],
+         [ 61, 158, 255 ],
+         [ 132, 255, 132 ],
+         [ 193, 255, 132 ],
+         [ 255, 255, 61 ],
+         [ 132, 193, 255 ], 
+         [ 255, 255, 132 ],
+         [ 25, 140, 255 ],
+         [ 61, 255, 158 ],
+         [ 255, 140, 25 ],
+         [ 168, 255, 168 ],
+         [ 132, 255, 255 ],
+         [ 140, 255, 25 ], 
+         [ 158, 61, 255 ],
+         [ 255, 132, 255 ],
+         [ 255, 255, 168 ],
+         [ 255, 158, 61 ],
+         [ 211, 255, 168 ],
+         [ 255, 61, 61 ],
+         [ 132, 132, 255 ], 
+         [ 96, 255, 96 ],
+         [ 61, 255, 255 ],
+         [ 255, 211, 168 ],
+         [ 255, 25, 140 ],
+         [ 25, 25, 255 ],
+         [ 255, 255, 25 ], 
+         [ 255, 96, 96 ],
+         [ 96, 255, 175 ], 
+         [ 96, 175, 255 ]
+      ],
+      "__class__": "ColorArray"
+   },
+   "7e6febf4-ca5c-4480-beae-3404212d8e48": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "holeid",
+      "description": "",
+      "values": "95c44ffa-965b-4f32-af97-3a53768303ba",
+      "__class__": "Legend"
+   },
+   "43a206d8-1beb-4d35-a528-4f422f34a92d": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "name": "holeid",
+      "description": "",
+      "location": "vertices",
+      "array": "aa6fec60-fefe-4e5f-b742-e581ec73b769",
+      "legends": [
+         "78ba26b7-1c9a-4880-8580-d574b49e6ecc",
+         "7e6febf4-ca5c-4480-beae-3404212d8e48"
+      ],
+      "__class__": "MappedData"
+   },
+   "24b86b64-90c9-448b-b0de-2dab6feae213": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "array": {
+         "start": 159,
+         "dtype": "<f8",
+         "length": 892
+      },
+      "__class__": "Vector3Array"
+   },
+   "fbd1ec9c-ccd6-4dfd-ab3e-e8d17ea2fcb1": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "origin": [
+         0,
+         0,
+         0
+      ],
+      "vertices": "24b86b64-90c9-448b-b0de-2dab6feae213",
+      "__class__": "PntSetGeometry"
+   },
+   "538089c7-d2f0-4260-ba91-7ae674b9bdea": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "collar",
+      "description": "",
+      "data": [
+         "43a206d8-1beb-4d35-a528-4f422f34a92d"
+      ],
+      "color": [
+         174,
+         199,
+         232
+      ],
+      "geometry": "fbd1ec9c-ccd6-4dfd-ab3e-e8d17ea2fcb1",
+      "textures": [],
+      "subtype": "point",
+      "__class__": "PntSetElement"
+   },
+   "91bf26c2-c955-4480-98f5-4d9d14f14601": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 1051,
+         "dtype": "<f8",
+         "length": 14533
+      },
+      "__class__": "ScalarArray"
+   },
+   "6468dbdb-cb35-4c0d-bbbd-1faa49150ca3": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "CU_pct",
+      "description": "",
+      "location": "segments",
+      "array": "91bf26c2-c955-4480-98f5-4d9d14f14601",
+      "__class__": "ScalarData"
+   },
+   "85b5d4e0-06f5-4d9f-a895-f12d0ef81190": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 15584,
+         "dtype": "<f8",
+         "length": 9964
+      },
+      "__class__": "ScalarArray"
+   },
+   "79c34d45-d198-4b4a-b066-542c96878bc9": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "DENSITY",
+      "description": "",
+      "location": "segments",
+      "array": "85b5d4e0-06f5-4d9f-a895-f12d0ef81190",
+      "__class__": "ScalarData"
+   },
+   "7ccf8ee0-b037-44fd-a124-ad279b57d038": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 25548,
+         "dtype": "<f8",
+         "length": 14252
+      },
+      "__class__": "ScalarArray"
+   },
+   "e864aa11-44dc-4bb6-a312-08ec569f76a5": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "AG_gpt",
+      "description": "",
+      "location": "segments",
+      "array": "7ccf8ee0-b037-44fd-a124-ad279b57d038",
+      "__class__": "ScalarData"
+   },
+   "a6e5c2cc-acdf-4596-9d31-9b9e39bbef2e": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 39800,
+         "dtype": "<f8",
+         "length": 15347
+      },
+      "__class__": "ScalarArray"
+   },
+   "bc057cef-0eb6-4a13-a213-c388ee81fc0a": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "AU_gpt",
+      "description": "",
+      "location": "segments",
+      "array": "a6e5c2cc-acdf-4596-9d31-9b9e39bbef2e",
+      "__class__": "ScalarData"
+   },
+   "3b515c11-1bb8-4ce4-8f54-289254d2fa1c": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 55147,
+         "dtype": "<f8",
+         "length": 3301
+      },
+      "__class__": "ScalarArray"
+   },
+   "3afe4e07-807a-42e9-b5ba-09157f90c058": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "RECOV",
+      "description": "",
+      "location": "segments",
+      "array": "3b515c11-1bb8-4ce4-8f54-289254d2fa1c",
+      "__class__": "ScalarData"
+   },
+   "6dee20aa-c143-42bb-9d40-4ebcbc661548": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 58448,
+         "dtype": "<f8",
+         "length": 6566
+      },
+      "__class__": "ScalarArray"
+   },
+   "292ff592-4a81-4802-bf09-de72fe5e64a0": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "S_pct",
+      "description": "",
+      "location": "segments",
+      "array": "6dee20aa-c143-42bb-9d40-4ebcbc661548",
+      "__class__": "ScalarData"
+   },
+   "dfa36d76-db43-4e9f-8d3d-85893d7c44fa": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 65014,
+         "dtype": "<f8",
+         "length": 18729
+      },
+      "__class__": "ScalarArray"
+   },
+   "0ed882e1-5d33-422a-9576-bcea91c7b63b": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "MO_ppm",
+      "description": "",
+      "location": "segments",
+      "array": "dfa36d76-db43-4e9f-8d3d-85893d7c44fa",
+      "__class__": "ScalarData"
+   },
+   "1f85d8eb-de71-4892-b7b4-25cd00abf55e": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 83743,
+         "dtype": "<f8",
+         "length": 16338
+      },
+      "__class__": "ScalarArray"
+   },
+   "2880f5a6-a025-4cc0-a82e-0ef1f2452ee4": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "AS_ppm",
+      "description": "",
+      "location": "segments",
+      "array": "1f85d8eb-de71-4892-b7b4-25cd00abf55e",
+      "__class__": "ScalarData"
+   },
+   "982c6aea-fcbe-410f-aac1-f14503dc55b5": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 100081,
+         "dtype": "<i8",
+         "length": 1152
+      },
+      "__class__": "ScalarArray"
+   },
+   "c03946c3-8472-4f07-8ac0-d35b9ff1c945": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         "Ignored",
+         "Ore",
+         "waste"
+      ],
+      "__class__": "StringArray"
+   },
+   "89a190db-1348-431b-9557-2f597d44f953": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "Final_cut",
+      "description": "",
+      "values": "c03946c3-8472-4f07-8ac0-d35b9ff1c945",
+      "__class__": "Legend"
+   },
+   "1d725801-a4ee-45a8-bb86-3c7a0ce1c0c9": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         [116,55,240],
+         [87,148,108],
+         [198,250,190]
+      ],
+      "__class__": "ColorArray"
+   },
+   "3849d694-04a4-44cb-9f57-15622d033c38": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "Final_cut",
+      "description": "",
+      "values": "1d725801-a4ee-45a8-bb86-3c7a0ce1c0c9",
+      "__class__": "Legend"
+   },
+   "a61d96a0-b5cf-478a-b612-bad21007142e": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "Final_cut",
+      "description": "",
+      "location": "segments",
+      "array": "982c6aea-fcbe-410f-aac1-f14503dc55b5",
+      "legends": [
+         "89a190db-1348-431b-9557-2f597d44f953",
+         "3849d694-04a4-44cb-9f57-15622d033c38"
+      ],
+      "__class__": "MappedData"
+   },
+   "a445cefe-024f-477f-98fb-183e5dd4f9de": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 101233,
+         "dtype": "<i8",
+         "length": 261
+      },
+      "__class__": "ScalarArray"
+   },
+   "1c6dbdb1-df1c-4484-9462-ac04ec6cd016": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         "WP001","WP002","WP003","WP004","WP005",
+         "WP006","WP007","WP008","WP009","WP010",
+         "WP011","WP012","WP013","WP014","WP015",
+         "WP016","WP017","WP018","WP019","WP020",
+         "WP021","WP022","WP023","WP025","WP026",
+         "WP027","WP028","WP029","WP030","WP031",
+         "WP032","WP033","WP034","WP035","WP036",
+         "WP037","WP038","WP039","WP040","WP041",
+         "WP043","WP044","WP045","WP046","WP047",
+         "WP048","WP049","WP050","WP052","WP053",
+         "WP054","WP055","WP056","WP057","WP058"
+      ],
+      "__class__": "StringArray"
+   },
+   "c38e23f2-1e87-4f1c-be4c-6bff2d30aa0f": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "holeid",
+      "description": "",
+      "values": "1c6dbdb1-df1c-4484-9462-ac04ec6cd016",
+      "__class__": "Legend"
+   },
+   "30fff2d0-084f-45cd-ae41-1731ca049a76": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": [
+         [61,255,255],
+         [255,61,158],
+         [255,61,61],
+         [211,255,168],
+         [255,255,61],
+         [255,61,61],
+         [25,255,255],
+         [61,61,255],
+         [255,175,96],
+         [132,255,255],
+         [193,255,132],
+         [255,132,255],
+         [255,96,175],
+         [61,255,158],
+         [96,175,255],
+         [61,255,158],
+         [255,255,168],
+         [132,255,132],
+         [96,255,255],
+         [175,255,96],
+         [175,96,255],
+         [255,25,25],
+         [132,255,193],
+         [255,25,255],
+         [168,255,168],
+         [158,61,255],
+         [25,25,255],
+         [96,255,96],
+         [255,255,132],
+         [255,168,168],
+         [132,193,255],
+         [140,255,25],
+         [255,255,96],
+         [61,255,61],
+         [255,255,25],
+         [255,140,25],
+         [96,96,255],
+         [255,132,193],
+         [25,255,25],
+         [255,211,168],
+         [96,255,175],
+         [25,255,140],
+         [255,61,255],
+         [255,193,132],
+         [140,25,255],
+         [255,158,61],
+         [255,25,140],
+         [255,96,96],
+         [255,96,255],
+         [158,255,61],
+         [61,158,255],
+         [193,132,255],
+         [255,132,132],
+         [25,140,255],
+         [132,132,255]
+      ],
+      "__class__": "ColorArray"
+   },
+   "6d06967e-de74-4dc8-857b-c8da9538fdc7": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "holeid",
+      "description": "",
+      "values": "30fff2d0-084f-45cd-ae41-1731ca049a76",
+      "__class__": "Legend"
+   },
+   "351d1919-f577-426d-95bd-dab287b4b545": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "name": "holeid",
+      "description": "",
+      "location": "segments",
+      "array": "a445cefe-024f-477f-98fb-183e5dd4f9de",
+      "legends": [
+         "c38e23f2-1e87-4f1c-be4c-6bff2d30aa0f",
+         "6d06967e-de74-4dc8-857b-c8da9538fdc7"
+      ],
+      "__class__": "MappedData"
+   },
+   "357241d5-00c1-4689-9320-4443e1c5de9b": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 101494,
+         "dtype": "<f8",
+         "length": 160194
+      },
+      "__class__": "Vector3Array"
+   },
+   "0bb3fe9d-e0ae-4ad7-8117-8b83058bd3ef": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "array": {
+         "start": 261688,
+         "dtype": "<i8",
+         "length": 14294
+      },
+      "__class__": "Int2Array"
+   },
+   "8e30c134-6371-431d-a12b-f99b33901b70": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-02-27T00:21:31Z",
+      "origin": [0,0,0],
+      "vertices": "357241d5-00c1-4689-9320-4443e1c5de9b",
+      "segments": "0bb3fe9d-e0ae-4ad7-8117-8b83058bd3ef",
+      "__class__": "LineSetGeometry"
+   },
+   "39daee76-e38d-44a6-b1ad-5fb16796ce9a": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-08-29T18:25:22Z",
+      "name": "wolfpass_WP_assay",
+      "description": "",
+      "data": [
+         "6468dbdb-cb35-4c0d-bbbd-1faa49150ca3",
+         "79c34d45-d198-4b4a-b066-542c96878bc9",
+         "e864aa11-44dc-4bb6-a312-08ec569f76a5",
+         "bc057cef-0eb6-4a13-a213-c388ee81fc0a",
+         "3afe4e07-807a-42e9-b5ba-09157f90c058",
+         "292ff592-4a81-4802-bf09-de72fe5e64a0",
+         "0ed882e1-5d33-422a-9576-bcea91c7b63b",
+         "2880f5a6-a025-4cc0-a82e-0ef1f2452ee4",
+         "a61d96a0-b5cf-478a-b612-bad21007142e",
+         "351d1919-f577-426d-95bd-dab287b4b545"
+      ],
+      "color": [199,199,199],
+      "geometry": "8e30c134-6371-431d-a12b-f99b33901b70",
+      "subtype": "line",
+      "__class__": "LineSetElement"
+   },
+   "baff1938-18a5-45dd-a13b-88c602e427db": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 275982,
+         "dtype": "<f8",
+         "length": 245367
+      },
+      "__class__": "ScalarArray"
+   },
+   "a7edab72-587a-40c9-8040-5b2b4842fa37": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "name": "Elevation",
+      "description": "",
+      "location": "vertices",
+      "array": "baff1938-18a5-45dd-a13b-88c602e427db",
+      "__class__": "ScalarData"
+   },
+   "ab6f9cc5-e48b-4d87-8575-201302d193b6": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 521349,
+         "dtype": "<f8",
+         "length": 671393
+      },
+      "__class__": "Vector3Array"
+   },
+   "caf5db70-1237-46e4-8f38-adc66a6f0434": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 1192742,
+         "dtype": "<i8",
+         "length": 267390
+      },
+      "__class__": "Int3Array"
+   },
+   "c766d7f3-d872-4d22-afec-54790eefbf1c": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "origin": [0,0,0],
+      "vertices": "ab6f9cc5-e48b-4d87-8575-201302d193b6",
+      "triangles": "caf5db70-1237-46e4-8f38-adc66a6f0434",
+      "__class__": "SurfGeometry"
+   },
+   "697f7955-9d48-46c4-addf-34d2e3fba525": {
+      "date_created": "2017-08-29T18:25:30Z",
+      "date_modified": "2017-08-29T18:25:30Z",
+      "name": "",
+      "description": "",
+      "origin": [443200,491750,0],
+      "axis_u": [4425,0,0],
+      "axis_v": [0,3690,0],
+      "image": {
+         "start": 1460132,
+         "dtype": "image/png",
+         "length": 872539
+      },
+      "__class__": "ImageTexture"
+   },
+   "91f54905-5051-49e2-8de6-25c97f23a8e2": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-08-29T18:25:30Z",
+      "name": "Topography",
+      "description": "",
+      "data": [
+         "a7edab72-587a-40c9-8040-5b2b4842fa37"
+      ],
+      "color": [152,223,138],
+      "geometry": "c766d7f3-d872-4d22-afec-54790eefbf1c",
+      "textures": [
+         "697f7955-9d48-46c4-addf-34d2e3fba525"
+      ],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "9a430ccb-ee89-44a0-b978-d2b25d623af2": {
+      "date_created": "2017-02-27T00:21:32Z",
+      "date_modified": "2017-02-27T00:21:32Z",
+      "array": {
+         "start": 2332671,
+         "dtype": "<f8",
+         "length": 812893
+      },
+      "__class__": "Vector3Array"
+   },
+   "2c74bb64-9711-4150-aa32-7c36c54c8c15": {
+      "date_created": "2017-02-27T00:21:32Z",
+      "date_modified": "2017-02-27T00:21:32Z",
+      "array": {
+         "start": 3145564,
+         "dtype": "<i8",
+         "length": 366411
+      },
+      "__class__": "Int3Array"
+   },
+   "7e1820b7-69b3-4239-8671-b6962daf4690": {
+      "date_created": "2017-02-27T00:21:32Z",
+      "date_modified": "2017-02-27T00:21:32Z",
+      "origin": [0,0,0],
+      "vertices": "9a430ccb-ee89-44a0-b978-d2b25d623af2",
+      "triangles": "2c74bb64-9711-4150-aa32-7c36c54c8c15",
+      "__class__": "SurfGeometry"
+   },
+   "12380ba7-6864-49e3-b873-7793c034b84d": {
+      "date_created": "2017-02-27T00:21:32Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "Basement",
+      "description": "",
+      "data": [],
+      "color": [214,39,40],
+      "geometry": "7e1820b7-69b3-4239-8671-b6962daf4690",
+      "textures": [],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "b8eee73f-04d9-47b4-b159-ca05b8b386dc": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 3511975,
+         "dtype": "<f8",
+         "length": 764944
+      },
+      "__class__": "Vector3Array"
+   },
+   "e5d88471-5d05-413a-851c-cdb0633f14bd": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 4276919,
+         "dtype": "<i8",
+         "length": 341809
+      },
+      "__class__": "Int3Array"
+   },
+   "28a10326-3506-4b5c-8570-f8640e61ebb9": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "origin": [0,0,0],
+      "vertices": "b8eee73f-04d9-47b4-b159-ca05b8b386dc",
+      "triangles": "e5d88471-5d05-413a-851c-cdb0633f14bd",
+      "__class__": "SurfGeometry"
+   },
+   "74d84d14-3a3b-40aa-83f0-08a0795c1842": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "Early Diorite",
+      "description": "",
+      "data": [],
+      "color": [227,119,194],
+      "geometry": "28a10326-3506-4b5c-8570-f8640e61ebb9",
+      "textures": [],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "69aa4d7a-e909-4615-b3d9-3c4c62520b23": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 4618728,
+         "dtype": "<f8",
+         "length": 1020471
+      },
+      "__class__": "Vector3Array"
+   },
+   "d1a810a4-820f-4481-99e9-76ddaa637069": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 5639199,
+         "dtype": "<i8",
+         "length": 476545
+      },
+      "__class__": "Int3Array"
+   },
+   "564bffc6-4d68-480b-997e-347835c284e5": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "origin": [0,0,0],
+      "vertices": "69aa4d7a-e909-4615-b3d9-3c4c62520b23",
+      "triangles": "d1a810a4-820f-4481-99e9-76ddaa637069",
+      "__class__": "SurfGeometry"
+   },
+   "3ecc6939-241e-422e-ada0-99b2f656b806": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "Intermineral diorite",
+      "description": "",
+      "data": [],
+      "color": [247,182,210],
+      "geometry": "564bffc6-4d68-480b-997e-347835c284e5",
+      "textures": [],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "6d76b1c7-e35b-47a7-a6ab-6bb80017ec9b": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "array": {
+         "start": 6115744,
+         "dtype": "<f8",
+         "length": 364716
+      },
+      "__class__": "Vector3Array"
+   },
+   "71eb4fec-d9af-401e-91f5-e468fc17cd78": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "array": {
+         "start": 6480460,
+         "dtype": "<i8",
+         "length": 179363
+      },
+      "__class__": "Int3Array"
+   },
+   "6dc4014b-4322-4772-ab77-0c264bd4dcb0": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "origin": [0,0,0],
+      "vertices": "6d76b1c7-e35b-47a7-a6ab-6bb80017ec9b",
+      "triangles": "71eb4fec-d9af-401e-91f5-e468fc17cd78",
+      "__class__": "SurfGeometry"
+   },
+   "726b37cb-ad38-44a0-bb4c-6ad3ea4ab3f1": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "Dacite",
+      "description": "",
+      "data": [],
+      "color": [152,223,138],
+      "geometry": "6dc4014b-4322-4772-ab77-0c264bd4dcb0",
+      "textures": [],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "42b5a211-6fee-4fe2-942b-65e17efec5e3": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 6659823,
+         "dtype": "<f8",
+         "length": 1014649
+      },
+      "__class__": "Vector3Array"
+   },
+   "0e9f73b1-e90f-4b28-bb32-50258ea14b1e": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "array": {
+         "start": 7674472,
+         "dtype": "<i8",
+         "length": 419838
+      },
+      "__class__": "Int3Array"
+   },
+   "1354e6da-04f6-41f5-ab97-e33d055b295a": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-02-27T00:21:27Z",
+      "origin": [0,0,0],
+      "vertices": "42b5a211-6fee-4fe2-942b-65e17efec5e3",
+      "triangles": "0e9f73b1-e90f-4b28-bb32-50258ea14b1e",
+      "__class__": "SurfGeometry"
+   },
+   "de99b692-3bc7-429e-a229-1254e69495d9": {
+      "date_created": "2017-02-27T00:21:27Z",
+      "date_modified": "2017-08-29T18:25:14Z",
+      "name": "Cover",
+      "description": "",
+      "data": [],
+      "color": [197,176,213],
+      "geometry": "1354e6da-04f6-41f5-ab97-e33d055b295a",
+      "textures": [],
+      "subtype": "surface",
+      "__class__": "SurfElement"
+   },
+   "a8619a26-7495-4083-9438-a611ab915f2a": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "array": {
+         "start": 8094310,
+         "dtype": "<f8",
+         "length": 12739166
+      },
+      "__class__": "ScalarArray"
+   },
+   "c6a68c40-7a23-432b-a04a-31f6e855a785": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "name": "CU_pct",
+      "description": "",
+      "location": "cells",
+      "array": "a8619a26-7495-4083-9438-a611ab915f2a",
+      "__class__": "ScalarData"
+   },
+   "0ccfc3df-bf7d-4c99-8aaa-cc4bece06f15": {
+      "date_created": "2017-02-27T00:21:28Z",
+      "date_modified": "2017-02-27T00:21:28Z",
+      "origin": [444700,492800,2330],
+      "tensor_u": [
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10
+      ],
+      "tensor_v": [
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10
+      ],
+      "tensor_w": [
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+         10,10,10,10,10,10
+      ],
+      "axis_u": [1,0,0],
+      "axis_v": [0,1,0],
+      "axis_w": [0,0,1],
+      "__class__": "VolGridGeometry"
+   },
+   "e6cc3e55-d6b3-4b26-bbac-4c490c1b465a": {
+      "date_created": "2017-02-27T00:21:31Z",
+      "date_modified": "2017-08-29T18:25:23Z",
+      "name": "Block Model",
+      "description": "",
+      "data": [
+         "c6a68c40-7a23-432b-a04a-31f6e855a785"
+      ],
+      "color": [219,219,141],
+      "geometry": "0ccfc3df-bf7d-4c99-8aaa-cc4bece06f15",
+      "subtype": "volume",
+      "__class__": "VolElement"
+   },
+   "b3a1eb11-d893-4e15-9b4d-6b7fdd4b35da": {
+      "date_created": "2017-02-27T00:21:32Z",
+      "date_modified": "2017-08-29T18:25:47Z",
+      "name": "Wolfpass",
+      "description": "OMF Wolfpass model",
+      "author": "",
+      "revision": "",
+      "units": "",
+      "elements": [
+         "538089c7-d2f0-4260-ba91-7ae674b9bdea",
+         "39daee76-e38d-44a6-b1ad-5fb16796ce9a",
+         "91f54905-5051-49e2-8de6-25c97f23a8e2",
+         "12380ba7-6864-49e3-b873-7793c034b84d",
+         "74d84d14-3a3b-40aa-83f0-08a0795c1842",
+         "3ecc6939-241e-422e-ada0-99b2f656b806",
+         "726b37cb-ad38-44a0-bb4c-6ad3ea4ab3f1",
+         "de99b692-3bc7-429e-a229-1254e69495d9",
+         "e6cc3e55-d6b3-4b26-bbac-4c490c1b465a"
+      ],
+      "origin": [0,0,0],
+      "__class__": "Project"
+   }
+}

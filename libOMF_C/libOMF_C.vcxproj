@@ -150,7 +150,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="libJSON.h" />
-    <ClInclude Include="lib_local.h" />
+    <ClInclude Include="libJSON_local.h" />
+    <ClInclude Include="libOMF_local.h" />
     <ClInclude Include="libOMF_C.h" />
     <ClInclude Include="miniz.h" />
     <ClInclude Include="pch.h" />

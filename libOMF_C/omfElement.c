@@ -86,7 +86,7 @@ void omfElemDestroy(OmfElem * const elem)
 
    _OmfElemDestroyContent(elem);
    
-   memDestroy(elem);
+   _OmfMemDestroy(elem);
 
    return;
 }
@@ -142,7 +142,7 @@ OmfColor omfElemGetColor(OmfElem const * const elem)
 {
    OmfColor color;
 
-   memClearType(OmfColor, &color);
+   _OmfMemClearType(OmfColor, &color);
 
    returnIf(
          !omfIsStarted() ||

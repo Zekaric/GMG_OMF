@@ -42,12 +42,12 @@ OmfProj *_OmfProjCreate(void)
 
    returnNullIf(!omfIsStarted());
 
-   project = memCreateType(OmfProj);
+   project = _OmfMemCreateType(OmfProj);
    returnNullIf(!project);
 
    if (!_OmfProjCreateContent(project))
    {
-      memDestroy(project);
+      _OmfMemDestroy(project);
       return NULL;
    }
 
@@ -61,7 +61,7 @@ OmfBool _OmfProjCreateContent(OmfProj * const project)
 {
    returnFalseIf(!omfIsStarted());
 
-   memClearType(OmfProj, project);
+   _OmfMemClearType(OmfProj, project);
 
    return omfTRUE;
 }
@@ -137,7 +137,7 @@ OmfCoord omfProjGetOrigin(OmfProj const * const project)
 {
    OmfCoord vec;
 
-   memClearType(OmfCoord, &vec);
+   _OmfMemClearType(OmfCoord, &vec);
 
    returnIf(
          !omfIsStarted() ||

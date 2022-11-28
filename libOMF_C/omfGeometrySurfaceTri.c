@@ -40,7 +40,7 @@ OmfGeomSurfTri *_OmfGeomSurfTriCreate(void)
 {
    OmfGeomSurfTri *geom;
 
-   geom = memCreateType(OmfGeomSurfTri);
+   geom = _OmfMemCreateType(OmfGeomSurfTri);
    returnNullIf(!geom);
 
    if (!_OmfGeomSurfTriCreateContent(geom))
@@ -57,7 +57,7 @@ func: _OmfGeomSurfTriCreateContent
 **************************************************************************************************/
 OmfBool _OmfGeomSurfTriCreateContent(OmfGeomSurfTri * const geom)
 {
-   memClearType(OmfGeomSurfTri, geom);
+   _OmfMemClearType(OmfGeomSurfTri, geom);
    geom->typeElem = omfElemTypeSURF_TRI;
 
    return omfTRUE;

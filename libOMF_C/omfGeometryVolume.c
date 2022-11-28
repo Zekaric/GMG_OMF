@@ -40,7 +40,7 @@ OmfGeomVol *_OmfGeomVolCreate(void)
 {
    OmfGeomVol *geom;
 
-   geom = memCreateType(OmfGeomVol);
+   geom = _OmfMemCreateType(OmfGeomVol);
    returnNullIf(!geom);
 
    if (!_OmfGeomVolCreateContent(geom))
@@ -57,7 +57,7 @@ func: _OmfGeomVolCreateContent
 **************************************************************************************************/
 OmfBool _OmfGeomVolCreateContent(OmfGeomVol * const geom)
 {
-   memClearType(OmfGeomVol, geom);
+   _OmfMemClearType(OmfGeomVol, geom);
    geom->typeElem = omfElemTypeVOL;
 
    return omfTRUE;
@@ -120,7 +120,7 @@ OmfVector omfGeomVolGetAxisU(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
-   memClearType(OmfVector, &vec);
+   _OmfMemClearType(OmfVector, &vec);
 
    returnIf(
          !omfIsStarted() ||
@@ -137,7 +137,7 @@ OmfVector omfGeomVolGetAxisV(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
-   memClearType(OmfVector, &vec);
+   _OmfMemClearType(OmfVector, &vec);
 
    returnIf(
          !omfIsStarted() ||
@@ -154,7 +154,7 @@ OmfVector omfGeomVolGetAxisW(OmfGeomVol const * const geom)
 {
    OmfVector vec;
 
-   memClearType(OmfVector, &vec);
+   _OmfMemClearType(OmfVector, &vec);
 
    returnIf(
          !omfIsStarted() ||

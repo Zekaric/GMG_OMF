@@ -40,7 +40,7 @@ OmfGeomLineSet *_OmfGeomLineSetCreate(void)
 {
    OmfGeomLineSet *geom;
 
-   geom = memCreateType(OmfGeomLineSet);
+   geom = _OmfMemCreateType(OmfGeomLineSet);
    returnNullIf(!geom);
 
    if (!_OmfGeomLineSetCreateContent(geom))
@@ -57,7 +57,7 @@ func: _OmfGeomLineSetCreateContent
 **************************************************************************************************/
 OmfBool _OmfGeomLineSetCreateContent(OmfGeomLineSet * const geom)
 {
-   memClearType(OmfGeomLineSet, geom);
+   _OmfMemClearType(OmfGeomLineSet, geom);
    geom->typeElem = omfElemTypeLINE_SET;
 
    return omfTRUE;

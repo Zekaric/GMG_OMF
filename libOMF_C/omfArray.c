@@ -42,12 +42,12 @@ OmfArray *_OmfArrayCreate(OmfArrayType const type)
 
    returnNullIf(!omfIsStarted());
 
-   arrayData = memCreateType(OmfArray);
+   arrayData = _OmfMemCreateType(OmfArray);
    returnNullIf(!arrayData);
 
    if (!_OmfArrayCreateContent(arrayData, type))
    {
-      memDestroy(arrayData);
+      _OmfMemDestroy(arrayData);
       return NULL;
    }
 
@@ -61,7 +61,7 @@ OmfBool _OmfArrayCreateContent(OmfArray * const arrayData, OmfArrayType const ty
 {
    returnFalseIf(!omfIsStarted());
 
-   memClearType(OmfArray, arrayData);
+   _OmfMemClearType(OmfArray, arrayData);
    arrayData->bufferType = type;
 
    return omfTRUE;

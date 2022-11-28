@@ -16,13 +16,16 @@ Precompiled header compilation.
 #include <Windows.h>
 
 #include <assert.h>
-#include <stdint.h>
+#include <locale.h>
 #include <stdbool.h>
-#include <guiddef.h>
+#include <stdint.h>
 #include <stdio.h>
 
+#include "libJSON.h"
+#include "libJSON_local.h"
+
 #include "libOMF_C.h"
-#include "lib_local.h"
+#include "libOMF_local.h"
 
 // miniz is a smaller (file count) implementation of the compression and zip archive handling
 // project can be found here  https://github.com/richgel999/miniz

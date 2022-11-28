@@ -221,7 +221,7 @@ void omfObjDestroy(OmfObj * const obj)
 
    _OmfObjDestroyContent(obj);
    
-   memDestroy(obj);
+   _OmfMemDestroy(obj);
 
    return;
 }
@@ -343,7 +343,7 @@ OmfId omfObjGetId(OmfObj const * const obj)
 {
    OmfId id;
 
-   memClearType(OmfId, &id);
+   _OmfMemClearType(OmfId, &id);
 
    returnIf(
          !omfIsStarted() ||

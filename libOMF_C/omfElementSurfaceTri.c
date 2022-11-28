@@ -40,12 +40,12 @@ OmfElemSurfTri *_OmfElemSurfTriCreate(void)
 {
    OmfElemSurfTri *elem;
 
-   elem = memCreateType(OmfElemSurfTri);
+   elem = _OmfMemCreateType(OmfElemSurfTri);
    returnNullIf(!elem);
 
    if (!_OmfElemSurfTriCreateContent(elem))
    {
-      memDestroy(elem);
+      _OmfMemDestroy(elem);
       return NULL;
    }
 
@@ -57,7 +57,7 @@ func: _OmfElemSurfTriCreateContent
 **************************************************************************************************/
 OmfBool _OmfElemSurfTriCreateContent(OmfElemSurfTri * const elem)
 {
-   memClearType(OmfElemSurfTri, elem);
+   _OmfMemClearType(OmfElemSurfTri, elem);
    elem->typeElem    = omfElemTypeSURF_GRID;
    elem->typeElemSub = omfElemSubTypeSURF_TRI_SURFACE_DEFAULT;
 

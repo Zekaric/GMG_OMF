@@ -40,12 +40,12 @@ OmfElemLineSet *_OmfElemLineSetCreate(void)
 {
    OmfElemLineSet *elem;
 
-   elem = memCreateType(OmfElemLineSet);
+   elem = _OmfMemCreateType(OmfElemLineSet);
    returnNullIf(!elem);
 
    if (!_OmfElemLineSetCreateContent(elem))
    {
-      memDestroy(elem);
+      _OmfMemDestroy(elem);
       return NULL;
    }
 
@@ -57,7 +57,7 @@ func: _OmfElemLineSetCreateContent
 **************************************************************************************************/
 OmfBool _OmfElemLineSetCreateContent(OmfElemLineSet * const elem)
 {
-   memClearType(OmfElemLineSet, elem);
+   _OmfMemClearType(OmfElemLineSet, elem);
    elem->typeElem    = omfElemTypeLINE_SET;
    elem->typeElemSub = omfElemSubTypeLINE_SET_LINE_DEFAULT;
 

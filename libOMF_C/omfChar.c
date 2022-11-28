@@ -40,7 +40,7 @@ OmfChar *omfCharClone(OmfChar const * const value)
 {
    returnNullIf(!value);
 
-   return memCloneTypeArray(omfCharGetSize(value) + 1, OmfChar, value);
+   return _OmfMemCloneTypeArray(omfCharGetSize(value) + 1, OmfChar, value);
 }
 
 /**************************************************************************************************
@@ -59,14 +59,14 @@ OmfChar *omfCharCreateFromWchar(wchar_t const * const value)
    returnNullIf(!count);
 
    // Create the buffer for the new string.
-   ctemp = memCreateTypeArray(count, OmfChar);
+   ctemp = _OmfMemCreateTypeArray(count, OmfChar);
    returnNullIf(!ctemp);
 
    // Convert the string.
    if (!WideCharToMultiByte(CP_UTF8, 0, value, -1, (LPSTR) ctemp, count, NULL, NULL))
    {
       // Something went wrong.
-      memDestroy(ctemp);
+      _OmfMemDestroy(ctemp);
       return NULL;
    }
 
@@ -78,7 +78,7 @@ func: omfCharDestroy
 **************************************************************************************************/
 void omfCharDestroy(OmfChar * const value)
 {
-   memDestroy(value);
+   _OmfMemDestroy(value);
 }
 
 /**************************************************************************************************
@@ -117,13 +117,13 @@ wchar_t *wcharCreateFromOmfChar(OmfChar const * const value)
    returnNullIf(!count);
    
    // Create the buffer for the new string.
-   ctemp = memCreateTypeArray(count, wchar_t);
+   ctemp = _OmfMemCreateTypeArray(count, wchar_t);
    returnNullIf(!ctemp);
 
    // Convert the string.
    if (!MultiByteToWideChar(CP_UTF8, 0, (LPCCH) value, -1, ctemp, count))
    {
-      memDestroy(ctemp);
+      _OmfMemDestroy(ctemp);
       return NULL;
    }
    
