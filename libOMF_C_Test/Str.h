@@ -1,10 +1,11 @@
 /**************************************************************************************************
-file:       pch
+file:       Str
 author:     Robbert de Groot
+company:    Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Precompiled header compilation.
+Simple dynamic string routines.
 **************************************************************************************************/
 
 /**************************************************************************************************
@@ -28,4 +29,43 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **************************************************************************************************/
 
-#include "pch.h"
+#pragma once
+
+/**************************************************************************************************
+include:
+**************************************************************************************************/
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/**************************************************************************************************
+constant:
+**************************************************************************************************/
+#define strCHUNK 32
+
+/**************************************************************************************************
+type:
+**************************************************************************************************/
+typedef struct
+{
+   int    length,
+          size;
+   char  *buffer;
+} Str;
+
+/**************************************************************************************************
+prototype:
+**************************************************************************************************/
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+bool strAppend( Str * const s, char const * const js);
+Str *strCreate( size_t const reserve);
+void strDestroy(Str * const s);
+bool strGrow(   Str * const s, size_t const count);
+
+#if defined(__cplusplus)
+}
+#endif

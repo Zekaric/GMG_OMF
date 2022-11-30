@@ -33,7 +33,7 @@
     <ClInclude Include="miniz.h">
       <Filter>miniz</Filter>
     </ClInclude>
-    <ClInclude Include="libJSON.h">
+    <ClInclude Include="libJSON_C.h">
       <Filter>json</Filter>
     </ClInclude>
     <ClInclude Include="libJSON_local.h">
@@ -104,7 +104,7 @@
     <ClCompile Include="omfObject.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libJSON.c">
+    <ClCompile Include="libJSON_C.c">
       <Filter>json</Filter>
     </ClCompile>
   </ItemGroup>

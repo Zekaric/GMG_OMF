@@ -31,7 +31,8 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 /**************************************************************************************************
 include:
 **************************************************************************************************/
-#include "pch.h"
+#include "libJSON_C.h"
+#include "libJSON_local.h"
 
 /**************************************************************************************************
 local:
@@ -86,8 +87,6 @@ static JsonBool       _WriteStringJson(         Json       * const json, JsonCha
 global:
 function:
 **************************************************************************************************/
-
-
 /**************************************************************************************************
 func: omfStart
 
@@ -142,7 +141,12 @@ Json *jsonCreateRead(void * const input,
 {
    Json *json;
 
-   returnNullIf(!_isStarted);
+   returnFalseIf(
+      !_isStarted    ||
+      !input         ||
+      !output        ||
+      !func_GetInput ||
+      !func_SetOutput);
 
    json = _JsonMemCreateType(Json);
    returnNullIf(!json);
@@ -163,7 +167,13 @@ JsonBool jsonCreateContentRead(Json * const json, void * const input,
    JsonBool (*func_GetInput)(void * const input, JsonChar * const letter), void * const output, 
    JsonBool (*func_SetOutput)(void * const output, JsonToken const token, JsonChar const * const value))
 {
-   returnFalseIf(!_isStarted);
+   returnFalseIf(
+      !_isStarted    ||
+      !json          ||
+      !input         ||
+      !output        ||
+      !func_GetInput ||
+      !func_SetOutput);
 
    _JsonMemClearType(Json, json);
 
@@ -185,7 +195,10 @@ Json *jsonCreateWrite(void * const output,
 {
    Json *json;
 
-   returnNullIf(!_isStarted);
+   returnFalseIf(
+      !_isStarted ||
+      !output     ||
+      !func_SetOutput);
 
    json = _JsonMemCreateType(Json);
    returnNullIf(!json);
@@ -205,7 +218,11 @@ func: jsonCreateContentWrite
 JsonBool jsonCreateContentWrite(Json * const json, void * const output, 
    JsonBool (*func_SetOutput)(void * const output, JsonChar const * const value))
 {
-   returnFalseIf(!_isStarted);
+   returnFalseIf(
+      !_isStarted ||
+      !json       ||
+      !output     ||
+      !func_SetOutput);
 
    _JsonMemClearType(Json, json);
 
@@ -290,6 +307,13 @@ JsonError jsonWriteArrayStop(Json * const json)
    // Remove the array scope from the scope stack.
    _ScopePop(json);
 
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
+
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
 
@@ -326,6 +350,13 @@ JsonError jsonWriteBoolean(Json * const json, JsonBool value)
       returnIf(!json->funcWrite_SetOutput(json->output, jsonStringFALSE), jsonErrorFAILED_WRITE);
    }
 
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
+
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
 
@@ -355,8 +386,15 @@ JsonError jsonWriteInteger(Json * const json, int64_t value)
    }
 
    // Convert the integer to a string.
-   _i64toa_s(value, (char *) buffer, 128, 10);
+   _i64toa_s(value, (char *) buffer, 32, 10);
    returnIf(!json->funcWrite_SetOutput(json->output, buffer), jsonErrorFAILED_WRITE);
+
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
 
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
@@ -387,6 +425,13 @@ JsonError jsonWriteNull(Json * const json)
 
    returnIf(!json->funcWrite_SetOutput(json->output, jsonStringNULL), jsonErrorFAILED_WRITE);
    
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
+
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
 
@@ -431,10 +476,17 @@ JsonError jsonWriteObjectStop(Json * const json)
    state = _StateGet(json);
    returnIf(!(state == jsonStateOBJECT_KEY_OR_OBJECT_STOP), jsonErrorCANNOT_OBJECT_STOP);
    
-   returnIf(!json->funcWrite_SetOutput(json->output, jsonStringARRAY_STOP), jsonErrorFAILED_WRITE);
+   returnIf(!json->funcWrite_SetOutput(json->output, jsonStringOBJECT_STOP), jsonErrorFAILED_WRITE);
 
    // Remove the array scope from the scope stack.
    _ScopePop(json);
+
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
 
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
@@ -467,6 +519,13 @@ JsonError jsonWriteReal(Json * const json, double value)
    // Convert the float to a string.
    _snprintf_s_l((char *) buffer, 32, 32, "%0.15g", _locale_c, value);
    returnIf(!json->funcWrite_SetOutput(json->output, buffer), jsonErrorFAILED_WRITE);
+
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
 
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
@@ -501,6 +560,13 @@ JsonError jsonWriteReal4(Json * const json, double value)
    // Convert the float to a string.
    _snprintf_s_l((char *) buffer, 32, 32, "%0.7g", _locale_c, value);
    returnIf(!json->funcWrite_SetOutput(json->output, buffer), jsonErrorFAILED_WRITE);
+
+   // We are in an object scope, toggle whether we are writing out the key.
+   if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
+   {
+      // Toggle whether we have set the key or not.
+      _ScopeSetIsWritingKey(json, jsonTRUE);
+   }
 
    // Indicate that the array has elements in it.
    _ScopeSetIsEmpty(json, jsonFALSE);
@@ -558,15 +624,15 @@ JsonError jsonWriteString(Json * const json, JsonChar const * const value)
          jsonErrorFAILED_WRITE);
    }
 
-   // Indicate that the current scope has something.
-   _ScopeSetIsEmpty(json, jsonFALSE);
-
    // We are in an object scope, toggle whether we are writing out the key.
    if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
    {
       // Toggle whether we have set the key or not.
       _ScopeSetIsWritingKey(json, !_ScopeIsWritingKey(json));
    }
+
+   // Indicate that the current scope has something.
+   _ScopeSetIsEmpty(json, jsonFALSE);
 
    return jsonErrorNONE;
 }
@@ -646,7 +712,7 @@ void *_JsonMemClone(size_t const size, void * const buf)
    dst = _memCreate(size);
    returnNullIf(!dst);
 
-   memmove(dst, buf, size);
+   memcpy(dst, buf, size);
 
    return dst;
 }
@@ -804,14 +870,14 @@ static JsonState _StateGet(Json * const json)
    // Object scope.
    if (_ScopeGetType(json) == jsonScopeTypeOBJECT)
    {
-      // Key value pair.  We are expecting a value.
+      // Key value pair.  We are expecting a key or close.
       if (_ScopeIsWritingKey(json))
       {
-         return jsonStateVALUE;
+         return jsonStateOBJECT_KEY_OR_OBJECT_STOP;
       }
 
-      // Key value pair.  We are expecting a key or close.
-      return jsonStateOBJECT_KEY_OR_OBJECT_STOP;
+      // Key value pair.  We are expecting a value.
+      return jsonStateVALUE;
    }
 
    // Root json element.
@@ -837,34 +903,34 @@ static JsonBool _WriteStringJson(Json * const json, JsonChar const * const value
 {
    JsonChar const *letter;
    JsonChar        letterString[2];
-   JsonError       error;
+   JsonBool        result;
 
    letterString[1] = 0;
 
    // For all letters in the null terminated string.
-   for (letter = value; *letter == 0; letter++)
+   for (letter = value; *letter != 0; letter++)
    {
       // Write out the escaped letter or the letter itself.
       // Not escaping unicode letters, they should already be properly encoded in the UTF-8 string.
       switch (*letter)
       {
       // Characters to escape.
-      case '\"': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\"");  break;
-      case '\\': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\");  break;
-      case '/':  error = json->funcWrite_SetOutput(json->output, (JsonChar *) "/");   break;
-      case '\b': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\b"); break;
-      case '\f': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\f"); break;
-      case '\n': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\n"); break;
-      case '\r': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\r"); break;
-      case '\t': error = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\t"); break;
+      case '\"': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\"");  break;
+      case '\\': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\");  break;
+      case '/':  result = json->funcWrite_SetOutput(json->output, (JsonChar *) "/");   break;
+      case '\b': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\b"); break;
+      case '\f': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\f"); break;
+      case '\n': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\n"); break;
+      case '\r': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\r"); break;
+      case '\t': result = json->funcWrite_SetOutput(json->output, (JsonChar *) "\\t"); break;
 
       // No excapting.
       default:   letterString[0] = *letter;
-                 error = json->funcWrite_SetOutput(json->output, letterString);       break;
+                 result = json->funcWrite_SetOutput(json->output, letterString);       break;
       }
 
       // There was a problem writing to the output.
-      returnFalseIf(error != jsonErrorNONE);
+      returnFalseIf(!result);
    }
 
    return jsonTRUE;

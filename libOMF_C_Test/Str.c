@@ -1,10 +1,10 @@
 /**************************************************************************************************
-file:       OmfElemLineSet
+file:       Str
 author:     Robbert de Groot
-copyright:  2022, Robbert de Groot
+company:    Robbert de Grootcopyright:  2022, Robbert de Groot
 
 description:
-Line set element 
+Simple dynamic string for testing purposes.
 **************************************************************************************************/
 
 /**************************************************************************************************
@@ -31,95 +31,106 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 /**************************************************************************************************
 include:
 **************************************************************************************************/
-#include "pch.h"
-
-/**************************************************************************************************
-local:
-constant:
-**************************************************************************************************/
-
-/**************************************************************************************************
-type:
-**************************************************************************************************/
-
-/**************************************************************************************************
-variable:
-**************************************************************************************************/
-
-/**************************************************************************************************
-prototype:
-**************************************************************************************************/
+#include "Str.h"
 
 /**************************************************************************************************
 global:
 function:
 **************************************************************************************************/
 /**************************************************************************************************
-func: _OmfElemLineSetCreate
+func: strAppend
 **************************************************************************************************/
-OmfElemLineSet *_OmfElemLineSetCreate(void)
+bool strAppend(Str * const s, char const * const js)
 {
-   OmfElemLineSet *elem;
+   int index,
+       count;
 
-   elem = _OmfMemCreateType(OmfElemLineSet);
-   returnNullIf(!elem);
-
-   if (!_OmfElemLineSetCreateContent(elem))
+   if (!s ||
+       !js)
    {
-      _OmfMemDestroy(elem);
-      return NULL;
+      return false;
    }
 
-   return elem;
+   count = (int) strlen(js);
+   strGrow(s, count);
+   
+   for (index = 0; index < count; index++)
+   {
+      s->buffer[s->length + index] = js[index];
+   }
+   s->length += count;
+
+   return true;
 }
 
 /**************************************************************************************************
-func: _OmfElemLineSetCreateContent
+func: strCreate
 **************************************************************************************************/
-OmfBool _OmfElemLineSetCreateContent(OmfElemLineSet * const elem)
+Str *strCreate(size_t const reserve)
 {
-   _OmfMemClearType(OmfElemLineSet, elem);
-   elem->typeElem    = omfElemTypeLINE_SET;
-   elem->typeElemSub = omfElemSubTypeLINE_SET_LINE_DEFAULT;
+   Str *s;
 
-   return omfTRUE;
+   s = (Str *) calloc(1, sizeof(Str));
+   if (!s)
+   {
+      return false;
+   }
+
+   s->length = 0;
+   s->size   = 0;
+   strGrow(s, reserve);
+
+   return s;
 }
 
 /**************************************************************************************************
-func: _OmfElemLineSetDestroyContent
+func: strDestroy
 **************************************************************************************************/
-void _OmfElemLineSetDestroyContent(OmfElemLineSet * const elem)
+void strDestroy(Str * const s)
 {
-   returnVoidIf(!elem);
+   if (!s)
+   {
+      return;
+   }
 
-   omfObjDestroyObj(elem->geometry);
+   free(s->buffer);
 
-   return;
+   s->length = 0;
+   s->size   = 0;
+
+   free(s);
 }
 
 /**************************************************************************************************
-func: omfElemLineSetGetGeometry
+func: strGrow
 **************************************************************************************************/
-OmfGeom *omfElemLineSetGetGeometry(OmfElemLineSet const * const elem)
+bool strGrow(Str * const s, size_t const count)
 {
-   returnNullIf(
-      !omfIsStarted() ||
-      !elem);
+   char *stemp;
 
-   return (OmfGeom *) elem->geometry;
+   if (s->length + count < s->size)
+   {
+      return true;
+   }
+
+   // What size should be our string.
+   while (s->size < s->length + count + 1)
+   {
+      s->size += strCHUNK;
+   }
+
+   stemp = (char *) calloc(s->size, sizeof(char));
+   if (!stemp)
+   {
+      return false;
+   }
+
+   memcpy(stemp, s->buffer, s->length);
+
+   free(s->buffer);
+
+   s->buffer = stemp;
+
+   return true;
 }
 
-/**************************************************************************************************
-func: omfElemLineSetSetGeometry
-**************************************************************************************************/
-OmfBool omfElemLineSetSetGeometry(OmfElemLineSet * const elem, 
-   OmfGeomLineSet * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !elem);
-
-   elem->geometry = value;
-
-   return omfTRUE;
-}

@@ -1,5 +1,5 @@
 /**************************************************************************************************
-file:       libJSON
+file:       libJSON_C
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
@@ -7,26 +7,50 @@ description:
 Simple JSON routines.
 **************************************************************************************************/
 
-#if !defined(LIB_JSON_ROBBERT_DE_GROOT)
-#define      LIB_JSON_ROBBERT_DE_GROOT
+/**************************************************************************************************
+MIT License
+
+Copyright (c) !!!!YEAR!!!!, Robbert de Groot
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, 
+sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or 
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT 
+OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**************************************************************************************************/
+
+#if !defined(LIB_JSON_RDG)
+#define      LIB_JSON_RDG
 
 /**************************************************************************************************
 include:
 **************************************************************************************************/
+#include <assert.h>
+#include <locale.h>
+#include <memory.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /**************************************************************************************************
 constant:
 **************************************************************************************************/
+#define jsonTRUE     true
+#define jsonFALSE    false
 
 /**************************************************************************************************
 type:
 **************************************************************************************************/
-typedef enum
-{
-   jsonFALSE,
-   jsonTRUE
-} JsonBool;
-
 typedef enum
 {
    jsonErrorNONE,
@@ -87,6 +111,8 @@ typedef enum
 } JsonToken;
 
 typedef unsigned char          Uft8Char;
+
+typedef bool                   JsonBool;
 typedef Uft8Char               JsonChar;
 typedef int32_t                JsonCount;
 typedef struct JsonScope       JsonScope;
@@ -116,6 +142,10 @@ struct JsonScope
 /**************************************************************************************************
 prototype:
 **************************************************************************************************/
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 JsonError jsonStart(                   void *(*memCreate)(size_t const size), void (*memDestroy)(void * const buffer), void (*memClear)(void * const buffer, size_t const size));
 void      jsonStop(                    void);
                                        
@@ -136,6 +166,11 @@ JsonError jsonWriteNull(               Json * const json);
 JsonError jsonWriteObjectStart(        Json * const json);
 JsonError jsonWriteObjectStop(         Json * const json);
 JsonError jsonWriteReal(               Json * const json, double value);
+JsonError jsonWriteReal4(              Json * const json, double value);
 JsonError jsonWriteString(             Json * const json, JsonChar const * const value);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
