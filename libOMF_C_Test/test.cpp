@@ -12,6 +12,22 @@ include:
 **************************************************************************************************/
 #include "pch.h"
 
+// This should get around the compiler error about no binary |=, |, & operator found for JsonError.
+inline JsonError operator |(JsonError a, JsonError b)
+{
+    return static_cast<JsonError>(static_cast<int>(a) | static_cast<int>(b));
+}
+
+inline JsonError operator &(JsonError a, JsonError b)
+{
+    return static_cast<JsonError>(static_cast<int>(a) & static_cast<int>(b));
+}
+
+inline JsonError& operator |=(JsonError& a, JsonError b)
+{
+    return a= a |b;
+}
+
 /**************************************************************************************************
 function:
 **************************************************************************************************/
@@ -175,8 +191,33 @@ func: write
 **************************************************************************************************/
 TEST(TestJSONRoutines, Write)
 {
-   Str   *s;
-   Json  *json;
+   Str         *s;
+   Json        *json;
+   JsonError    error;
+   char         result[] = 
+      "{"
+         "\"ValueTrue\":true,"
+         "\"ValueFalse\":false,"
+         "\"ValueNull\":null,"
+         "\"ValueString\":\"The quick brown fox jumped over the lazy dog.\","
+         "\"ValueInteger\":42,"
+         "\"ValueReal\":1.23456789012346,"
+         "\"ValueReal4\":1.234568,"
+         "\"ValueArrayInt\":[1,2,3,4,5,6,7,8,9,10],"
+         "\"ValueObject\":{"
+            "\"ValueTrue\":true,"
+            "\"ValueFalse\":false,"
+            "\"ValueNull\":null,"
+            "\"ValueString\":\"The quick brown fox jumped over the lazy dog.\","
+            "\"ValueInteger\":42,"
+            "\"ValueReal\":1.23456789012346,"
+            "\"ValueReal4\":1.234568,"
+            "\"ValueArrayInt\":[1,2,3,4,5,6,7,8,9,10],"
+            "\"ValueObject\":{"
+               "\"ValueString\":\"Ok, \\r\\n\\tThat's enough of this silliness.\""
+            "}"
+         "}"
+      "}";
 
    s = strCreate(0);
 
@@ -184,88 +225,121 @@ TEST(TestJSONRoutines, Write)
 
    json = jsonCreateWrite(s, _BufferAppendString);
 
-   jsonWriteObjectStart(json);
+   error  = jsonErrorNONE;
+   error |= jsonWriteObjectStart(json); 
    {
-      jsonWriteString( json, (JsonChar *) "ValueTrue");
-      jsonWriteBoolean(json, jsonTRUE);
+      error |= jsonWriteString( json, (JsonChar *) "ValueTrue");  
+      error |= jsonWriteBoolean(json, jsonTRUE);
 
-      jsonWriteString( json, (JsonChar *) "ValueFalse");
-      jsonWriteBoolean(json, jsonFALSE);
+      error |= jsonWriteString( json, (JsonChar *) "ValueFalse");
+      error |= jsonWriteBoolean(json, jsonFALSE);
 
-      jsonWriteString( json, (JsonChar *) "ValueNull");
-      jsonWriteNull(   json);
+      error |= jsonWriteString( json, (JsonChar *) "ValueNull");
+      error |= jsonWriteNull(   json);
 
-      jsonWriteString( json, (JsonChar *) "ValueString");
-      jsonWriteString( json, (JsonChar *) "The quick brown fox jumped over the lazy dog.");
+      error |= jsonWriteString( json, (JsonChar *) "ValueString");
+      error |= jsonWriteString( json, (JsonChar *) "The quick brown fox jumped over the lazy dog.");
 
-      jsonWriteString( json, (JsonChar *) "ValueInteger");
-      jsonWriteInteger(json, 42);
-
-      jsonWriteString( json, (JsonChar *) "ValueReal");
-      jsonWriteReal(   json, 1.234567890123456789);
-
-      jsonWriteString( json, (JsonChar *) "ValueReal4");
-      jsonWriteReal4(  json, 1.234567890123456789);
-
-      jsonWriteString( json, (JsonChar *) "ValueArrayInt");
-      jsonWriteArrayStart(json);
+      error |= jsonWriteString( json, (JsonChar *) "ValueInteger");
+      error |= jsonWriteInteger(json, 42);
+      
+      error |= jsonWriteString( json, (JsonChar *) "ValueReal");
+      error |= jsonWriteReal(   json, 1.234567890123456789);
+      
+      error |= jsonWriteString( json, (JsonChar *) "ValueReal4");
+      error |= jsonWriteReal4(  json, 1.234567890123456789);
+      
+      error |= jsonWriteString( json, (JsonChar *) "ValueArrayInt");
+      error |= jsonWriteArrayStart(json);
       {
          int index;
 
          for (index = 1; index <= 10; index++)
          {
-            jsonWriteInteger(json, index);
+            error |= jsonWriteInteger(json, index);
          }
       }
-      jsonWriteArrayStop(json);
-
-      jsonWriteString( json, (JsonChar *) "ValueObject");
-      jsonWriteObjectStart(json);
+      error |= jsonWriteArrayStop(json);
+      
+      error |= jsonWriteString( json, (JsonChar *) "ValueObject");
+      error |= jsonWriteObjectStart(json);
       {
-         jsonWriteString( json, (JsonChar *) "ValueTrue");
-         jsonWriteBoolean(json, jsonTRUE);
-
-         jsonWriteString( json, (JsonChar *) "ValueFalse");
-         jsonWriteBoolean(json, jsonFALSE);
-
-         jsonWriteString( json, (JsonChar *) "ValueNull");
-         jsonWriteNull(   json);
-
-         jsonWriteString( json, (JsonChar *) "ValueString");
-         jsonWriteString( json, (JsonChar *) "The quick brown fox jumped over the lazy dog.");
-
-         jsonWriteString( json, (JsonChar *) "ValueInteger");
-         jsonWriteInteger(json, 42);
-
-         jsonWriteString( json, (JsonChar *) "ValueReal");
-         jsonWriteReal(   json, 1.234567890123456789);
-
-         jsonWriteString( json, (JsonChar *) "ValueReal4");
-         jsonWriteReal4(  json, 1.234567890123456789);
-
-         jsonWriteString( json, (JsonChar *) "ValueArrayInt");
-         jsonWriteArrayStart(json);
+         error |= jsonWriteString( json, (JsonChar *) "ValueTrue");
+         error |= jsonWriteBoolean(json, jsonTRUE);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueFalse");
+         error |= jsonWriteBoolean(json, jsonFALSE);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueNull");
+         error |= jsonWriteNull(   json);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueString");
+         error |= jsonWriteString( json, (JsonChar *) "The quick brown fox jumped over the lazy dog.");
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueInteger");
+         error |= jsonWriteInteger(json, 42);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueReal");
+         error |= jsonWriteReal(   json, 1.234567890123456789);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueReal4");
+         error |= jsonWriteReal4(  json, 1.234567890123456789);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueArrayInt");
+         error |= jsonWriteArrayStart(json);
          {
             int index;
 
             for (index = 1; index <= 10; index++)
             {
-               jsonWriteInteger(json, index);
+               error |= jsonWriteInteger(json, index);
             }
          }
-         jsonWriteArrayStop(json);
-
-         jsonWriteString( json, (JsonChar *) "ValueObject");
-         jsonWriteObjectStart(json);
+         error |= jsonWriteArrayStop(json);
+      
+         error |= jsonWriteString( json, (JsonChar *) "ValueObject");
+         error |= jsonWriteObjectStart(json);
          {
-            jsonWriteString(json, (JsonChar *) "ValueString");
-            jsonWriteString(json, (JsonChar *) "Ok, \r\n\tThat's enough of this silliness.");
+            error |= jsonWriteString(json, (JsonChar *) "ValueString");
+            error |= jsonWriteString(json, (JsonChar *) "Ok, \r\n\tThat's enough of this silliness.");
          }
-         jsonWriteObjectStop(json);
+         error |= jsonWriteObjectStop(json);
       }
-      jsonWriteObjectStop(json);
+      error |= jsonWriteObjectStop(json);
    }
-   jsonWriteObjectStop(json);
+   error |= jsonWriteObjectStop(json);
+
+   EXPECT_TRUE(error == jsonErrorNONE);
+
+   jsonDestroy(json);
+
+   jsonStop();
+
+   EXPECT_TRUE(strcmp(s->buffer, result) == 0);
+
+   strDestroy(s);
+}
+
+/**************************************************************************************************
+func: write errors
+**************************************************************************************************/
+TEST(TestJSONRoutines, Write)
+{
+   Str         *s;
+   Json        *json;
+   JsonError    error;
+
+   s = strCreate(0);
+
+   jsonStart(memCreate, memDestroy, memClear);
+
+   json = jsonCreateWrite(s, _BufferAppendString);
+
+   error  = jsonErrorNONE;
+   error |= jsonWriteObjectStart(json); 
+   {
+   }
+   error |= jsonWriteObjectStop(json);
 
    jsonDestroy(json);
 

@@ -55,16 +55,16 @@ typedef enum
 {
    jsonErrorNONE,
 
-   jsonErrorCANNOT_ARRAY_START,
-   jsonErrorCANNOT_ARRAY_STOP,
-   jsonErrorCANNOT_OBJECT_START,
-   jsonErrorCANNOT_OBJECT_STOP,
-   jsonErrorCANNOT_VALUE_OUT,
-   jsonErrorFAILED_MEMORY_ALLOC,
-   jsonErrorFAILED_SCOPE_POP,
-   jsonErrorFAILED_WRITE,
-   jsonErrorLIBRARY_NOT_STARTED,
-   jsonErrorPARAMETER_BAD,
+   jsonErrorCANNOT_ARRAY_START                        = 0x00000001,
+   jsonErrorCANNOT_ARRAY_STOP                         = 0x00000002,
+   jsonErrorCANNOT_OBJECT_START                       = 0x00000004,
+   jsonErrorCANNOT_OBJECT_STOP                        = 0x00000008,
+   jsonErrorCANNOT_VALUE_OUT                          = 0x00000010,
+   jsonErrorFAILED_MEMORY_ALLOC                       = 0x00000020,
+   jsonErrorFAILED_SCOPE_POP                          = 0x00000040, 
+   jsonErrorFAILED_WRITE                              = 0x00000080,  
+   jsonErrorLIBRARY_NOT_STARTED                       = 0x00000100,
+   jsonErrorPARAMETER_BAD                             = 0x00000200,
 } JsonError;
 
 typedef enum
