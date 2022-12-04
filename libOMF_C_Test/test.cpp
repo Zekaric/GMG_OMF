@@ -323,7 +323,7 @@ TEST(TestJSONRoutines, Write)
 /**************************************************************************************************
 func: write errors
 **************************************************************************************************/
-TEST(TestJSONRoutines, Write)
+TEST(TestJSONRoutines, WriteError1)
 {
    Str         *s;
    Json        *json;
@@ -336,10 +336,47 @@ TEST(TestJSONRoutines, Write)
    json = jsonCreateWrite(s, _BufferAppendString);
 
    error  = jsonErrorNONE;
-   error |= jsonWriteObjectStart(json); 
+   error |= jsonWriteString(json, (JsonChar *) "value");
+   EXPECT_TRUE(error == jsonErrorNONE);
+
+   error |= jsonWriteString(json, (JsonChar *) "2nd value should be error.");
+   EXPECT_FALSE(error == jsonErrorNONE);
+
+   jsonDestroy(json);
+
+   jsonStop();
+
+   strDestroy(s);
+}
+
+/**************************************************************************************************
+func: write errors
+**************************************************************************************************/
+TEST(TestJSONRoutines, WriteError2)
+{
+   Str         *s;
+   Json        *json;
+   JsonError    error;
+
+   s = strCreate(0);
+
+   jsonStart(memCreate, memDestroy, memClear);
+
+   json = jsonCreateWrite(s, _BufferAppendString);
+
+   error  = jsonErrorNONE;
+   error |= jsonWriteObjectStart(json);
    {
+      // Key is expected.  This is not a stirng/key.
+      error |= jsonWriteInteger(json, 42);
+      EXPECT_FALSE(error == jsonErrorNONE);
+
+      error  = jsonErrorNONE;
+      error |= jsonWriteString(json, (JsonChar *) "key");
    }
+   // Value for a key is expected.  Can't close yet.
    error |= jsonWriteObjectStop(json);
+   EXPECT_FALSE(error == jsonErrorNONE);
 
    jsonDestroy(json);
 

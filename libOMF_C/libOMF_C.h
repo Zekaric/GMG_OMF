@@ -47,8 +47,8 @@ include:
 #include <stdlib.h>
 
 // miniz is a smaller (file count) implementation of the compression and zip archive handling
-// project can be found here  https://github.com/richgel999/miniz
-// As indicated on usage for that project, we are just including the source in the project 
+// proj can be found here  https://github.com/richgel999/miniz
+// As indicated on usage for that proj, we are just including the source in the proj 
 // directly.
 // 
 // For deflate and inflate
@@ -254,6 +254,9 @@ typedef struct OmfGeomSurfTri          OmfGeomSurfTri;
 typedef struct OmfGeomVol              OmfGeomVol;
 typedef GUID                           OmfId;
 typedef uint32_t                       OmfIndex;
+typedef struct OmfList                 OmfList;
+typedef struct OmfListItem             OmfListItem;
+typedef struct OmfListIter             OmfListIter;
 typedef struct OmfObj                  OmfObj;
 typedef uint64_t                       OmfOffset;
 typedef struct OmfProj                 OmfProj;
@@ -273,6 +276,25 @@ struct OmfObj
    OmfChar                    *dateModified;
 
    OMF_OBJECT_VARS
+};
+
+struct OmfList
+{
+   OmfCount                    count;
+   OmfListItem                *head,
+                              *tail;
+};
+
+struct OmfListItem
+{
+   OmfListItem                *next;
+   OmfObj                     *obj;
+};
+
+struct OmfListIter
+{
+   OmfList const              *list;
+   OmfListItem                *curr;
 };
 
 struct OmfArray
@@ -412,6 +434,7 @@ struct OmfProj
    OmfCoord                    origin;                                                             \
    OmfChar                    *revision;                                                           \
    OmfChar                    *units;                                                              \
+   OmfList                    *elemList;                                                           \
                                                                                                    \
    OmfBool                     isDateSet;                                                          \
    OmfChar                    *date;
@@ -423,7 +446,7 @@ struct OmfFile
 {
    OmfBool                     isWriting;
    OmfFileVersion              version;
-   OmfProj                    *project;
+   OmfProj                    *proj;
 
    // v00_09
    FILE                       *file;
@@ -644,6 +667,7 @@ macro:
 #define omfObjSetGeomSurfTriArrayCoord(      OBJ, VAL)      omfGeomSurfTriSetArrayCoord(     omfGeomSurfTriFromObj(  OBJ), (VAL))
 #define omfObjSetGeomSurfTriArrayTriangle(   OBJ, VAL)      omfGeomSurfTriSetArrayTriangle(  omfGeomSurfTriFromObj(  OBJ), (VAL))
 
+#define omfObjAddProjElem(                   OBJ, ELEM)     omfProjAddElem(                  omfProjFromObj(         OBJ), (ELEM))
 #define omfObjGetProjAuthor(                 OBJ)           omfProjGetAuthor(                omfProjFromObj(         OBJ)) 
 #define omfObjGetProjDate(                   OBJ)           omfProjGetDate(                  omfProjFromObj(         OBJ)) 
 #define omfObjGetProjDescription(            OBJ)           omfProjGetDescription(           omfProjFromObj(         OBJ)) 
@@ -694,6 +718,42 @@ void                        omfCharDestroy(                          OmfChar    
 OmfCount                    omfCharGetSize(                          OmfChar const * const value);
 
 wchar_t                    *wcharCreateFromOmfChar(                  OmfChar const * const value);
+
+// OmfList functions
+OmfList                    *omfListCreate(                           void);
+OmfBool                     omfListCreateContent(                    OmfList       * const list);
+
+void                        omfListDestroy(                          OmfList       * const list);
+void                        omfListDestroyContent(                   OmfList       * const list);
+
+void                        omfListAppend(                           OmfList       * const list, OmfListItem * const item);
+
+OmfCount                    omfListGetCount(                         OmfList const * const list);
+OmfListItem                *omfListGetHeadItem(                      OmfList const * const list);
+
+// OmfListItem functions
+OmfListItem                *omfListItemCreate(                       void);
+OmfBool                     omfListItemCreateContent(                OmfListItem       * const listItem);
+
+void                        omfListItemDestroy(                      OmfListItem       * const listItem);
+void                        omfListItemDestroyContent(               OmfListItem       * const listItem);
+
+OmfListItem                *omfListItemGetNext(                      OmfListItem const * const listItem);
+OmfObj                     *omfListItemGetObj(                       OmfListItem const * const listItem);
+
+OmfBool                     omfListItemSetNext(                      OmfListItem       * const listItem, OmfListItem * const value);
+OmfBool                     omfListItemSetObj(                       OmfListItem       * const listItem, OmfObj * const value);
+
+// OmfListIter function
+OmfListIter                *omfListIterCreate(                       OmfList const * const list);
+OmfBool                     omfListIterCreateContent(                OmfListIter       * const listIter, OmfList const * const list);
+
+void                        omfListIterDestroy(                      OmfListIter       * const listIter);
+void                        omfListIterDestroyContent(               OmfListIter       * const listIter);
+
+OmfListItem                *omfListIterGetItem(                      OmfListIter const * const listIter);
+
+OmfBool                     omfListIterNext(                         OmfListIter       * const listIter);
 
 // Array buffer routines
 OmfArray                   *omfArrayCreate(                          void);
@@ -829,21 +889,23 @@ OmfBool                     omfGeomSurfTriSetArrayCoord(             OmfGeomSurf
 OmfBool                     omfGeomSurfTriSetArrayTriangle(          OmfGeomSurfTri       * const geom, OmfArray * const value);
 
 // Project routines
-OmfChar                    *omfProjGetAuthor(                     OmfProj const * const project);
-OmfChar                    *omfProjGetDate(                       OmfProj const * const project);
-OmfChar                    *omfProjGetDescription(                OmfProj const * const project);
-OmfChar                    *omfProjGetName(                       OmfProj const * const project);
-OmfCoord                    omfProjGetOrigin(                     OmfProj const * const project);
-OmfChar                    *omfProjGetRevision(                   OmfProj const * const project);
-OmfChar                    *omfProjGetUnits(                      OmfProj const * const project);
+OmfBool                     omfProjAddElem(                       OmfProj       * const proj, OmfElem * const elem);
 
-OmfBool                     omfProjSetAuthor(                     OmfProj       * const project, OmfChar const * const value);
-OmfBool                     omfProjSetDate(                       OmfProj       * const project, OmfChar const * const value);
-OmfBool                     omfProjSetDescription(                OmfProj       * const project, OmfChar const * const value);
-OmfBool                     omfProjSetName(                       OmfProj       * const project, OmfChar const * const value);
-OmfBool                     omfProjSetOrigin(                     OmfProj       * const project, OmfCoord const value);
-OmfBool                     omfProjSetRevision(                   OmfProj       * const project, OmfChar const * const value);
-OmfBool                     omfProjSetUnits(                      OmfProj       * const project, OmfChar const * const value);
+OmfChar                    *omfProjGetAuthor(                     OmfProj const * const proj);
+OmfChar                    *omfProjGetDate(                       OmfProj const * const proj);
+OmfChar                    *omfProjGetDescription(                OmfProj const * const proj);
+OmfChar                    *omfProjGetName(                       OmfProj const * const proj);
+OmfCoord                    omfProjGetOrigin(                     OmfProj const * const proj);
+OmfChar                    *omfProjGetRevision(                   OmfProj const * const proj);
+OmfChar                    *omfProjGetUnits(                      OmfProj const * const proj);
+
+OmfBool                     omfProjSetAuthor(                     OmfProj       * const proj, OmfChar const * const value);
+OmfBool                     omfProjSetDate(                       OmfProj       * const proj, OmfChar const * const value);
+OmfBool                     omfProjSetDescription(                OmfProj       * const proj, OmfChar const * const value);
+OmfBool                     omfProjSetName(                       OmfProj       * const proj, OmfChar const * const value);
+OmfBool                     omfProjSetOrigin(                     OmfProj       * const proj, OmfCoord const value);
+OmfBool                     omfProjSetRevision(                   OmfProj       * const proj, OmfChar const * const value);
+OmfBool                     omfProjSetUnits(                      OmfProj       * const proj, OmfChar const * const value);
 
 #if defined(__cplusplus)
 }

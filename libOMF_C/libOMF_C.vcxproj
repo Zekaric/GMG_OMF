@@ -193,6 +193,7 @@
     <ClCompile Include="omfGeometrySurfaceGrid.c" />
     <ClCompile Include="omfGeometrySurfaceTri.c" />
     <ClCompile Include="omfGeometryVolume.c" />
+    <ClCompile Include="omfList.c" />
     <ClCompile Include="omfObject.c" />
     <ClCompile Include="omfProject.c" />
     <ClCompile Include="omgGeometryLineSet.c" />

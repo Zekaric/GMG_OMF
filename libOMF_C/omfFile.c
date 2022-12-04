@@ -87,10 +87,10 @@ OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file
 
    _OmfMemClearType(OmfFile, ftemp);
 
-   // Set up what needs to be set up for the project.
-   ftemp->project = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
+   // Set up what needs to be set up for the proj.
+   ftemp->proj = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
    error = omfErrorMEM_CREATE_FAILURE;
-   gotoIf(!ftemp->project, omfFileCreateReadERROR);
+   gotoIf(!ftemp->proj, omfFileCreateReadERROR);
 
    // Todo read in the file to see if it is a version 0.9.0 or a zip file which
    // will be a version 1.0.0 or larger.
@@ -122,7 +122,7 @@ OmfError omfFileCreateRead(wchar_t const * const fileName, OmfFile ** const file
 omfFileCreateReadERROR:
 
    // Clean up
-   omfObjDestroyObj(ftemp->project);
+   omfObjDestroyObj(ftemp->proj);
    _OmfMemDestroy(ftemp);
 
    return error;
@@ -158,10 +158,10 @@ OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const
 
    _OmfMemClearType(OmfFile, ftemp);
 
-   // Set up what needs to be set up for the project.
+   // Set up what needs to be set up for the proj.
    error = omfErrorMEM_CREATE_FAILURE;
-   ftemp->project = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
-   gotoIf(!ftemp->project, omfFileCreateWriteERROR);
+   ftemp->proj = omfProjFromObj(omfObjCreate(omfObjTypePROJ));
+   gotoIf(!ftemp->proj, omfFileCreateWriteERROR);
    
    // Open the file.
    error = omfErrorFILE_OPEN_FAILURE;
@@ -180,7 +180,7 @@ OmfError omfFileCreateWrite(wchar_t const * const fileName, OmfFileVersion const
 omfFileCreateWriteERROR:
    // Clean up.
    fclose(ftemp->file);
-   omfObjDestroyObj(ftemp->project);
+   omfObjDestroyObj(ftemp->proj);
    _OmfMemDestroy(ftemp);
 
    return error;
@@ -213,7 +213,7 @@ void omfFileDestroy(OmfFile * const file)
          _fseeki64(file->file, 0, SEEK_SET);
          _WriteHeader00_09(file, pos);
           
-         // Write the project and other items.
+         // Write the proj and other items.
          _fseeki64(file->file, 0, SEEK_END);
          // _WriteTableOfContents00_09(file);
       }
@@ -227,7 +227,7 @@ void omfFileDestroy(OmfFile * const file)
    }
 
    // Clean up.
-   omfObjDestroyObj(file->project);
+   omfObjDestroyObj(file->proj);
 
    _OmfMemDestroy(file->jsonTableOfContents);
    _OmfMemDestroy(file);
@@ -242,7 +242,7 @@ OmfProj *omfFileGetProject(OmfFile * const file)
       !omfIsStarted() ||
       !file);
 
-   return file->project;
+   return file->proj;
 }
 
 /**************************************************************************************************
@@ -310,7 +310,7 @@ static OmfError _TestLoad00_09(OmfFile * const file, wchar_t const * const fileN
    gotoIf(count != 32,                                  LOAD_ERROR);
    gotoIf(!strIsEqual(version, omfVERSION00_09_00, 32), LOAD_ERROR);
 
-   // Read in the project uid
+   // Read in the proj uid
    count = fread_s(&file->idProject, 16, 1, 16, file->file);
    gotoIf(count != 16, LOAD_ERROR);
    //TODO we probably have to endian change the GUID 
@@ -370,8 +370,8 @@ static OmfError _WriteHeader00_09(OmfFile const * const file, OmfOffset const po
    count = fwrite(version, 1, 32, file->file);
    gotoIf(count != 32, WRITE_ERROR);
 
-   // Write out the project id.
-   count = fwrite(&file->project->id, 1, sizeof(OmfId), file->file);
+   // Write out the proj id.
+   count = fwrite(&file->proj->id, 1, sizeof(OmfId), file->file);
    gotoIf(count != 16, WRITE_ERROR);
 
    // Write out the offset to the table of contents json.

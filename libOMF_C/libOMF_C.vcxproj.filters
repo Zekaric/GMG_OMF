@@ -107,5 +107,8 @@
     <ClCompile Include="libJSON_C.c">
       <Filter>json</Filter>
     </ClCompile>
+    <ClCompile Include="omfList.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

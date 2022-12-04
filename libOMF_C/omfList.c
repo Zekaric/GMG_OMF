@@ -1,10 +1,10 @@
 /**************************************************************************************************
-file:       OmfProj
+file:       OmfList
 author:     Robbert de Groot
 copyright:  2022, Robbert de Groot
 
 description:
-Project routines
+A simple linked list implementation.
 **************************************************************************************************/
 
 /**************************************************************************************************
@@ -55,284 +55,330 @@ global:
 function:
 **************************************************************************************************/
 /**************************************************************************************************
-func: _OmfProjCreate
+func: omfListCreate
 **************************************************************************************************/
-OmfProj *_OmfProjCreate(void)
+OmfList *omfListCreate(void)
 {
-   OmfProj *proj;
+   OmfList *list;
 
    returnNullIf(!omfIsStarted());
 
-   proj = _OmfMemCreateType(OmfProj);
-   returnNullIf(!proj);
+   list = _OmfMemCreateType(OmfList);
+   returnNullIf(!list);
 
-   if (!_OmfProjCreateContent(proj))
+   if (!omfListCreateContent(list))
    {
-      _OmfMemDestroy(proj);
+      _OmfMemDestroy(list);
       return NULL;
    }
 
-   return proj;
+   return list;
 }
 
 /**************************************************************************************************
-func: _OmfProjCreateContent
+func: omfListCreateContent
 **************************************************************************************************/
-OmfBool _OmfProjCreateContent(OmfProj * const proj)
+OmfBool omfListCreateContent(OmfList * const list)
 {
    returnFalseIf(!omfIsStarted());
 
-   _OmfMemClearType(OmfProj, proj);
-
-   proj->elemList = omfListCreate();
-   returnFalseIf(!proj->elemList);
+   _OmfMemClearType(OmfList, list);
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: _OmfProjDestroyContent
+func: omfListDestroy
 **************************************************************************************************/
-void _OmfProjDestroyContent(OmfProj * const proj)
+void omfListDestroy(OmfList * const list)
 {
-   returnVoidIf(!proj);
+   returnVoidIf(
+      !omfIsStarted() ||
+      !list);
 
-   omfCharDestroy(proj->author);
-   omfCharDestroy(proj->date);
-   omfCharDestroy(proj->description);
-   omfCharDestroy(proj->name);
-   omfCharDestroy(proj->revision);
+   omfListDestroyContent(list);
+   
+   _OmfMemDestroy(list);
 
    return;
 }
 
 /**************************************************************************************************
-func: omfProjAddElem
+func: omfListDestroyContent
 **************************************************************************************************/
-OmfBool omfProjAddElem(OmfProj *const proj, OmfElem *const elem)
+void omfListDestroyContent(OmfList * const list)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !list);
+
+   return;
+}
+
+/**************************************************************************************************
+func: omfListAppend
+**************************************************************************************************/
+void omfListAppend(OmfList * const list, OmfListItem * const item)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !list);
+
+   if (list->head == NULL)
+   {
+      list->head    =
+         list->tail = item;
+      return;
+   }
+
+   // Add the new item to the tail of the list.
+   omfListItemSetNext(list->tail, item);
+
+   // Set the new tail.
+   list->tail = item;
+
+   // Increment the count.
+   list->count++;
+}
+
+/**************************************************************************************************
+func: omfListGetCount
+**************************************************************************************************/
+OmfCount omfListGetCount(OmfList const * const list)
+{
+   returnIf(
+         !omfIsStarted() ||
+         !list,
+      0);
+
+   return list->count;
+}
+
+/**************************************************************************************************
+func: omfListGetHeadItem
+**************************************************************************************************/
+OmfListItem *omfListGetHeadItem(OmfList const * const list)
+{
+   returnNullIf(
+      !omfIsStarted() ||
+      !list);
+
+   return list->head;
+}
+
+/**************************************************************************************************
+OmfListItem:
+function:
+**************************************************************************************************/
+/**************************************************************************************************
+func: omfListItemCreate
+**************************************************************************************************/
+OmfListItem *omfListItemCreate(void)
 {
    OmfListItem *listItem;
 
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj           ||
-      (omfObjGetObjType(elem) & omfObjTypeELEM) != omfObjTypeELEM);
+   returnNullIf(!omfIsStarted());
 
-   // Create a new list item.
-   listItem = omfListItemCreate();
-   returnFalseIf(!listItem);
+   listItem = _OmfMemCreateType(OmfListItem);
+   returnNullIf(!listItem);
 
-   // Set up the list item.
-   omfListItemSetObj(listItem, omfObjFromObj(elem));
+   if (!omfListItemCreateContent(listItem))
+   {
+      _OmfMemDestroy(listItem);
+      return NULL;
+   }
 
-   // Add the listItem to the list.
-   omfListAppend(proj->elemList, listItem);
+   return listItem;
+}
+
+/**************************************************************************************************
+func: omfListItemCreateContent
+**************************************************************************************************/
+OmfBool omfListItemCreateContent(OmfListItem * const listItem)
+{
+   returnFalseIf(!omfIsStarted());
+
+   _OmfMemClearType(OmfListItem, listItem);
 
    return omfTRUE;
 }
 
 /**************************************************************************************************
-func: omfProjGetAuthor
+func: omfListItemDestroy
 **************************************************************************************************/
-OmfChar *omfProjGetAuthor(OmfProj const * const proj)
+void omfListItemDestroy(OmfListItem * const listItem)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !listItem);
+
+   omfListItemDestroyContent(listItem);
+   
+   _OmfMemDestroy(listItem);
+
+   return;
+}
+
+/**************************************************************************************************
+func: omfListItemDestroyContent
+**************************************************************************************************/
+void omfListItemDestroyContent(OmfListItem * const listItem)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !listItem);
+
+   return;
+}
+
+/**************************************************************************************************
+func: omfListItemGetNext
+**************************************************************************************************/
+OmfListItem *omfListItemGetNext(OmfListItem const * const listItem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !proj);
+      !listItem);
 
-   return proj->author;
+   return listItem->next;
 }
 
 /**************************************************************************************************
-func: omfProjGetDate
+func: omfListItemGetObj
 **************************************************************************************************/
-OmfChar *omfProjGetDate(OmfProj const * const proj)
+OmfObj *omfListItemGetObj(OmfListItem const * const listItem)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !proj);
+      !listItem);
 
-   return proj->date;
+   return listItem->obj;
 }
 
 /**************************************************************************************************
-func: omfProjGetDescription
+func: omfListItemSetNext
 **************************************************************************************************/
-OmfChar *omfProjGetDescription(OmfProj const * const proj)
+OmfBool omfListItemSetNext(OmfListItem * const listItem, OmfListItem * const value)
+{
+   returnFalseIf(
+      !omfIsStarted() ||
+      !listItem);
+
+   listItem->next = value;
+
+   return omfTRUE;
+}
+
+/**************************************************************************************************
+func: omfListItemSetObj
+**************************************************************************************************/
+OmfBool omfListItemSetObj(OmfListItem * const listItem, OmfObj * const value)
+{
+   returnFalseIf(
+      !omfIsStarted() ||
+      !listItem);
+
+   listItem->obj = value;
+
+   return omfTRUE;
+}
+
+/**************************************************************************************************
+OmfListIter:
+function:
+**************************************************************************************************/
+/**************************************************************************************************
+func: omfListIterCreate
+**************************************************************************************************/
+OmfListIter *omfListIterCreate(OmfList const * const list)
+{
+   OmfListIter *listIter;
+
+   returnNullIf(!omfIsStarted());
+
+   listIter = _OmfMemCreateType(OmfListIter);
+   returnNullIf(!listIter);
+
+   if (!omfListIterCreateContent(listIter, list))
+   {
+      _OmfMemDestroy(listIter);
+      return NULL;
+   }
+
+   return listIter;
+}
+
+/**************************************************************************************************
+func: omfListIterCreateContent
+**************************************************************************************************/
+OmfBool omfListIterCreateContent(OmfListIter * const listIter, OmfList const * const list)
+{
+   returnFalseIf(!omfIsStarted());
+
+   _OmfMemClearType(OmfListIter, listIter);
+
+   listIter->list = list;
+   listIter->curr = list->head;
+
+   return omfTRUE;
+}
+
+/**************************************************************************************************
+func: omfListIterDestroy
+**************************************************************************************************/
+void omfListIterDestroy(OmfListIter * const listIter)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !listIter);
+
+   omfListIterDestroyContent(listIter);
+   
+   _OmfMemDestroy(listIter);
+
+   return;
+}
+
+/**************************************************************************************************
+func: omfListIterDestroyContent
+**************************************************************************************************/
+void omfListIterDestroyContent(OmfListIter * const listIter)
+{
+   returnVoidIf(
+      !omfIsStarted() ||
+      !listIter);
+
+   return;
+}
+
+/**************************************************************************************************
+func: omfListIterGetItem
+**************************************************************************************************/
+OmfListItem *omfListIterGetItem(OmfListIter const * const listIter)
 {
    returnNullIf(
       !omfIsStarted() ||
-      !proj);
+      !listIter);
 
-   return proj->description;
+   return listIter->curr;
 }
 
 /**************************************************************************************************
-func: omfProjGetName
+func: omfListIterNext
 **************************************************************************************************/
-OmfChar *omfProjGetName(OmfProj const * const proj)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !proj);
-
-   return proj->name;
-}
-
-/**************************************************************************************************
-func: omfProjGetOrigin
-**************************************************************************************************/
-OmfCoord omfProjGetOrigin(OmfProj const * const proj)
-{
-   OmfCoord vec;
-
-   _OmfMemClearType(OmfCoord, &vec);
-
-   returnIf(
-         !omfIsStarted() ||
-         !proj,
-      vec);
-
-   return proj->origin;
-}
-
-/**************************************************************************************************
-func: omfProjGetRevision
-**************************************************************************************************/
-OmfChar *omfProjGetRevision(OmfProj const * const proj)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !proj);
-
-   return proj->revision;
-}
-
-/**************************************************************************************************
-func: omfProjGetUnits
-**************************************************************************************************/
-OmfChar *omfProjGetUnits(OmfProj const * const proj)
-{
-   returnNullIf(
-      !omfIsStarted() ||
-      !proj);
-
-   return proj->units;
-}
-
-/**************************************************************************************************
-func: omfProjIsDateSet
-**************************************************************************************************/
-OmfBool omfProjIsDateSet(OmfProj const * const proj)
+OmfBool omfListIterNext(OmfListIter * const listIter)
 {
    returnFalseIf(
       !omfIsStarted() ||
-      !proj);
+      !listIter    ||
+      !listIter->curr);
 
-   return proj->isDateSet;
-}
+   // Move to the next item in the list.
+   listIter->curr = listIter->curr->next;
 
-/**************************************************************************************************
-func: omfProjSetAuthor
-**************************************************************************************************/
-OmfBool omfProjSetAuthor(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
+   // If there is no more items, then we return FALSE.
+   returnFalseIf(!listIter->curr);
 
-   omfCharDestroy(proj->author);
-   proj->author = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetDate
-**************************************************************************************************/
-OmfBool omfProjSetDate(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   omfCharDestroy(proj->date);
-   proj->date      = omfCharClone(value);
-   proj->isDateSet = (value != NULL);
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetDescription
-**************************************************************************************************/
-OmfBool omfProjSetDescription(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   omfCharDestroy(proj->description);
-   proj->description = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetName
-**************************************************************************************************/
-OmfBool omfProjSetName(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   omfCharDestroy(proj->name);
-   proj->name = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetOrigin
-**************************************************************************************************/
-OmfBool omfProjSetOrigin(OmfProj * const proj, OmfCoord const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   proj->origin = value;
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetRevision
-**************************************************************************************************/
-OmfBool omfProjSetRevision(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   omfCharDestroy(proj->revision);
-   proj->revision = omfCharClone(value);
-
-   return omfTRUE;
-}
-
-/**************************************************************************************************
-func: omfProjSetUnits
-**************************************************************************************************/
-OmfBool omfProjSetUnits(OmfProj * const proj, OmfChar const * const value)
-{
-   returnFalseIf(
-      !omfIsStarted() ||
-      !proj);
-
-   omfCharDestroy(proj->units);
-   proj->units = omfCharClone(value);
-
+   // If there is more items, then we return TRUE.
    return omfTRUE;
 }
