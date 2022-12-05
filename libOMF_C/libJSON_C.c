@@ -52,6 +52,12 @@ constant:
 /**************************************************************************************************
 type:
 **************************************************************************************************/
+typedef struct 
+{
+   JsonCount charLen,
+             buffLen;
+   JsonChar *buff;
+} JsonStr;
 
 /**************************************************************************************************
 variable:
@@ -67,7 +73,10 @@ static _locale_t   _locale_c;
 /**************************************************************************************************
 prototype:
 **************************************************************************************************/
-static JsonBool       _MemGrow(                 JsonCount const count, JsonCount const typeSize, void ** const buffer, JsonCount const addCount);
+static JsonChar       _ReadGetNextLetter(       Json       * const json);
+static JsonError      _ReadNumber(              Json       * const json, JsonChar letter);
+static JsonError      _ReadPredefined(          Json       * const json, JsonChar letter);
+static JsonError      _ReadValue(               Json       * const json, JsonBool isStringOnlyAllowed);
 
 static JsonScopeType  _ScopeGetType(            Json const * const json);
 static JsonBool       _ScopeIsEmpty(            Json const * const json);
@@ -80,6 +89,10 @@ static JsonError      _ScopeStart(              Json       * const json);
 static void           _ScopeStop(               Json       * const json);
 
 static JsonState      _StateGet(                Json       * const json);
+
+static JsonBool       _StrAppendLetter(         JsonStr * const str, JsonChar letter);
+static JsonStr       *_StrCreate(               void);
+static void           _StrDestroy(              JsonStr * const str);
 
 static JsonBool       _WriteStringJson(         Json       * const json, JsonChar const * const value);
 
@@ -134,6 +147,8 @@ void jsonStop(void)
 
 /**************************************************************************************************
 func: jsonCreateRead
+
+input and output pointers are optional.  The functions are not.
 **************************************************************************************************/
 Json *jsonCreateRead(void * const input, 
    JsonBool (*func_GetInput)(void * const input, JsonChar * const letter), void * const output, 
@@ -143,8 +158,6 @@ Json *jsonCreateRead(void * const input,
 
    returnFalseIf(
       !_isStarted    ||
-      !input         ||
-      !output        ||
       !func_GetInput ||
       !func_SetOutput);
 
@@ -162,6 +175,8 @@ Json *jsonCreateRead(void * const input,
 
 /**************************************************************************************************
 func: jsonCreateContentRead
+
+input and output pointers are optional.  The functions are not.
 **************************************************************************************************/
 JsonBool jsonCreateContentRead(Json * const json, void * const input,
    JsonBool (*func_GetInput)(void * const input, JsonChar * const letter), void * const output, 
@@ -170,8 +185,6 @@ JsonBool jsonCreateContentRead(Json * const json, void * const input,
    returnFalseIf(
       !_isStarted    ||
       !json          ||
-      !input         ||
-      !output        ||
       !func_GetInput ||
       !func_SetOutput);
 
@@ -265,6 +278,24 @@ void jsonDestroyContent(Json * const json)
 }
 
 /**************************************************************************************************
+func: jsonRead
+**************************************************************************************************/
+JsonError jsonRead(Json * const json)
+{
+   JsonError error;
+
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf( json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_READING);
+
+   // Read the one and only value in the json buffer.
+   error  = jsonErrorNONE;
+   error |= _ReadValue(json, jsonFALSE);
+
+   return error;
+}
+
+/**************************************************************************************************
 func: jsonWriteArrayStart
 **************************************************************************************************/
 JsonError jsonWriteArrayStart(Json * const json)
@@ -272,8 +303,9 @@ JsonError jsonWriteArrayStart(Json * const json)
    JsonError error;
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can start an array.
    state = _StateGet(json);
@@ -295,8 +327,9 @@ JsonError jsonWriteArrayStop(Json * const json)
 {
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can stop an array.
    state = _StateGet(json);
@@ -327,8 +360,9 @@ JsonError jsonWriteBoolean(Json * const json, JsonBool value)
 {
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -371,8 +405,9 @@ JsonError jsonWriteInteger(Json * const json, int64_t value)
    JsonState state;
    JsonChar  buffer[32];
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -409,8 +444,9 @@ JsonError jsonWriteNull(Json * const json)
 {
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -446,8 +482,9 @@ JsonError jsonWriteObjectStart(Json * const json)
    JsonError error;
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can start an array.
    state = _StateGet(json);
@@ -469,8 +506,9 @@ JsonError jsonWriteObjectStop(Json * const json)
 {
    JsonState state;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can stop an array.
    state = _StateGet(json);
@@ -502,8 +540,9 @@ JsonError jsonWriteReal(Json * const json, double value)
    JsonState state;
    JsonChar  buffer[32];
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -543,8 +582,9 @@ JsonError jsonWriteReal4(Json * const json, double value)
    JsonState state;
    JsonChar  buffer[32];
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -582,8 +622,9 @@ JsonError jsonWriteString(Json * const json, JsonChar const * const value)
    JsonState       state;
    JsonScopeType   scopeType;
 
-   returnIf(!_isStarted, jsonErrorLIBRARY_NOT_STARTED);
-   returnIf(!json,       jsonErrorPARAMETER_BAD);
+   returnIf(!_isStarted,      jsonErrorLIBRARY_NOT_STARTED);
+   returnIf(!json,            jsonErrorPARAMETER_BAD);
+   returnIf(!json->isWriting, jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING);
 
    // Check if we can write out a value.
    state = _StateGet(json);
@@ -753,6 +794,447 @@ local:
 function:
 **************************************************************************************************/
 /**************************************************************************************************
+func: _ReadArray
+**************************************************************************************************/
+static JsonError _ReadArray(Json * const json)
+{
+   JsonChar  letter;
+   JsonError error;
+
+   // Send the token of array start.
+   returnIf(
+         !json->funcRead_SetOutput(json->output, jsonTokenARRAY_START, NULL),
+      jsonErrorFAILED_READ_SET_OUTPUT);
+
+   loop
+   {
+      error = _ReadValue(json, jsonFALSE);
+
+      // Another value follows.
+      if (json->readLastLetter == ',')
+      {
+         returnIf(
+               !json->funcRead_SetOutput(json->output, jsonTokenCOMMA, NULL),
+            jsonErrorFAILED_READ_SET_OUTPUT);
+         continue;
+      }
+      // End of the array.
+      if (json->readLastLetter == ']')
+      {
+         break;
+      }
+      // Called a value that doesn't really read ahead to the next character.
+      if (json->readLastLetter == ' ')
+      {
+         letter = _ReadGetNextLetter(json);
+         returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+         if (letter == ',')
+         {
+            continue;
+         }
+         if (letter == ']')
+         {
+            break;
+         }
+      }
+
+      // Bad JSON
+      return jsonErrorUNEXPECTED_INPUT;
+   }
+
+   // Send the token of array stop.
+   returnIf(
+         !json->funcRead_SetOutput(json->output, jsonTokenARRAY_STOP, NULL),
+      jsonErrorFAILED_READ_SET_OUTPUT);
+
+   return jsonErrorNONE;
+}
+
+/**************************************************************************************************
+func: _ReadGetNextLetter
+**************************************************************************************************/
+static JsonChar _ReadGetNextLetter(Json * const json)
+{
+   JsonBool result;
+   JsonChar letter;
+
+   loop
+   {
+      result = json->funcRead_GetInput(json->input, &letter);
+      
+      // Bad input or 
+      // End of file.
+      returnIf(
+            result == jsonFALSE ||
+            letter == 0, 
+         0);
+
+      // Whitespace
+      if (letter == (JsonChar) ' '  ||
+          letter == (JsonChar) '\t' ||
+          letter == (JsonChar) '\n' ||
+          letter == (JsonChar) '\r')
+      {
+         // Skip white space.
+         continue;
+      }
+
+      break;
+   }
+
+   // regular letter.
+   return letter;
+}
+
+/**************************************************************************************************
+func: _ReadNumber
+**************************************************************************************************/
+static JsonError _ReadNumber(Json * const json, JsonChar letterStart)
+{
+   JsonStr  *stemp;
+   JsonChar  letter;
+   JsonBool  isReal;
+
+   isReal = jsonFALSE;
+   stemp  = _StrCreate();
+   returnIf(!stemp, jsonErrorFAILED_MEMORY_ALLOC);
+
+   _StrAppendLetter(stemp, letterStart);
+
+   // Get the integer portion
+   loop
+   {
+      letter = _ReadGetNextLetter(json);
+      returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+      breakIf(!('0' <= letter && letter <= '9'));
+
+      returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+   }
+
+   // Get the fractional.
+   if (letter == '.')
+   {
+      isReal = jsonTRUE;
+
+      returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+
+      loop
+      {
+         letter = _ReadGetNextLetter(json);
+         returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+         breakIf(!('0' <= letter && letter <= '9'));
+
+         returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+      }
+   }
+
+   // Get the exponent.
+   if (letter == 'e' || letter == 'E')
+   {
+      isReal = jsonTRUE;
+
+      returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+
+      letter = _ReadGetNextLetter(json);
+      returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+      // + and - can only appear at the start of the exponent
+      returnIf(
+            !(letter == '+' || 
+              letter == '-' ||
+              ('0' <= letter && letter <= '9')),
+         jsonErrorUNEXPECTED_INPUT);
+
+      returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+
+      loop
+      {
+         letter = _ReadGetNextLetter(json);
+         returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+         breakIf(!('0' <= letter && letter <= '9'));
+
+         returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+      }
+   }
+
+   // Send out the token.
+   if (isReal)
+   {
+      returnIf(
+            !json->funcRead_SetOutput(json->output, jsonTokenNUMBER_REAL, stemp->buff),
+         jsonErrorFAILED_READ_SET_OUTPUT);
+   }
+   else
+   {
+      returnIf(
+            !json->funcRead_SetOutput(json->output, jsonTokenNUMBER_INTEGER, stemp->buff),
+         jsonErrorFAILED_READ_SET_OUTPUT);
+   }
+
+   // Clean up.
+   _StrDestroy(stemp);
+
+   // Set the last letter read.
+   json->readLastLetter = letter;
+
+   return jsonErrorNONE;
+}
+
+/**************************************************************************************************
+func: _ReadObject
+**************************************************************************************************/
+static JsonError _ReadObject(Json * const json)
+{
+   JsonChar  letter;
+   JsonError error;
+
+   // Send the token of array start.
+   returnIf(
+         !json->funcRead_SetOutput(json->output, jsonTokenOBJECT_START, NULL),
+      jsonErrorFAILED_READ_SET_OUTPUT);
+
+   loop
+   {
+      // Get the key
+      error = _ReadValue(json, jsonTRUE);
+
+      // May not be an error.  Could just be a }
+      if (error != jsonErrorNONE)
+      {
+         letter = json->readLastLetter;
+         if (letter == '}')
+         {
+            break;
+         }
+      }
+
+
+      // Get the next letter to see what to do.
+      letter = _ReadGetNextLetter(json);
+      returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+
+      // Key value splitter.  
+      if (letter == ':')
+      {
+         returnIf(
+               !json->funcRead_SetOutput(json->output, jsonTokenKEY_VALUE_SEPARATOR, NULL),
+            jsonErrorFAILED_READ_SET_OUTPUT);
+      }
+      // Not allowed here.
+      if (letter == '}')
+      {
+         return jsonErrorUNEXPECTED_INPUT;
+      }
+
+      // Get the value
+      error = _ReadValue(json, jsonFALSE);
+
+      // Get the next letter to see what to do.
+      letter = json->readLastLetter;
+      if (json->readLastLetter == ' ')
+      {
+         letter = _ReadGetNextLetter(json);
+         returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+      }
+
+      // Another value follows.
+      if (letter == ',')
+      {
+         returnIf(
+               !json->funcRead_SetOutput(json->output, jsonTokenCOMMA, NULL),
+            jsonErrorFAILED_READ_SET_OUTPUT);
+         continue;
+      }
+      // End of the array.
+      if (letter == '}')
+      {
+         break;
+      }
+
+      // Bad JSON
+      return jsonErrorUNEXPECTED_INPUT;
+   }
+
+   // Send the token of array stop.
+   returnIf(
+         !json->funcRead_SetOutput(json->output, jsonTokenOBJECT_STOP, NULL),
+      jsonErrorFAILED_READ_SET_OUTPUT);
+
+   return jsonErrorNONE;
+}
+
+/**************************************************************************************************
+func: _ReadPredefined
+**************************************************************************************************/
+static JsonError _ReadPredefined(Json * const json, JsonChar letter)
+{
+   char ltemp[5];
+
+   // Reading in "false"
+   if (letter == 'f')
+   {
+      ltemp[0] = _ReadGetNextLetter(json);
+      ltemp[1] = _ReadGetNextLetter(json);
+      ltemp[2] = _ReadGetNextLetter(json);
+      ltemp[3] = _ReadGetNextLetter(json);
+      
+      returnIf(
+            !(ltemp[0] == 'a' &&
+              ltemp[1] == 'l' &&
+              ltemp[2] == 's' &&
+              ltemp[3] == 'e'),
+         jsonErrorUNEXPECTED_INPUT);
+
+      returnIf(
+            !json->funcRead_SetOutput(json->output, jsonTokenBOOL_FALSE, NULL),
+         jsonErrorFAILED_READ_SET_OUTPUT);
+   }
+   
+   // Reading in "true"
+   if (letter == 't')
+   {
+      ltemp[0] = _ReadGetNextLetter(json);
+      ltemp[1] = _ReadGetNextLetter(json);
+      ltemp[2] = _ReadGetNextLetter(json);
+
+      returnIf(
+            !(ltemp[0] == 'r' &&
+              ltemp[1] == 'u' &&
+              ltemp[2] == 'e'),
+         jsonErrorUNEXPECTED_INPUT);
+
+      returnIf(
+            !json->funcRead_SetOutput(json->output, jsonTokenBOOL_TRUE, NULL),
+         jsonErrorFAILED_READ_SET_OUTPUT);
+   }
+
+   // Reading in "null"
+   if (letter == 'n')
+   {
+      ltemp[0] = _ReadGetNextLetter(json);
+      ltemp[1] = _ReadGetNextLetter(json);
+      ltemp[2] = _ReadGetNextLetter(json);
+
+      returnIf(
+            !(ltemp[0] == 'u' &&
+              ltemp[1] == 'l' &&
+              ltemp[2] == 'l'),
+         jsonErrorUNEXPECTED_INPUT);
+
+      returnIf(
+            !json->funcRead_SetOutput(json->output, jsonTokenNULL, NULL),
+         jsonErrorFAILED_READ_SET_OUTPUT);
+   }
+
+   // Set the last letter read to a space.
+   json->readLastLetter = ' ';
+
+   return jsonErrorNONE;
+}
+
+/**************************************************************************************************
+func: _ReadString
+**************************************************************************************************/
+static JsonError _ReadString(Json * const json)
+{
+   JsonStr  *stemp;
+   JsonChar  letter;
+
+   stemp = _StrCreate();
+   returnIf(!stemp, jsonErrorFAILED_MEMORY_ALLOC);
+
+   loop
+   {
+      letter = _ReadGetNextLetter(json);
+      returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+      
+      // And unescaped quote terminates the string.
+      breakIf(letter == '\"');
+   
+      returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+
+      // Escaped letter
+      if (letter == '\\')
+      {
+         letter = _ReadGetNextLetter(json);
+         returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
+         
+         returnIf(!_StrAppendLetter(stemp, letter), jsonErrorFAILED_MEMORY_ALLOC);
+      }
+   }
+
+   // Send the string to the output.
+   returnIf(
+         !json->funcRead_SetOutput(json->output, jsonTokenSTRING, stemp->buff),
+      jsonErrorFAILED_READ_SET_OUTPUT);
+
+   // Destroy the string.  
+   _StrDestroy(stemp);
+
+   // Set the last letter read to a space.
+   json->readLastLetter = ' ';
+
+   return jsonErrorNONE;
+}
+
+/**************************************************************************************************
+func: _ReadValue
+**************************************************************************************************/
+static JsonError _ReadValue(Json * const json, JsonBool isStringOnlyAllowed)
+{
+   JsonChar letter;
+
+   letter = _ReadGetNextLetter(json);
+
+   // Premature EOF
+   returnIf(letter == 0, jsonErrorUNEXPECTED_EOF);
+
+   // Start of an object.
+   if (letter == '{')
+   {
+      returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
+      return _ReadObject(json);
+   }
+
+   // Start of an array.
+   if (letter == '[')
+   {
+      returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
+      return _ReadArray(json);
+   }
+
+   // Start of a string.
+   if (letter == '\"')
+   {
+      return _ReadString(json);
+   }
+
+   // Start of true, false, or null
+   if (letter == 't' ||
+       letter == 'f' ||
+       letter == 'n')
+   {
+      returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
+      return _ReadPredefined(json, letter);
+   }
+
+   // Start of a number.
+   if (letter == '-' ||
+       ('0' <= letter && letter <= '9'))
+   {
+      returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
+      return _ReadNumber(json, letter);
+   }
+
+   // Bad JSON
+   return jsonErrorUNEXPECTED_INPUT;
+}
+
+/**************************************************************************************************
 func: _ScopeGet
 **************************************************************************************************/
 static JsonScopeType _ScopeGetType(Json const * const json)
@@ -787,7 +1269,7 @@ static JsonError _ScopePush(Json * const json, JsonScopeType const scopeType)
    if (json->scopeIndex == json->scopeCount - 1)
    {
       returnIf(
-            _JsonMemGrowTypeArray(json->scopeCount, JsonScope, &(json->scopeStack), 32), 
+            _JsonMemGrowTypeArray(json->scopeCount, JsonScope, &(json->scopeStack), jsonBUFF_SIZE), 
          jsonErrorFAILED_MEMORY_ALLOC);
    }
 
@@ -838,7 +1320,7 @@ func: _ScopeStart
 **************************************************************************************************/
 static JsonError _ScopeStart(Json * const json)
 {
-   json->scopeCount = 32;
+   json->scopeCount = jsonBUFF_SIZE;
    json->scopeIndex = -1;
    json->scopeStack = _JsonMemCreateTypeArray(json->scopeCount, JsonScope);
    returnIf(!json->scopeStack, jsonErrorFAILED_MEMORY_ALLOC);
@@ -890,6 +1372,54 @@ static JsonState _StateGet(Json * const json)
 
    // We have written the one and only thing that makes up a JSON file.
    return jsonStateNONE;
+}
+
+/**************************************************************************************************
+func: _StrAppendLetter
+**************************************************************************************************/
+static JsonBool _StrAppendLetter(JsonStr * const str, JsonChar letter)
+{
+   // Grow the buffer
+   if (str->charLen == str->buffLen - 1)
+   {
+      return _JsonMemGrowTypeArray(str->buffLen, JsonChar, &str->buff, jsonBUFF_SIZE);
+   }
+
+   // Set the letter
+   str->buff[str->charLen++] = letter;
+   str->buff[str->charLen]   = 0; // Always null terminate.
+
+   return jsonTRUE;
+}
+
+/**************************************************************************************************
+func: _StrCreate
+**************************************************************************************************/
+static JsonStr *_StrCreate(void)
+{
+   JsonStr *str;
+
+   str = _JsonMemCreateType(JsonStr);
+
+   str->charLen = 0;
+   str->buffLen = jsonBUFF_SIZE;
+   str->buff    = _JsonMemCreateTypeArray(str->buffLen, JsonChar);
+   if (!str->buff)
+   {
+      _JsonMemDestroy(str);
+      return NULL;
+   }
+
+   return str;
+}
+
+/**************************************************************************************************
+func: _StrDestroy
+**************************************************************************************************/
+static void _StrDestroy(JsonStr * const str)
+{
+   _JsonMemDestroy(str->buff);
+   _JsonMemDestroy(str);
 }
 
 /**************************************************************************************************

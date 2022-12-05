@@ -65,6 +65,11 @@ typedef enum
    jsonErrorFAILED_WRITE                              = 0x00000080,  
    jsonErrorLIBRARY_NOT_STARTED                       = 0x00000100,
    jsonErrorPARAMETER_BAD                             = 0x00000200,
+   jsonErrorSTRUCT_NOT_SETUP_FOR_READING              = 0x00000400,
+   jsonErrorSTRUCT_NOT_SETUP_FOR_WRITING              = 0x00000800,
+   jsonErrorUNEXPECTED_EOF,
+   jsonErrorUNEXPECTED_INPUT,
+   jsonErrorFAILED_READ_SET_OUTPUT
 } JsonError;
 
 typedef enum
@@ -97,15 +102,15 @@ typedef enum
    
    jsonTokenARRAY_START,            // [
    jsonTokenARRAY_STOP,             // ]
-   jsonTokenBOOL_FALSE,             // "false"
-   jsonTokenBOOL_TRUE,              // "true"
+   jsonTokenBOOL_FALSE,             // false
+   jsonTokenBOOL_TRUE,              // true
    jsonTokenCOMMA,                  // ,
    jsonTokenEOF,
    jsonTokenKEY_VALUE_SEPARATOR,    // :
-   jsonTokenNULL,                   // "null"
+   jsonTokenNULL,                   // null
    jsonTokenNUMBER_INTEGER,         // -0123456789
    jsonTokenNUMBER_REAL,            // -0123456789
-   jeonTokenOBJECT_START,           // {
+   jsonTokenOBJECT_START,           // {
    jsonTokenOBJECT_STOP,            // }
    jsonTokenSTRING,                 // "
 } JsonToken;
@@ -114,6 +119,7 @@ typedef unsigned char          Uft8Char;
 
 typedef bool                   JsonBool;
 typedef Uft8Char               JsonChar;
+typedef int32_t                JsonIndex;
 typedef int32_t                JsonCount;
 typedef struct JsonScope       JsonScope;
 typedef struct Json            Json;
@@ -126,6 +132,7 @@ struct Json
    JsonBool                  (*funcRead_GetInput)(  void * const input,  JsonChar       * const letter);
    JsonBool                  (*funcRead_SetOutput)( void * const output, JsonToken const token, JsonChar const * const value);
    JsonBool                  (*funcWrite_SetOutput)(void * const output, JsonChar const * const value);
+   JsonChar                    readLastLetter;
    JsonScope                  *scopeStack;
    JsonCount                   scopeIndex;
    JsonCount                   scopeCount;
@@ -156,6 +163,8 @@ JsonBool  jsonCreateContentWrite(      Json * const json, void * const output, J
                                        
 void      jsonDestroy(                 Json * const json);
 void      jsonDestroyContent(          Json * const json);
+
+JsonError jsonRead(                    Json * const json);
 
 JsonError jsonWriteArrayStart(         Json * const json);
 JsonError jsonWriteArrayStop(          Json * const json);

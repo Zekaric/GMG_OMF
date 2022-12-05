@@ -50,7 +50,8 @@ type:
 typedef struct
 {
    int    length,
-          size;
+          size,
+          index;
    char  *buffer;
 } Str;
 
@@ -61,10 +62,13 @@ prototype:
 extern "C" {
 #endif
 
-bool strAppend( Str * const s, char const * const js);
-Str *strCreate( size_t const reserve);
-void strDestroy(Str * const s);
-bool strGrow(   Str * const s, size_t const count);
+bool   strAppend(       Str * const s, char const * const js);
+Str   *strCreate(       size_t const reserve);
+void   strDestroy(      Str * const s);
+bool   strGrow(         Str * const s, size_t const count);
+char   strPosGetLetter( Str * const s);
+void   strPosNext(      Str * const s);
+void   strPosReset(     Str * const s);
 
 #if defined(__cplusplus)
 }
