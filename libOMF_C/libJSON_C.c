@@ -831,6 +831,9 @@ static JsonError _ReadArray(Json * const json)
 
          if (letter == ',')
          {
+            returnIf(
+                  !json->funcRead_SetOutput(json->output, jsonTokenCOMMA, NULL),
+               jsonErrorFAILED_READ_SET_OUTPUT);
             continue;
          }
          if (letter == ']')
@@ -842,6 +845,8 @@ static JsonError _ReadArray(Json * const json)
       // Bad JSON
       return jsonErrorUNEXPECTED_INPUT;
    }
+
+   json->readLastLetter = ' ';
 
    // Send the token of array stop.
    returnIf(
@@ -1034,8 +1039,9 @@ static JsonError _ReadObject(Json * const json)
       error = _ReadValue(json, jsonFALSE);
 
       // Get the next letter to see what to do.
-      letter = json->readLastLetter;
-      if (json->readLastLetter == ' ')
+      letter               = json->readLastLetter;
+      json->readLastLetter = ' ';
+      if (letter == ' ')
       {
          letter = _ReadGetNextLetter(json);
          returnIf(!letter, jsonErrorUNEXPECTED_INPUT);
@@ -1186,7 +1192,8 @@ func: _ReadValue
 **************************************************************************************************/
 static JsonError _ReadValue(Json * const json, JsonBool isStringOnlyAllowed)
 {
-   JsonChar letter;
+   JsonChar  letter;
+   JsonError error;
 
    letter = _ReadGetNextLetter(json);
 
@@ -1196,15 +1203,27 @@ static JsonError _ReadValue(Json * const json, JsonBool isStringOnlyAllowed)
    // Start of an object.
    if (letter == '{')
    {
+      _ScopePush(json, jsonScopeTypeOBJECT);
+      
       returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
-      return _ReadObject(json);
+      error = _ReadObject(json);
+
+      _ScopePop(json);
+
+      return error;
    }
 
    // Start of an array.
    if (letter == '[')
    {
+      _ScopePush(json, jsonScopeTypeARRAY);
+
       returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
-      return _ReadArray(json);
+      error = _ReadArray(json);
+
+      _ScopePop(json);
+
+      return error;
    }
 
    // Start of a string.
@@ -1228,6 +1247,18 @@ static JsonError _ReadValue(Json * const json, JsonBool isStringOnlyAllowed)
    {
       returnIf(isStringOnlyAllowed, jsonErrorUNEXPECTED_INPUT);
       return _ReadNumber(json, letter);
+   }
+
+   if (letter == ']')
+   {
+      json->readLastLetter = letter;
+      returnIf(_ScopeGetType(json) == jsonScopeTypeARRAY, jsonErrorNONE);
+   }
+
+   if (letter == '}')
+   {
+      json->readLastLetter = letter;
+      returnIf(_ScopeGetType(json) == jsonScopeTypeOBJECT, jsonErrorNONE);
    }
 
    // Bad JSON
@@ -1269,7 +1300,7 @@ static JsonError _ScopePush(Json * const json, JsonScopeType const scopeType)
    if (json->scopeIndex == json->scopeCount - 1)
    {
       returnIf(
-            _JsonMemGrowTypeArray(json->scopeCount, JsonScope, &(json->scopeStack), jsonBUFF_SIZE), 
+            !_JsonMemGrowTypeArray(json->scopeCount, JsonScope, &(json->scopeStack), jsonBUFF_SIZE), 
          jsonErrorFAILED_MEMORY_ALLOC);
    }
 
@@ -1382,7 +1413,8 @@ static JsonBool _StrAppendLetter(JsonStr * const str, JsonChar letter)
    // Grow the buffer
    if (str->charLen == str->buffLen - 1)
    {
-      return _JsonMemGrowTypeArray(str->buffLen, JsonChar, &str->buff, jsonBUFF_SIZE);
+      returnFalseIf(!_JsonMemGrowTypeArray(str->buffLen, JsonChar, &str->buff, jsonBUFF_SIZE));
+      str->buffLen += jsonBUFF_SIZE;
    }
 
    // Set the letter
@@ -1409,6 +1441,8 @@ static JsonStr *_StrCreate(void)
       _JsonMemDestroy(str);
       return NULL;
    }
+
+   str->buff[0] = 0;
 
    return str;
 }
